@@ -1,0 +1,19 @@
+{
+  "name": "dmarynicz/behat-parallel-extension",
+  "description": "Parallel extension for Behat",
+  "keywords": ["BDD", "Behat", "Symfony2", "Context", "Extension"],
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": ">=5.3.3",
+    "behat/behat": "^3.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^4.8.36 || ^6.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "DMarynicz\\BehatParallelExtension\\": "src/"
+    }
+  }
+}
