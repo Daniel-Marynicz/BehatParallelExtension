@@ -4,17 +4,19 @@ namespace DMarynicz\BehatParallelExtension;
 
 use Behat\Testwork\Cli\ServiceContainer\CliExtension;
 use Behat\Testwork\EventDispatcher\ServiceContainer\EventDispatcherExtension;
+use Behat\Testwork\Hook\ServiceContainer\HookExtension;
 use Behat\Testwork\ServiceContainer\Extension as ExtensionInterface;
 use Behat\Testwork\ServiceContainer\ExtensionManager;
 use Behat\Testwork\Specification\ServiceContainer\SpecificationExtension;
 use Behat\Testwork\Suite\ServiceContainer\SuiteExtension;
 use DMarynicz\BehatParallelExtension\Cli\ParallelScenarioController;
 use DMarynicz\BehatParallelExtension\Cli\RerunController;
-use DMarynicz\BehatParallelExtension\Queue\Queue;
+use DMarynicz\BehatParallelExtension\Event\WorkerCreated;
+use DMarynicz\BehatParallelExtension\Finder\ScenarioSpecificationsFinder;
 use DMarynicz\BehatParallelExtension\Service\FilePutContentsWrapper;
 use DMarynicz\BehatParallelExtension\Service\Finder\FeatureSpecificationsFinder;
-use DMarynicz\BehatParallelExtension\Service\Finder\ScenarioSpecificationsFinder;
-use DMarynicz\BehatParallelExtension\Service\Task\ArgumentsBuilder;
+use DMarynicz\BehatParallelExtension\Task\ArgumentsBuilder;
+use DMarynicz\BehatParallelExtension\Task\Queue;
 use DMarynicz\BehatParallelExtension\Worker\WorkerPoll;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -49,13 +51,80 @@ class Extension implements ExtensionInterface
         $builder
             ->children()
                 ->scalarNode('rerun_cache')
-                ->info('Sets the rerun cache path')
-                ->defaultValue(
-                    is_writable(sys_get_temp_dir())
-                        ? sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'behat_rerun_cache'
-                        : null
-                )
-            ->end();
+                    ->info('Sets the rerun cache path, must have same value as testers.rerun_cache')
+                    ->defaultValue(
+                        is_writable(sys_get_temp_dir())
+                            ? sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'behat_rerun_cache'
+                            : null
+                    )
+                ->end()
+                ->arrayNode('events')
+                    ->arrayPrototype()
+                        ->children()
+                            ->scalarNode('eventName')
+                                ->example(WorkerCreated::WORKER_CREATED)
+                                ->cannotBeEmpty()
+                            ->end()
+                            ->arrayNode('handler')
+                                ->info(
+                                    'By default class must have method __invoke, '
+                                    . 'if array have two elements then second element is the name '
+                                    .'for the method handler name'
+                                )
+                                ->cannotBeEmpty()
+                                ->example([
+                                    [
+                                        'App\Tests\Behat\Event\WorkerCreatedHandler'
+                                    ],
+                                    [
+                                        'App\Tests\Behat\Event\EventsHandler',
+                                        'handleWorkerCreated'
+                                    ]
+
+                                ])
+                                ->scalarPrototype()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+                ->end()
+                ->arrayNode('environments')
+                    ->example(
+                        [
+                            [
+                                'CACHE_DIR' => '00-test',
+                                'SYMFONY_SERVER_PORT' => 8000,
+                                'SYMFONY_SERVER_PID_FILE' => '.web-server-8000-pid',
+                                'DATABASE_URL' => 'mysql://db_user:db_password@127.0.0.1:3306/db_name_00?serverVersion=5.7',
+                                'SYMFONY_DOTENV_VARS' => '',
+                            ],
+                            [
+                                'CACHE_DIR' => '01-test',
+                                'SYMFONY_SERVER_PORT' => 8001,
+                                'SYMFONY_SERVER_PID_FILE' => '.web-server-8001-pid',
+                                'DATABASE_URL' => 'mysql://db_user:db_password@127.0.0.1:3306/db_name_01?serverVersion=5.7',
+                                'SYMFONY_DOTENV_VARS' => '',
+                            ],
+                            [
+                                'CACHE_DIR' => '02-test',
+                                'SYMFONY_SERVER_PORT' => 8002,
+                                'SYMFONY_SERVER_PID_FILE' => '.web-server-8002-pid',
+                                'DATABASE_URL' => 'mysql://db_user:db_password@127.0.0.1:3306/db_name_02?serverVersion=5.7',
+                                'SYMFONY_DOTENV_VARS' => '',
+                            ],
+                            [
+                                'CACHE_DIR' => '03-test',
+                                'SYMFONY_SERVER_PORT' => 8003,
+                                'SYMFONY_SERVER_PID_FILE' => '.web-server-8003-pid',
+                                'DATABASE_URL' => 'mysql://db_user:db_password@127.0.0.1:3306/db_name_03?serverVersion=5.7',
+                                'SYMFONY_DOTENV_VARS' => '',
+                            ]
+                        ]
+                    )
+                    ->variablePrototype()
+                ->end()
+            ->end()
+        ;
     }
 
     /**
@@ -127,6 +196,7 @@ class Extension implements ExtensionInterface
      */
     private function loadParallelController($controllerClass, $specificationsFinderClass, ContainerBuilder $container)
     {
+        ;
         $definition = new Definition(
             $controllerClass,
             [
@@ -136,6 +206,7 @@ class Extension implements ExtensionInterface
                 new Reference(WorkerPoll::SERVICE_ID),
                 new Reference(Queue::SERVICE_ID),
                 new Reference(EventDispatcherExtension::DISPATCHER_ID),
+                new Reference(HookExtension::DISPATCHER_ID),
             //              new Reference(TesterExtension::EXERCISE_ID)
                 //new Reference(ParallelWorkerFactory::class),
             ]

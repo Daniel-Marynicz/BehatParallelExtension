@@ -33,4 +33,17 @@ class Assert
 
         return $value;
     }
+
+    /**
+     * @param mixed $value
+     * @return int
+     */
+    public static function assertInt($value)
+    {
+        if (! is_int($value)) {
+            throw new UnexpectedValue('Expected int');
+        }
+
+        return $value;
+    }
 }

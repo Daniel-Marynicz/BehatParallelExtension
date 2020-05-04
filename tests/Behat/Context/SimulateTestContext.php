@@ -47,4 +47,13 @@ class SimulateTestContext implements Context
     public function thenThisTestWillBeSuccessful()
     {
     }
+
+    /**
+     * @WorkerCreated
+     */
+    public function test($a)
+    {
+        $b=1;
+
+    }
 }

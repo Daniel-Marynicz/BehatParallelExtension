@@ -1,6 +1,6 @@
 <?php
 
-namespace DMarynicz\BehatParallelExtension\Service\Task;
+namespace DMarynicz\BehatParallelExtension\Task;
 
 use DMarynicz\BehatParallelExtension\Exception\Runtime;
 use ReflectionClass;

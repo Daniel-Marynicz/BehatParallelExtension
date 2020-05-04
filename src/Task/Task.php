@@ -1,6 +1,6 @@
 <?php
 
-namespace DMarynicz\BehatParallelExtension\Queue;
+namespace DMarynicz\BehatParallelExtension\Task;
 
 use Behat\Gherkin\Node\FeatureNode;
 use Behat\Gherkin\Node\ScenarioLikeInterface as Scenario;
@@ -22,9 +22,6 @@ class Task
 
     /** @var string[] */
     private $command;
-
-    /** @var string|null */
-    private $cwd;
 
     /**
      * @param string $path
@@ -88,13 +85,5 @@ class Task
         $this->command = $command;
 
         return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCwd()
-    {
-        return $this->cwd;
     }
 }

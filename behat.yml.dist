@@ -12,3 +12,4 @@ default:
                 - DMarynicz\Tests\Behat\Context\SimulateTestContext
     extensions:
         DMarynicz\BehatParallelExtension\Extension: ~
+

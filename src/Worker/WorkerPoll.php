@@ -3,7 +3,7 @@
 namespace DMarynicz\BehatParallelExtension\Worker;
 
 use DMarynicz\BehatParallelExtension\Exception\Runtime;
-use DMarynicz\BehatParallelExtension\Queue\Queue;
+use DMarynicz\BehatParallelExtension\Task\Queue;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class WorkerPoll
@@ -50,7 +50,7 @@ class WorkerPoll
 
         $this->started = true;
         for ($i = 0; $i< $this->maxWorkers; $i++) {
-            $worker = new Worker($this->queue, [], $this->eventDispatcher);
+            $worker = new Worker($this->queue, [], $this->eventDispatcher, $i);
             $worker->start();
             $this->workers[] = $worker;
         }

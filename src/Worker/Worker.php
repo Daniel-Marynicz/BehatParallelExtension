@@ -4,9 +4,12 @@ namespace DMarynicz\BehatParallelExtension\Worker;
 
 use DMarynicz\BehatParallelExtension\Event\AfterTaskTested;
 use DMarynicz\BehatParallelExtension\Event\BeforeTaskTested;
+use DMarynicz\BehatParallelExtension\Event\WorkerCreated;
+use DMarynicz\BehatParallelExtension\Event\WorkerDestroyed;
 use DMarynicz\BehatParallelExtension\Exception\Runtime;
-use DMarynicz\BehatParallelExtension\Queue\Queue;
-use DMarynicz\BehatParallelExtension\Queue\Task;
+use DMarynicz\BehatParallelExtension\Task\Queue;
+use DMarynicz\BehatParallelExtension\Task\Task;
+use DMarynicz\BehatParallelExtension\Util\Assert;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Process\Process;
 
@@ -30,14 +33,21 @@ class Worker
     /** @var Task|null */
     private $currentTask;
 
+    /** @var int */
+    private $workerId;
+
     /**
      * @param string[] $env
+     * @param int $workerId
      */
-    public function __construct(Queue $queue, $env, EventDispatcherInterface $eventDispatcher)
+    public function __construct(Queue $queue, $env, EventDispatcherInterface $eventDispatcher, $workerId)
     {
         $this->env             = $env;
         $this->queue           = $queue;
         $this->eventDispatcher = $eventDispatcher;
+        Assert::assertInt($workerId);
+        $this->workerId = $workerId;
+        $this->eventDispatcher->dispatch(new WorkerCreated($this), WorkerCreated::WORKER_CREATED);
     }
 
     public function start()
@@ -119,9 +129,41 @@ class Worker
         $this->currentProcess->stop(0);
     }
 
+    /**
+     * @return string[]
+     */
+    public function getEnv()
+    {
+        return $this->env;
+    }
+
+    /**
+     * @param string[] $env
+     * @return Worker
+     */
+    public function setEnv($env)
+    {
+        Assert::assertArray($env);
+        $this->env = $env;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getWorkerId()
+    {
+        return $this->workerId;
+    }
+
     private function clearCurrent()
     {
         $this->currentTask    = null;
         $this->currentProcess = null;
+    }
+
+    public function __destruct()
+    {
+        $this->eventDispatcher->dispatch(new WorkerDestroyed($this), WorkerCreated::WORKER_CREATED);
     }
 }

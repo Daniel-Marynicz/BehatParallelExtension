@@ -4,15 +4,17 @@ namespace DMarynicz\BehatParallelExtension\Cli;
 
 use Behat\Gherkin\Node\ScenarioLikeInterface;
 use Behat\Testwork\Cli\Controller;
+use Behat\Testwork\Hook\HookDispatcher;
 use Behat\Testwork\Tester\Cli\ExerciseController;
 use DMarynicz\BehatParallelExtension\Event\AfterTaskTested;
 use DMarynicz\BehatParallelExtension\Event\BeforeTaskTested;
 use DMarynicz\BehatParallelExtension\Event\ParallelTestCompleted;
 use DMarynicz\BehatParallelExtension\Exception\UnexpectedValue;
-use DMarynicz\BehatParallelExtension\Queue\Queue;
-use DMarynicz\BehatParallelExtension\Queue\Task;
-use DMarynicz\BehatParallelExtension\Service\Finder\ScenarioSpecificationsFinder;
-use DMarynicz\BehatParallelExtension\Service\Task\ArgumentsBuilder;
+use DMarynicz\BehatParallelExtension\Finder\ScenarioSpecificationsFinder;
+use DMarynicz\BehatParallelExtension\Hook\WorkerCreated;
+use DMarynicz\BehatParallelExtension\Task\ArgumentsBuilder;
+use DMarynicz\BehatParallelExtension\Task\Queue;
+use DMarynicz\BehatParallelExtension\Task\Task;
 use DMarynicz\BehatParallelExtension\Worker\WorkerPoll;
 use ReflectionException;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
@@ -45,8 +47,8 @@ class ParallelScenarioController implements Controller
     /** @var EventDispatcherInterface */
     private $eventDispatcher;
 
-    /** @var AfterTaskTested[] */
-    private $failed = [];
+    /** @var int */
+    private $exitCode = 0;
 
     /** @var ProgressBar */
     private $progressBar;
@@ -81,14 +83,14 @@ class ParallelScenarioController implements Controller
         $this->decoratedExerciseController->configure($command);
 
         $command->addOption(
-            'parallel-scenario',
-            null,
+            'parallel',
+            'l',
             InputOption::VALUE_OPTIONAL,
             'How many scenario jobs run in parallel? Available values empty or integer',
             false
         )
-            ->addUsage('--parallel-scenario 8')
-            ->addUsage('--parallel-scenario');
+            ->addUsage('--parallel 8')
+            ->addUsage('--parallel');
     }
 
     /**
@@ -98,12 +100,14 @@ class ParallelScenarioController implements Controller
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $startInParallel = $input->getOption('parallel-scenario') !== false;
+        $startInParallel = $input->getOption('parallel') !== false;
         if (! $startInParallel) {
             return $this->decoratedExerciseController->execute($input, $output);
         }
 
-        $this->poll->setMaxWorkers($this->getMaxPoolSize($input));
+        $poolSize = $this->getMaxPoolSize($input);
+        $output->writeln(sprintf('Starting parallel scenario tests with %d workers', $poolSize));
+        $this->poll->setMaxWorkers($poolSize);
 
         $this->output = $output;
         $this->input  = $input;
@@ -134,7 +138,7 @@ class ParallelScenarioController implements Controller
 
         $this->eventDispatcher->dispatch(new ParallelTestCompleted(), ParallelTestCompleted::COMPLETED);
 
-        return empty($this->failed) ? 0 : 1;
+        return $this->exitCode;
     }
 
     public function beforeTaskTested(BeforeTaskTested $beforeTaskTested)
@@ -158,6 +162,7 @@ class ParallelScenarioController implements Controller
             return;
         }
 
+        $this->exitCode = 1;
         $output = $process->getOutput() . $process->getErrorOutput();
 
         $this->output->write("\n" . $output);
@@ -165,8 +170,6 @@ class ParallelScenarioController implements Controller
         if ($this->input->getOption('stop-on-failure') !== false) {
             $this->poll->stop();
         }
-
-        $this->failed[] = $taskTested;
     }
 
     /**

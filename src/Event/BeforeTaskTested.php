@@ -3,7 +3,7 @@
 namespace DMarynicz\BehatParallelExtension\Event;
 
 use Behat\Testwork\Event\Event;
-use DMarynicz\BehatParallelExtension\Queue\Task;
+use DMarynicz\BehatParallelExtension\Task\Task;
 
 class BeforeTaskTested extends Event
 {

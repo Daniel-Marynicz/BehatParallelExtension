@@ -1,8 +1,9 @@
 <?php
 
-namespace DMarynicz\BehatParallelExtension\Service\Finder;
+namespace DMarynicz\BehatParallelExtension\Finder;
 
-use DMarynicz\BehatParallelExtension\Queue\Task;
+use DMarynicz\BehatParallelExtension\Service\Finder\SpecificationsFinder;
+use DMarynicz\BehatParallelExtension\Task\Task;
 
 class ScenarioSpecificationsFinder extends SpecificationsFinder
 {

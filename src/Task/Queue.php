@@ -1,6 +1,6 @@
 <?php
 
-namespace DMarynicz\BehatParallelExtension\Queue;
+namespace DMarynicz\BehatParallelExtension\Task;
 
 use Countable;
 
