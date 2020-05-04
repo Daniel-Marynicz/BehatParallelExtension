@@ -5,6 +5,7 @@ namespace DMarynicz\BehatParallelExtension\Worker;
 use DMarynicz\BehatParallelExtension\Event\AfterTaskTested;
 use DMarynicz\BehatParallelExtension\Event\BeforeTaskTested;
 use DMarynicz\BehatParallelExtension\Exception\Runtime;
+use DMarynicz\BehatParallelExtension\Exception\UnexpectedValue;
 use DMarynicz\BehatParallelExtension\Queue\Queue;
 use DMarynicz\BehatParallelExtension\Queue\Task;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -24,10 +25,10 @@ class Worker
     /** @var bool */
     private $started = false;
 
-    /** @var Process */
+    /** @var Process<string, string>|null */
     private $currentProcess;
 
-    /** @var Task */
+    /** @var Task|null */
     private $currentTask;
 
     /**
@@ -53,6 +54,9 @@ class Worker
     private function next()
     {
         $this->currentTask = $this->queue->dequeue();
+        if (!$this->currentTask instanceof Task) {
+            throw new UnexpectedValue('Expected Task class');
+        }
         $before            = new BeforeTaskTested($this->currentTask);
         $this->eventDispatcher->dispatch($before, BeforeTaskTested::BEFORE);
         $this->currentProcess = new Process(
@@ -72,7 +76,7 @@ class Worker
             return;
         }
 
-        if ($this->currentTask) {
+        if ($this->currentTask && $this->currentProcess) {
             $tested = new AfterTaskTested($this->currentTask, $this->currentProcess);
             $this->eventDispatcher->dispatch($tested, AfterTaskTested::AFTER);
             $this->clearCurrent();
@@ -106,7 +110,9 @@ class Worker
     public function stop()
     {
         $this->started = false;
-        $this->currentProcess->stop(0);
+        if ($this->currentProcess instanceof Process) {
+            $this->currentProcess->stop(0);
+        }
     }
 
     private function clearCurrent()

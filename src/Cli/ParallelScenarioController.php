@@ -2,10 +2,12 @@
 
 namespace DMarynicz\BehatParallelExtension\Cli;
 
+use Behat\Gherkin\Node\ScenarioLikeInterface;
 use Behat\Testwork\Cli\Controller;
 use Behat\Testwork\Tester\Cli\ExerciseController;
 use DMarynicz\BehatParallelExtension\Event\AfterTaskTested;
 use DMarynicz\BehatParallelExtension\Event\BeforeTaskTested;
+use DMarynicz\BehatParallelExtension\Exception\UnexpectedValue;
 use DMarynicz\BehatParallelExtension\Queue\Queue;
 use DMarynicz\BehatParallelExtension\Queue\Task;
 use DMarynicz\BehatParallelExtension\Service\Finder\ScenarioSpecificationsFinder;
@@ -69,6 +71,9 @@ class ParallelScenarioController implements Controller
         $this->eventDispatcher             = $eventDispatcher;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function configure(SymfonyCommand $command)
     {
         $this->decoratedExerciseController->configure($command);
@@ -132,7 +137,11 @@ class ParallelScenarioController implements Controller
     {
         $task          = $beforeTaskTested->getTask();
         $featureTitle  = sprintf('<info>Feature: %s</info>', $task->getFeature()->getTitle());
-        $scenarioTitle = sprintf('<info>Scenario: %s</info>', $task->getScenario()->getTitle());
+        $scenarioTitle = '';
+        if ($task->getScenario() instanceof ScenarioLikeInterface) {
+            $scenarioTitle = sprintf('<info>Scenario: %s</info>', $task->getScenario()->getTitle());
+        }
+
         $this->progressBar->setMessage($featureTitle, 'feature');
         $this->progressBar->setMessage($scenarioTitle, 'scenario');
     }
@@ -162,6 +171,9 @@ class ParallelScenarioController implements Controller
     private function findScenarios(InputInterface $input)
     {
         $path = $input->hasArgument('path') ? $input->getArgument('path') : null;
+        if (!is_string($path) && $path !== null) {
+            throw new UnexpectedValue('Expected string or null');
+        }
 
         return $this->specificationFinder->findScenarios($path);
     }

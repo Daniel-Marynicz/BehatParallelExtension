@@ -20,19 +20,25 @@ class WorkerPoll
     private $eventDispatcher;
 
     /** @var int */
-    private $maxWorkers =2;
+    private $maxWorkers = 2;
 
     /** @var bool */
     private $started = false;
 
-    /**
-     * @param int $maxWorkers
-     */
     public function __construct(Queue $queue, EventDispatcherInterface $eventDispatcher)
     {
         $this->queue           = $queue;
         $this->eventDispatcher = $eventDispatcher;
     }
+
+    /**
+     * @param int $maxWorkers
+     */
+    public function setMaxWorkers($maxWorkers)
+    {
+        $this->maxWorkers = $maxWorkers;
+    }
+
 
     /**
      * @return $this

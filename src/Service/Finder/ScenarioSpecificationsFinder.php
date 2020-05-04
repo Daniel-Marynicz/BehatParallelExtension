@@ -9,7 +9,7 @@ class ScenarioSpecificationsFinder extends SpecificationsFinder
     const SERVICE_ID = 'parallel_extension.finder.scenario_specifications_finder';
 
     /**
-     * @param string $path
+     * @param string|null $path
      *
      * @return array|Task[]
      */
@@ -19,9 +19,6 @@ class ScenarioSpecificationsFinder extends SpecificationsFinder
         $tasks  = [];
         foreach ($suites as $suite) {
             foreach ($suite as $feature) {
-                /**
-                 * @var $feature FeatureNode
-                 */
                 foreach ($feature->getScenarios() as $scenario) {
                     $tasks[] = new Task(
                         $suite->getSuite(),

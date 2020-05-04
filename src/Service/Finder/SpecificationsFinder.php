@@ -25,7 +25,7 @@ abstract class SpecificationsFinder
     }
 
     /**
-     * @param string $path
+     * @param string|null $path
      *
      * @return GroupedSpecificationIterator[]
      */
@@ -39,7 +39,7 @@ abstract class SpecificationsFinder
     /**
      * Finds exercise specifications.
      *
-     * @param string $path
+     * @param string|null $path
      *
      * @return SpecificationIterator[]
      */

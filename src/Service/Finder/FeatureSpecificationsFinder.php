@@ -17,9 +17,6 @@ class FeatureSpecificationsFinder extends SpecificationsFinder
         $features = [];
         foreach ($suites as $suite) {
             foreach ($suite as $feature) {
-                /**
-                 * @var $feature FeatureNode
-                 */
                 $features[] = $feature->getFile();
             }
         }

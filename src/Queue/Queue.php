@@ -25,7 +25,7 @@ class Queue implements Countable
     }
 
     /**
-     * @return Task
+     * @return Task|null
      */
     public function dequeue()
     {

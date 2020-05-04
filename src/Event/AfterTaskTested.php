@@ -13,9 +13,12 @@ class AfterTaskTested extends Event
     /** @var Task */
     private $task;
 
-    /** @var Process */
+    /** @var Process<string, string> */
     private $process;
 
+    /**
+     * @param Process<string, string> $process
+     */
     public function __construct(Task $task, Process $process)
     {
         $this->task    = $task;
@@ -31,7 +34,7 @@ class AfterTaskTested extends Event
     }
 
     /**
-     * @return Process
+     * @return Process<string, string>
      */
     public function getProcess()
     {
