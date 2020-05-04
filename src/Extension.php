@@ -9,7 +9,9 @@ use Behat\Testwork\ServiceContainer\ExtensionManager;
 use Behat\Testwork\Specification\ServiceContainer\SpecificationExtension;
 use Behat\Testwork\Suite\ServiceContainer\SuiteExtension;
 use DMarynicz\BehatParallelExtension\Cli\ParallelScenarioController;
+use DMarynicz\BehatParallelExtension\Cli\RerunController;
 use DMarynicz\BehatParallelExtension\Queue\Queue;
+use DMarynicz\BehatParallelExtension\Service\FilePutContentsWrapper;
 use DMarynicz\BehatParallelExtension\Service\Finder\FeatureSpecificationsFinder;
 use DMarynicz\BehatParallelExtension\Service\Finder\ScenarioSpecificationsFinder;
 use DMarynicz\BehatParallelExtension\Service\Task\ArgumentsBuilder;
@@ -18,9 +20,12 @@ use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 class Extension implements ExtensionInterface
 {
+    const JSON_ENCODER_SERVICE_ID = 'parallel_extension.json_encoder';
+
     /**
      * @return string
      */
@@ -41,6 +46,16 @@ class Extension implements ExtensionInterface
      */
     public function configure(ArrayNodeDefinition $builder)
     {
+        $builder
+            ->children()
+                ->scalarNode('rerun_cache')
+                ->info('Sets the rerun cache path')
+                ->defaultValue(
+                    is_writable(sys_get_temp_dir())
+                        ? sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'behat_rerun_cache'
+                        : null
+                )
+            ->end();
     }
 
     /**
@@ -48,7 +63,12 @@ class Extension implements ExtensionInterface
      */
     public function load(ContainerBuilder $container, array $config)
     {
-        //new Reference(EventDispatcherExtension::DISPATCHER_ID),
+        $definition = new Definition(
+            JsonEncoder::class
+        );
+        $container->setDefinition(self::JSON_ENCODER_SERVICE_ID, $definition);
+
+        $this->loadService(FilePutContentsWrapper::class, $container);
 
         $this->loadSpecificationsFinder(FeatureSpecificationsFinder::class, $container);
         $this->loadSpecificationsFinder(ScenarioSpecificationsFinder::class, $container);
@@ -74,6 +94,8 @@ class Extension implements ExtensionInterface
             FeatureSpecificationsFinder::class,
             $container
         );*/
+
+        $this->loadRerunController($container, $config['rerun_cache']);
     }
 
     /**
@@ -133,5 +155,22 @@ class Extension implements ExtensionInterface
             $class
         );
         $container->setDefinition($class::SERVICE_ID, $definition);
+    }
+
+    /**
+     * Loads rerun controller.
+     *
+     * @param string|null $cachePath
+     */
+    private function loadRerunController(ContainerBuilder $container, $cachePath)
+    {
+        $definition = new Definition(RerunController::class, [
+            new Reference(EventDispatcherExtension::DISPATCHER_ID),
+            new Reference(self::JSON_ENCODER_SERVICE_ID),
+            new Reference(FilePutContentsWrapper::SERVICE_ID),
+            $cachePath,
+            $container->getParameter('paths.base'),
+        ]);
+        $container->setDefinition(RerunController::SERVICE_ID, $definition);
     }
 }

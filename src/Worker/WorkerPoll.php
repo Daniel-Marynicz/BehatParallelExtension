@@ -39,7 +39,6 @@ class WorkerPoll
         $this->maxWorkers = $maxWorkers;
     }
 
-
     /**
      * @return $this
      */

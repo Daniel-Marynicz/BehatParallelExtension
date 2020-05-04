@@ -7,6 +7,7 @@ use Behat\Testwork\Cli\Controller;
 use Behat\Testwork\Tester\Cli\ExerciseController;
 use DMarynicz\BehatParallelExtension\Event\AfterTaskTested;
 use DMarynicz\BehatParallelExtension\Event\BeforeTaskTested;
+use DMarynicz\BehatParallelExtension\Event\ParallelTestCompleted;
 use DMarynicz\BehatParallelExtension\Exception\UnexpectedValue;
 use DMarynicz\BehatParallelExtension\Queue\Queue;
 use DMarynicz\BehatParallelExtension\Queue\Task;
@@ -20,6 +21,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Process\Process;
 
 class ParallelScenarioController implements Controller
 {
@@ -101,6 +103,8 @@ class ParallelScenarioController implements Controller
             return $this->decoratedExerciseController->execute($input, $output);
         }
 
+        $this->poll->setMaxWorkers($this->getMaxPoolSize($input));
+
         $this->output = $output;
         $this->input  = $input;
 
@@ -121,14 +125,14 @@ class ParallelScenarioController implements Controller
 
         $this->progressBar->setMessage('<info>Starting</info>', 'feature');
         $this->progressBar->setMessage('', 'scenario');
-
         $this->progressBar->setFormat('custom');
-
         $this->progressBar->start();
 
         $this->poll->start();
         $this->poll->wait();
         $output->writeln('');
+
+        $this->eventDispatcher->dispatch(new ParallelTestCompleted(), ParallelTestCompleted::COMPLETED);
 
         return empty($this->failed) ? 0 : 1;
     }
@@ -171,10 +175,37 @@ class ParallelScenarioController implements Controller
     private function findScenarios(InputInterface $input)
     {
         $path = $input->hasArgument('path') ? $input->getArgument('path') : null;
-        if (!is_string($path) && $path !== null) {
+        if (! is_string($path) && $path !== null) {
             throw new UnexpectedValue('Expected string or null');
         }
 
         return $this->specificationFinder->findScenarios($path);
+    }
+
+    /**
+     * @return int
+     */
+    private function getNumberOfProcessingUnitsAvailable()
+    {
+        $nproc = new Process(['nproc']);
+        $nproc->run();
+        if (! $nproc->isSuccessful()) {
+            return 1;
+        }
+
+        return (int) trim($nproc->getOutput());
+    }
+
+    /**
+     * @return int
+     */
+    private function getMaxPoolSize(InputInterface $input)
+    {
+        $maxSize = is_array($input->getOption('parallel')) ?
+            (int) $input->getOption('parallel')[0] :
+            (int) $input->getOption('parallel');
+        $maxSize = $maxSize > 0 ? $maxSize : $this->getNumberOfProcessingUnitsAvailable();
+
+        return $maxSize;
     }
 }
