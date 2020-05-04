@@ -2,18 +2,37 @@
 
 namespace DMarynicz\BehatParallelExtension\Cli;
 
-use Behat\Testwork\Cli\ServiceContainer\CliExtension;
-use DMarynicz\BehatParallelExtension\Service\ScenarioSpecificationsFinder;
+use Behat\Behat\EventDispatcher\Event\AfterScenarioTested;
+use Behat\Behat\EventDispatcher\Event\ExampleTested;
+use Behat\Behat\EventDispatcher\Event\ScenarioTested;
+use Behat\Testwork\Environment\StaticEnvironment;
+use Behat\Testwork\EventDispatcher\Event\AfterExerciseCompleted;
+use Behat\Testwork\EventDispatcher\Event\BeforeExerciseCompleted;
+use Behat\Testwork\EventDispatcher\Event\ExerciseCompleted;
+use Behat\Testwork\Tester\Result\IntegerTestResult;
+use Behat\Testwork\Tester\Result\TestResult;
+use Behat\Testwork\Tester\Setup\SuccessfulTeardown;
+use DMarynicz\BehatParallelExtension\Event\AfterTaskTested;
+use DMarynicz\BehatParallelExtension\Event\BeforeTaskTested;
+use DMarynicz\BehatParallelExtension\Queue\ScenarioTask;
+use DMarynicz\BehatParallelExtension\Queue\Task;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Process\Process;
+use DMarynicz\BehatParallelExtension\Queue\Queue;
+use DMarynicz\BehatParallelExtension\Service\Finder\ScenarioSpecificationsFinder;
 use Behat\Testwork\Cli\Controller;
 use Behat\Testwork\Tester\Cli\ExerciseController;
+use DMarynicz\BehatParallelExtension\Service\Task\ArgumentsBuilder;
+use DMarynicz\BehatParallelExtension\Worker\WorkerPoll;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ParallelScenarioController implements Controller
 {
-    const SERVICE_ID = CliExtension::CONTROLLER_TAG.'.parallel_extension.parallel_scenario_exercise';
+    const SERVICE_ID = 'cli.controller.parallel_extension.parallel_scenario_exercise';
 
     /**
      * @var ExerciseController
@@ -26,15 +45,66 @@ class ParallelScenarioController implements Controller
     private $specificationFinder;
 
     /**
+     * @var ArgumentsBuilder
+     */
+    private $argumentsBuilder;
+
+    /**
+     * @var Queue
+     */
+    private $queue;
+
+    /**
+     * @var WorkerPoll
+     */
+    private $poll;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
+     * @var AfterTaskTested[]
+     */
+    private $failed = [];
+
+    /**
+     * @var ProgressBar
+     */
+    private $progressBar;
+
+    /**
+     * @var OutputInterface
+     */
+    private $output;
+
+    /**
+     * @var InputInterface
+     */
+    private $input;
+
+    /**
      * @param ExerciseController $decoratedExerciseController
      * @param ScenarioSpecificationsFinder $specificationsFinder
+     * @param ArgumentsBuilder $argumentsBuilder
+     * @param WorkerPoll $poll
+     * @param Queue $queue
      */
     public function __construct(
         ExerciseController $decoratedExerciseController,
-        ScenarioSpecificationsFinder $specificationsFinder
+        ScenarioSpecificationsFinder $specificationsFinder,
+        ArgumentsBuilder $argumentsBuilder,
+        WorkerPoll $poll,
+        Queue $queue,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->decoratedExerciseController = $decoratedExerciseController;
         $this->specificationFinder = $specificationsFinder;
+        $this->argumentsBuilder = $argumentsBuilder;
+        $this->queue = $queue;
+        $this->poll = $poll;
+        $this->eventDispatcher = $eventDispatcher;
     }
     public function configure(SymfonyCommand $command)
     {
@@ -51,6 +121,12 @@ class ParallelScenarioController implements Controller
             ->addUsage('--parallel-scenario');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|null
+     * @throws \ReflectionException
+     */
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $startInParallel = $input->getOption('parallel-scenario') !== false;
@@ -58,15 +134,86 @@ class ParallelScenarioController implements Controller
             return $this->decoratedExerciseController->execute($input, $output);
         }
 
-        $specs = $this->findSpecifications($input);
+        $this->output = $output;
+        $this->input = $input;
+
+        $this->eventDispatcher->addListener(BeforeTaskTested::BEFORE, [$this, 'beforeTaskTested']);
+        $this->eventDispatcher->addListener(AfterTaskTested::AFTER, [$this, 'afterTaskTested']);
+
+        $tasks = $this->findScenarios($input);
+        foreach ($tasks as $task) {
+            $task->setCommand($this->argumentsBuilder->buildArguments($input, $task->getPath()));
+            $this->queue->enqueue($task);
+        }
+
+        $this->progressBar = new ProgressBar($output, count($tasks));
+        ProgressBar::setFormatDefinition(
+            'custom',
+            " %feature%\n  %scenario%\n %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s%"
+        );
+
+        $this->progressBar->setMessage('<info>Starting</info>', 'feature');
+        $this->progressBar->setMessage('', 'scenario');
+
+        $this->progressBar->setFormat('custom');
+
+        $this->progressBar->start();
+
+
+        $this->poll->start();
+        $this->poll->wait();
+        $output->writeln('');
+
+        return empty($this->failed) ? 0 : 1;
+    }
+
+    /**
+     * @param BeforeTaskTested $beforeTaskTested
+     */
+    public function beforeTaskTested(BeforeTaskTested $beforeTaskTested)
+    {
+        $task = $beforeTaskTested->getTask();
+        $featureTitle = sprintf('<info>Feature: %s</info>', $task->getFeature()->getTitle());
+        $scenarioTitle = sprintf('<info>Scenario: %s</info>', $task->getScenario()->getTitle());
+        $this->progressBar->setMessage($featureTitle, 'feature');
+        $this->progressBar->setMessage($scenarioTitle, 'scenario');
+    }
+
+    /**
+     * @param AfterTaskTested $taskTested
+     */
+    public function afterTaskTested(AfterTaskTested $taskTested)
+    {
+        $this->progressBar->advance();
+        $process = $taskTested->getProcess();
+        if ($process->isSuccessful()) {
+            return;
+        }
+
+        $output = $process->getOutput() . $process->getErrorOutput();
+
+        $this->output->write("\n". $output);
+
+        if ($this->input->getOption('stop-on-failure') !== false) {
+            $this->poll->stop();
+        }
+
+        $this->failed[] = $taskTested;
     }
 
     /**
      * @param InputInterface $input
-     * @return array|string[]
+     * @return Task[]
      */
-    private function findSpecifications(InputInterface $input)
+    private function findScenarios(InputInterface $input)
     {
-        return $this->specificationFinder->findScenarios($input->getArgument('path'));
+        $path = $input->hasArgument('path') ? $input->getArgument('path') : null;
+        return $this->specificationFinder->findScenarios($path);
+    }
+
+    private function findGroupedSpecifications(InputInterface $input)
+    {
+        $path = $input->hasArgument('path') ? $input->getArgument('path') : null;
+        return $this->specificationFinder->findGroupedSpecifications($path);
     }
 }

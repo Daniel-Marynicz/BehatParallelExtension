@@ -3,17 +3,23 @@
 namespace DMarynicz\BehatParallelExtension;
 
 use Behat\Testwork\Cli\ServiceContainer\CliExtension;
+use Behat\Testwork\EventDispatcher\ServiceContainer\EventDispatcherExtension;
 use Behat\Testwork\ServiceContainer\Extension as ExtensionInterface;
 use Behat\Testwork\ServiceContainer\ExtensionManager;
 use Behat\Testwork\Specification\ServiceContainer\SpecificationExtension;
 use Behat\Testwork\Suite\ServiceContainer\SuiteExtension;
+use DMarynicz\BehatParallelExtension\Cli\ParallelFeatureController;
 use DMarynicz\BehatParallelExtension\Cli\ParallelScenarioController;
-use DMarynicz\BehatParallelExtension\Service\FeatureSpecificationsFinder;
-use DMarynicz\BehatParallelExtension\Service\ScenarioSpecificationsFinder;
+use DMarynicz\BehatParallelExtension\Service\Finder\FeatureSpecificationsFinder;
+use DMarynicz\BehatParallelExtension\Service\Finder\ScenarioSpecificationsFinder;
+use DMarynicz\BehatParallelExtension\Service\Task\ArgumentsBuilder;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
+use Behat\Behat\Tester\Cli\RerunController;
+use DMarynicz\BehatParallelExtension\Queue\Queue;
+use DMarynicz\BehatParallelExtension\Worker\WorkerPoll;
 
 class Extension implements ExtensionInterface
 {
@@ -38,20 +44,34 @@ class Extension implements ExtensionInterface
 
     public function load(ContainerBuilder $container, array $config)
     {
+        //new Reference(EventDispatcherExtension::DISPATCHER_ID),
+
         $this->loadSpecificationsFinder(FeatureSpecificationsFinder::class, $container);
         $this->loadSpecificationsFinder(ScenarioSpecificationsFinder::class, $container);
+        $this->loadService(ArgumentsBuilder::class, $container);
 
 
-        $this->loadParallelController(
-            ParallelScenarioController::class,
-            FeatureSpecificationsFinder::class,
-            $container
+        $this->loadService(Queue::class, $container);
+        $definition = new Definition(
+            WorkerPoll::class,
+            [
+                new Reference(Queue::SERVICE_ID),
+                new Reference(EventDispatcherExtension::DISPATCHER_ID)
+            ]
         );
+        $container->setDefinition(WorkerPoll::SERVICE_ID, $definition);
+
+
         $this->loadParallelController(
             ParallelScenarioController::class,
             ScenarioSpecificationsFinder::class,
             $container
         );
+       /* $this->loadParallelController(
+            ParallelFeatureController::class,
+            FeatureSpecificationsFinder::class,
+            $container
+        );*/
     }
 
     /**
@@ -61,8 +81,13 @@ class Extension implements ExtensionInterface
     {
     }
 
+    private function loadTaskArgumentsBuilder(ContainerBuilder $container)
+    {
+        $definition = new Definition(ArgumentsBuilder::class);
+        $container->setDefinition(ArgumentsBuilder::SERVICE_ID, $definition);
+    }
     /**
-     * @param string $class
+     * @param string $className
      * @param ContainerBuilder $container
      */
     private function loadSpecificationsFinder($className, ContainerBuilder $container)
@@ -70,8 +95,8 @@ class Extension implements ExtensionInterface
         $definition = new Definition(
             $className,
             [
-                SuiteExtension::REGISTRY_ID,
-                SpecificationExtension::FINDER_ID
+                new Reference(SuiteExtension::REGISTRY_ID),
+                new Reference(SpecificationExtension::FINDER_ID)
             ]
         );
 
@@ -83,8 +108,12 @@ class Extension implements ExtensionInterface
         $definition = new Definition(
             $controllerClass,
             [
-                new Reference(CliExtension::CONTROLLER_TAG . '.parallel_exercise.inner'),
+                new Reference($controllerClass::SERVICE_ID.'.inner'),
                 new Reference($specificationsFinderClass::SERVICE_ID),
+                new Reference(ArgumentsBuilder::SERVICE_ID),
+                new Reference(WorkerPoll::SERVICE_ID),
+                new Reference(Queue::SERVICE_ID),
+                new Reference(EventDispatcherExtension::DISPATCHER_ID),
   //              new Reference(TesterExtension::EXERCISE_ID)
                 //new Reference(ParallelWorkerFactory::class),
             ]
@@ -93,6 +122,14 @@ class Extension implements ExtensionInterface
         $definition
             ->setDecoratedService(CliExtension::CONTROLLER_TAG . '.exercise');
         $container->setDefinition($controllerClass::SERVICE_ID, $definition);
+    }
+
+    private function loadService($class, ContainerBuilder $container)
+    {
+        $definition = new Definition(
+            $class
+        );
+        $container->setDefinition($class::SERVICE_ID, $definition);
     }
 }
 

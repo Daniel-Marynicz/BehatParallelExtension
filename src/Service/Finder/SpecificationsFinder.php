@@ -1,6 +1,6 @@
 <?php
 
-namespace DMarynicz\BehatParallelExtension\Service;
+namespace DMarynicz\BehatParallelExtension\Service\Finder;
 
 use Behat\Gherkin\Node\FeatureNode;
 use Behat\Testwork\Specification\GroupedSpecificationIterator;
@@ -35,31 +35,9 @@ abstract class SpecificationsFinder
 
     /**
      * @param string $path
-     * @return array|string[]
-     */
-    public function findScenarios($path)
-    {
-        $suites = $this->findSuites($path);
-        $scenarios = [];
-        foreach ($suites as $suite) {
-            foreach ($suite as $feature) {
-                /**
-                 * @var $feature FeatureNode
-                 */
-                foreach ($feature->getScenarios() as $scenario) {
-                    $scenarios[] = sprintf('%s:%s', $feature->getFile(), $scenario->getLine());
-                }
-            }
-        }
-
-        return $scenarios;
-    }
-
-    /**
-     * @param string $path
      * @return GroupedSpecificationIterator[]
      */
-    protected function findSuites($path)
+    public function findGroupedSpecifications($path)
     {
         $specs = $this->findSpecifications($path);
         return GroupedSpecificationIterator::group($specs);
@@ -72,7 +50,7 @@ abstract class SpecificationsFinder
      *
      * @return SpecificationIterator[]
      */
-    protected function findSpecifications($path)
+    public function findSpecifications($path)
     {
         return $this->findSuitesSpecifications($this->getAvailableSuites(), $path);
     }
