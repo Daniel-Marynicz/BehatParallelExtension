@@ -1,50 +1,36 @@
 <?php
 
-
 namespace DMarynicz\BehatParallelExtension\Worker;
 
-
-use DMarynicz\BehatParallelExtension\Exception\RuntimeException;
+use DMarynicz\BehatParallelExtension\Exception\Runtime;
 use DMarynicz\BehatParallelExtension\Queue\Queue;
-use DMarynicz\BehatParallelExtension\Queue\Result;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class WorkerPoll
 {
     const SERVICE_ID = 'parallel_extension.worker_poll';
 
-    /**
-     * @var array<Worker>
-     */
+    /** @var array<Worker> */
     private $workers = [];
 
-    /**
-     * @var Queue
-     */
+    /** @var Queue */
     private $queue;
 
-    /**
-     * @var EventDispatcherInterface
-     */
+    /** @var EventDispatcherInterface */
     private $eventDispatcher;
 
-    /**
-     * @var int
-     */
-    private $maxWorkers=2;
+    /** @var int */
+    private $maxWorkers =2;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $started = false;
 
     /**
-     * @param Queue $queue
      * @param int $maxWorkers
      */
     public function __construct(Queue $queue, EventDispatcherInterface $eventDispatcher)
     {
-        $this->queue = $queue;
+        $this->queue           = $queue;
         $this->eventDispatcher = $eventDispatcher;
     }
 
@@ -54,10 +40,10 @@ class WorkerPoll
     public function start()
     {
         if ($this->isStarted()) {
-            throw new RuntimeException('Worker Poll is already started');
+            throw new Runtime('Worker Poll is already started');
         }
 
-        $this->started  = true;
+        $this->started = true;
         for ($i = 0; $i< $this->maxWorkers; $i++) {
             $worker = new Worker($this->queue, [], $this->eventDispatcher);
             $worker->start();
@@ -73,6 +59,7 @@ class WorkerPoll
             foreach ($this->workers as $worker) {
                 $worker->wait();
             }
+
             $this->sleep();
         }
     }
@@ -84,9 +71,10 @@ class WorkerPoll
     {
         foreach ($this->workers as $worker) {
             if ($worker->isStarted()) {
-                return  true;
+                return true;
             }
         }
+
         return false;
     }
 

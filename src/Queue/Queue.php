@@ -1,24 +1,16 @@
 <?php
 
-
 namespace DMarynicz\BehatParallelExtension\Queue;
 
+use Countable;
 
-use DMarynicz\BehatParallelExtension\Process\Process;
-
-class Queue implements \Countable
+class Queue implements Countable
 {
     const SERVICE_ID = 'parallel_extension.queue';
 
-    /**
-     * @var Task[]
-     */
+    /** @var Task[] */
     private $elements = [];
 
-
-    /**
-     * @param Task $task
-     */
     public function enqueue(Task $task)
     {
         $this->elements[] = $task;

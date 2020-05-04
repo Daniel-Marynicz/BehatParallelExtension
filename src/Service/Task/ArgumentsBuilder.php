@@ -1,10 +1,10 @@
 <?php
 
-
 namespace DMarynicz\BehatParallelExtension\Service\Task;
 
-
-use DMarynicz\BehatParallelExtension\Exception\RuntimeException;
+use DMarynicz\BehatParallelExtension\Exception\Runtime;
+use ReflectionClass;
+use ReflectionException;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 
@@ -13,10 +13,11 @@ class ArgumentsBuilder
     const SERVICE_ID = 'parallel_extension.task.arguments_builder';
 
     /**
-     * @param InputInterface $input
      * @param string $path
+     *
      * @return string[]
-     * @throws \ReflectionException
+     *
+     * @throws ReflectionException
      */
     public function buildArguments(InputInterface $input, $path)
     {
@@ -41,6 +42,7 @@ class ArgumentsBuilder
                     if ($value) {
                         $argv[] = '--' . $name;
                     }
+
                     break;
                 case 'integer':
                 case 'double':
@@ -57,6 +59,7 @@ class ArgumentsBuilder
 
                         $argv[] = $valueContent;
                     }
+
                     break;
             }
         }
@@ -65,9 +68,11 @@ class ArgumentsBuilder
             if ($value === $definition->getArgument($name)->getDefault()) {
                 continue;
             }
+
             if ($name === 'paths') {
                 continue;
             }
+
             $argv[] = $value;
         }
 
@@ -77,20 +82,20 @@ class ArgumentsBuilder
     }
 
     /**
-     * @param InputInterface $input
      * @return InputDefinition
-     * @throws \ReflectionException
+     *
+     * @throws ReflectionException
      */
     private function getInputDefinition(InputInterface $input)
     {
-        $ref = new \ReflectionClass($input);
+        $ref = new ReflectionClass($input);
         if (! $ref->hasProperty('definition')) {
-            throw new RuntimeException('Input must have definition property');
+            throw new Runtime('Input must have definition property');
         }
+
         $defProp = $ref->getProperty('definition');
         $defProp->setAccessible(true);
 
         return $defProp->getValue($input);
     }
-
 }

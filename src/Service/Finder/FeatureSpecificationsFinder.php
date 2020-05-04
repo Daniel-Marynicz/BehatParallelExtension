@@ -1,9 +1,6 @@
 <?php
 
-
 namespace DMarynicz\BehatParallelExtension\Service\Finder;
-
-use Behat\Gherkin\Node\FeatureNode;
 
 class FeatureSpecificationsFinder extends SpecificationsFinder
 {
@@ -11,11 +8,12 @@ class FeatureSpecificationsFinder extends SpecificationsFinder
 
     /**
      * @param string $path
+     *
      * @return array|string[]
      */
     public function findFeatures($path)
     {
-        $suites = $this->findGroupedSpecifications($path);
+        $suites   = $this->findGroupedSpecifications($path);
         $features = [];
         foreach ($suites as $suite) {
             foreach ($suite as $feature) {

@@ -1,78 +1,51 @@
 <?php
 
-
 namespace DMarynicz\BehatParallelExtension\Worker;
 
-use Behat\Behat\EventDispatcher\Event\AfterScenarioTested;
-use Behat\Behat\EventDispatcher\Event\ScenarioTested;
-use Behat\Behat\Tester\Result\FailedStepSearchResult;
-use Behat\Testwork\Environment\StaticEnvironment;
-use Behat\Testwork\EventDispatcher\Event\AfterExerciseCompleted;
-use Behat\Testwork\EventDispatcher\Event\BeforeExerciseCompleted;
-use Behat\Testwork\EventDispatcher\Event\ExerciseCompleted;
-use Behat\Testwork\Tester\Setup\SuccessfulTeardown;
 use DMarynicz\BehatParallelExtension\Event\AfterTaskTested;
 use DMarynicz\BehatParallelExtension\Event\BeforeTaskTested;
-use DMarynicz\BehatParallelExtension\Exception\RuntimeException;
+use DMarynicz\BehatParallelExtension\Exception\Runtime;
 use DMarynicz\BehatParallelExtension\Queue\Queue;
-use DMarynicz\BehatParallelExtension\Queue\ScenarioTask;
 use DMarynicz\BehatParallelExtension\Queue\Task;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Process\Process;
-use Behat\Testwork\Tester\Result\TestResults;
-use Behat\Testwork\Tester\Result\TestWithSetupResult;
-use Behat\Testwork\Tester\Result\IntegerTestResult;
-use Behat\Testwork\Tester\Result\TestResult;
-
 
 class Worker
 {
-    /**
-     * @var array
-     */
+    /** @var string[] */
     private $env;
 
-    /**
-     * @var Queue
-     */
+    /** @var Queue */
     private $queue;
 
-    /**
-     * @var EventDispatcherInterface
-     */
+    /** @var EventDispatcherInterface */
     private $eventDispatcher;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $started = false;
 
-    /**
-     * @var Process
-     */
+    /** @var Process */
     private $currentProcess;
 
-    /**
-     * @var Task
-     */
+    /** @var Task */
     private $currentTask;
 
     /**
-     * @param Queue $queue
-     * @param array $env
+     * @param string[] $env
      */
     public function __construct(Queue $queue, $env, EventDispatcherInterface $eventDispatcher)
     {
-        $this->env = $env;
-        $this->queue = $queue;
+        $this->env             = $env;
+        $this->queue           = $queue;
         $this->eventDispatcher = $eventDispatcher;
     }
 
     public function start()
     {
         if ($this->isStarted()) {
-            throw new RuntimeException('Worker is already started');
+            throw new Runtime('Worker is already started');
         }
+
         $this->started = true;
         $this->next();
     }
@@ -80,9 +53,9 @@ class Worker
     private function next()
     {
         $this->currentTask = $this->queue->dequeue();
-        $before = new BeforeTaskTested($this->currentTask);
+        $before            = new BeforeTaskTested($this->currentTask);
         $this->eventDispatcher->dispatch($before, BeforeTaskTested::BEFORE);
-        $this->currentProcess= new Process(
+        $this->currentProcess = new Process(
             $this->currentTask->getCommand(),
             null,
             $this->env,
@@ -105,10 +78,9 @@ class Worker
             $this->clearCurrent();
         }
 
-
-
         if ($this->queue->isEmpty()) {
             $this->started = false;
+
             return;
         }
 
@@ -139,8 +111,7 @@ class Worker
 
     private function clearCurrent()
     {
-        $this->currentTask = null;
+        $this->currentTask    = null;
         $this->currentProcess = null;
     }
 }
-

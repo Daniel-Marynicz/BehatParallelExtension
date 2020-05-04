@@ -1,6 +1,5 @@
 <?php
 
-
 namespace DMarynicz\Tests\Behat\Extension;
 
 use Behat\MinkExtension\ServiceContainer\MinkExtension;
@@ -9,6 +8,7 @@ use Behat\Testwork\ServiceContainer\ExtensionManager;
 use DMarynicz\Tests\Behat\Mink\Driver\ServerLessFactory;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use UnexpectedValueException;
 
 class ServerLessExtension implements ExtensionInterface
 {
@@ -27,15 +27,14 @@ class ServerLessExtension implements ExtensionInterface
      * before any extension `configure()` method is called. This allows extensions
      * to hook into the configuration of other extensions providing such an
      * extension point.
-     *
-     * @param ExtensionManager $extensionManager
      */
     public function initialize(ExtensionManager $extensionManager)
     {
         $minkExtension = $extensionManager->getExtension('mink');
-        if (!$minkExtension instanceof MinkExtension) {
-            throw new \UnexpectedValueException('Expected MinkExtension');
+        if (! $minkExtension instanceof MinkExtension) {
+            throw new UnexpectedValueException('Expected MinkExtension');
         }
+
         $minkExtension->registerDriverFactory(new ServerLessFactory());
     }
 

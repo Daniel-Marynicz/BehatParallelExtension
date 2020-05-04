@@ -1,6 +1,5 @@
 <?php
 
-
 namespace DMarynicz\BehatParallelExtension\Event;
 
 use Behat\Testwork\Event\Event;
@@ -11,23 +10,15 @@ class AfterTaskTested extends Event
 {
     const AFTER = 'parallel_extension.after_task_tested';
 
-    /**
-     * @var Task
-     */
+    /** @var Task */
     private $task;
 
-    /**
-     * @var Process
-     */
+    /** @var Process */
     private $process;
 
-    /**
-     * @param Task $task
-     * @param Process $process
-     */
     public function __construct(Task $task, Process $process)
     {
-        $this->task = $task;
+        $this->task    = $task;
         $this->process = $process;
     }
 

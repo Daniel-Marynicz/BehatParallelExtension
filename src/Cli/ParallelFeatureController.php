@@ -2,10 +2,10 @@
 
 namespace DMarynicz\BehatParallelExtension\Cli;
 
-use Behat\Testwork\Cli\ServiceContainer\CliExtension;
-use DMarynicz\BehatParallelExtension\Service\FeatureSpecificationsFinder;
 use Behat\Testwork\Cli\Controller;
+use Behat\Testwork\Cli\ServiceContainer\CliExtension;
 use Behat\Testwork\Tester\Cli\ExerciseController;
+use DMarynicz\BehatParallelExtension\Service\FeatureSpecificationsFinder;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -13,28 +13,20 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ParallelFeatureController implements Controller
 {
-    const SERVICE_ID = CliExtension::CONTROLLER_TAG.'.parallel_extension.parallel_feature_exercise';
+    const SERVICE_ID = CliExtension::CONTROLLER_TAG . '.parallel_extension.parallel_feature_exercise';
 
-    /**
-     * @var ExerciseController
-     */
+    /** @var ExerciseController */
     private $decoratedExerciseController;
 
-    /**
-     * @var FeatureSpecificationsFinder
-     */
+    /** @var FeatureSpecificationsFinder */
     private $specificationFinder;
 
-    /**
-     * @param ExerciseController $decoratedExerciseController
-     * @param FeatureSpecificationsFinder $specificationsFinder
-     */
     public function __construct(
         ExerciseController $decoratedExerciseController,
         FeatureSpecificationsFinder $specificationsFinder
     ) {
         $this->decoratedExerciseController = $decoratedExerciseController;
-        $this->specificationFinder = $specificationsFinder;
+        $this->specificationFinder         = $specificationsFinder;
     }
 
     public function configure(SymfonyCommand $command)
@@ -52,6 +44,9 @@ class ParallelFeatureController implements Controller
             ->addUsage('--parallel-feature');
     }
 
+    /**
+     * @return int
+     */
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $startInParallel = $input->getOption('parallel-scenario') !== false;
@@ -60,16 +55,15 @@ class ParallelFeatureController implements Controller
         }
 
         $specs = $this->findSpecifications($input);
+
+        return 0;
     }
 
     /**
-     * @param InputInterface $input
      * @return array|string[]
      */
     private function findSpecifications(InputInterface $input)
     {
         return $this->specificationFinder->findFeatures($input->getArgument('path'));
     }
-
-
 }

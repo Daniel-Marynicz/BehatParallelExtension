@@ -2,7 +2,6 @@
 
 namespace DMarynicz\BehatParallelExtension\Service\Finder;
 
-use Behat\Gherkin\Node\FeatureNode;
 use Behat\Testwork\Specification\GroupedSpecificationIterator;
 use Behat\Testwork\Specification\SpecificationFinder;
 use Behat\Testwork\Specification\SpecificationIterator;
@@ -11,35 +10,29 @@ use Behat\Testwork\Suite\SuiteRepository;
 
 abstract class SpecificationsFinder
 {
-    /**
-     * @var SuiteRepository
-     */
+    /** @var SuiteRepository */
     private $suiteRepository;
 
-    /**
-     * @var SpecificationFinder
-     */
+    /** @var SpecificationFinder */
     private $specificationFinder;
 
-    /**
-     * @param SuiteRepository $suiteRepository
-     * @param SpecificationFinder $specificationFinder
-     */
     public function __construct(
         SuiteRepository $suiteRepository,
         SpecificationFinder $specificationFinder
     ) {
-        $this->suiteRepository = $suiteRepository;
+        $this->suiteRepository     = $suiteRepository;
         $this->specificationFinder = $specificationFinder;
     }
 
     /**
      * @param string $path
+     *
      * @return GroupedSpecificationIterator[]
      */
     public function findGroupedSpecifications($path)
     {
         $specs = $this->findSpecifications($path);
+
         return GroupedSpecificationIterator::group($specs);
     }
 
@@ -59,7 +52,7 @@ abstract class SpecificationsFinder
      * Finds specification iterators for all provided suites using locator.
      *
      * @param Suite[]     $suites
-     * @param null|string $locator
+     * @param string|null $locator
      *
      * @return SpecificationIterator[]
      */

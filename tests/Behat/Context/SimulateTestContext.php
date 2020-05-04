@@ -1,14 +1,12 @@
 <?php
 
-
 namespace DMarynicz\Tests\Behat\Context;
 
 use Behat\Behat\Context\Context;
+use Exception;
 
 class SimulateTestContext implements Context
 {
-
-
     /**
      * @Given /^(?:|I )am on pretending to be on (?:|the )homepage$/
      * @When /^(?:|I )am pretending to go to (?:|the )homepage$/
@@ -16,6 +14,7 @@ class SimulateTestContext implements Context
     public function iAmPretendingOnHomepage()
     {
     }
+
     /**
      * @Given /^(?:|I )am on pretending "(?P<page>[^"]+)"$/
      * @When /^(?:|I )pretend I am going to "(?P<page>[^"]+)"$/
@@ -25,8 +24,9 @@ class SimulateTestContext implements Context
     }
 
     /**
-     * @When /^I wait for (\d+) seconds$/
      * @param int $seconds
+     *
+     * @When /^I wait for (\d+) seconds$/
      */
     public function iWaitForSeconds($seconds)
     {
@@ -38,7 +38,7 @@ class SimulateTestContext implements Context
      */
     public function thenThisTestWillFail()
     {
-        throw new \Exception('fail');
+        throw new Exception('fail');
     }
 
     /**
@@ -46,6 +46,5 @@ class SimulateTestContext implements Context
      */
     public function thenThisTestWillBeSuccessful()
     {
-
     }
 }

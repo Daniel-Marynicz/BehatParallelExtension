@@ -2,18 +2,16 @@
 
 namespace DMarynicz\BehatParallelExtension\Event;
 
-use DMarynicz\BehatParallelExtension\Queue\Task;
 use Behat\Testwork\Event\Event;
+use DMarynicz\BehatParallelExtension\Queue\Task;
 
 class BeforeTaskTested extends Event
 {
     const BEFORE = 'parallel_extension.before_task_tested';
 
+    /** @var Task */
     private $task;
 
-    /**
-     * @param Task $task
-     */
     public function __construct(Task $task)
     {
         $this->task = $task;

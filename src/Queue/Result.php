@@ -1,19 +1,13 @@
 <?php
 
-
 namespace DMarynicz\BehatParallelExtension\Queue;
-
 
 class Result
 {
-    /**
-     * @var Task[]
-     */
+    /** @var Task[] */
     private $successful = [];
 
-    /**
-     * @var Task[]
-     */
+    /** @var Task[] */
     private $failed = [];
 
     public function addSuccessful(Task $task)

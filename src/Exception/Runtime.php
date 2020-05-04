@@ -2,6 +2,8 @@
 
 namespace DMarynicz\BehatParallelExtension\Exception;
 
-class RuntimeException extends \RuntimeException
+use RuntimeException;
+
+class Runtime extends RuntimeException
 {
 }
