@@ -41,7 +41,7 @@ default:
         DMarynicz\BehatParallelExtension\Extension:
           events:
             -
-              eventName:
+              eventName: parallel_extension.worker_created
               handler:
                 - App\Tests\Behat\Event\WorkerCreatedHandler
                 - handleWorkerCreated
