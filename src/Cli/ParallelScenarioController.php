@@ -4,14 +4,13 @@ namespace DMarynicz\BehatParallelExtension\Cli;
 
 use Behat\Gherkin\Node\ScenarioLikeInterface;
 use Behat\Testwork\Cli\Controller;
-use Behat\Testwork\Hook\HookDispatcher;
 use Behat\Testwork\Tester\Cli\ExerciseController;
 use DMarynicz\BehatParallelExtension\Event\AfterTaskTested;
 use DMarynicz\BehatParallelExtension\Event\BeforeTaskTested;
 use DMarynicz\BehatParallelExtension\Event\ParallelTestCompleted;
 use DMarynicz\BehatParallelExtension\Exception\UnexpectedValue;
 use DMarynicz\BehatParallelExtension\Finder\ScenarioSpecificationsFinder;
-use DMarynicz\BehatParallelExtension\Hook\WorkerCreated;
+use DMarynicz\BehatParallelExtension\Service\EventDispatcherDecorator;
 use DMarynicz\BehatParallelExtension\Task\ArgumentsBuilder;
 use DMarynicz\BehatParallelExtension\Task\Queue;
 use DMarynicz\BehatParallelExtension\Task\Task;
@@ -65,7 +64,7 @@ class ParallelScenarioController implements Controller
         ArgumentsBuilder $argumentsBuilder,
         WorkerPoll $poll,
         Queue $queue,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherDecorator $eventDispatcher
     ) {
         $this->decoratedExerciseController = $decoratedExerciseController;
         $this->specificationFinder         = $specificationsFinder;

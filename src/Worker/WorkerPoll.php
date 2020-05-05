@@ -3,8 +3,8 @@
 namespace DMarynicz\BehatParallelExtension\Worker;
 
 use DMarynicz\BehatParallelExtension\Exception\Runtime;
+use DMarynicz\BehatParallelExtension\Service\EventDispatcherDecorator;
 use DMarynicz\BehatParallelExtension\Task\Queue;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class WorkerPoll
 {
@@ -16,7 +16,7 @@ class WorkerPoll
     /** @var Queue */
     private $queue;
 
-    /** @var EventDispatcherInterface */
+    /** @var EventDispatcherDecorator */
     private $eventDispatcher;
 
     /** @var int */
@@ -25,7 +25,7 @@ class WorkerPoll
     /** @var bool */
     private $started = false;
 
-    public function __construct(Queue $queue, EventDispatcherInterface $eventDispatcher)
+    public function __construct(Queue $queue, EventDispatcherDecorator $eventDispatcher)
     {
         $this->queue           = $queue;
         $this->eventDispatcher = $eventDispatcher;

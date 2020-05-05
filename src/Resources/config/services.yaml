@@ -1,0 +1,46 @@
+
+services:
+  parallel_extension.event_dispatcher:
+    class: DMarynicz\BehatParallelExtension\Service\EventDispatcherDecorator
+    arguments:
+      #EventDispatcherExtension::DISPATCHER_ID
+      $eventDispatcher: '@event_dispatcher'
+
+  parallel_extension.json_encoder:
+    class: Symfony\Component\Serializer\Encoder\JsonEncoder
+
+  parallel_extension.file_put_contents_wrapper:
+    class: DMarynicz\BehatParallelExtension\Service\FilePutContentsWrapper
+
+
+  parallel_extension.finder.scenario_specifications_finder:
+    class: DMarynicz\BehatParallelExtension\Finder\ScenarioSpecificationsFinder
+    arguments:
+      # SuiteExtension::REGISTRY_ID
+      $suiteRepository: '@suite.registry'
+      #SpecificationExtension::FINDER_ID
+      $specificationFinder: '@specifications.finder'
+
+  parallel_extension.task.arguments_builder:
+    class: DMarynicz\BehatParallelExtension\Task\ArgumentsBuilder
+  parallel_extension.queue:
+    class: DMarynicz\BehatParallelExtension\Task\Queue
+
+  parallel_extension.worker_poll:
+    class: DMarynicz\BehatParallelExtension\Worker\WorkerPoll
+    arguments:
+      $queue: '@parallel_extension.queue'
+      #EventDispatcherExtension::DISPATCHER_ID
+      $eventDispatcher: '@parallel_extension.event_dispatcher'
+  cli.controller.parallel_extension.parallel_scenario_exercise:
+    class: DMarynicz\BehatParallelExtension\Cli\ParallelScenarioController
+    arguments:
+      $decoratedExerciseController: '@cli.controller.parallel_extension.parallel_scenario_exercise.inner'
+      $specificationsFinder: '@parallel_extension.finder.scenario_specifications_finder'
+      $argumentsBuilder: '@parallel_extension.task.arguments_builder'
+      $poll: '@parallel_extension.worker_poll'
+      $queue: '@parallel_extension.queue'
+      $eventDispatcher: '@parallel_extension.event_dispatcher'
+    #CliExtension::CONTROLLER_TAG . '.exercise'
+    decorates: 'cli.controller.exercise'
+

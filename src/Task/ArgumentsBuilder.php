@@ -29,7 +29,7 @@ class ArgumentsBuilder
                 continue;
             }
 
-            if (in_array($name, ['parallel-scenario', 'parallel-feature', 'colors'])) {
+            if (in_array($name, ['parallel', 'parallel-feature', 'colors'])) {
                 continue;
             }
 

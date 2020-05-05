@@ -19,8 +19,10 @@ use DMarynicz\BehatParallelExtension\Task\ArgumentsBuilder;
 use DMarynicz\BehatParallelExtension\Task\Queue;
 use DMarynicz\BehatParallelExtension\Worker\WorkerPoll;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
@@ -59,7 +61,7 @@ class Extension implements ExtensionInterface
                     )
                 ->end()
                 ->arrayNode('events')
-                    ->arrayPrototype()
+                    ->prototype('array')
                         ->children()
                             ->scalarNode('eventName')
                                 ->example(WorkerCreated::WORKER_CREATED)
@@ -82,7 +84,7 @@ class Extension implements ExtensionInterface
                                     ]
 
                                 ])
-                                ->scalarPrototype()
+                                ->prototype('scalar')
                             ->end()
                         ->end()
                     ->end()
@@ -121,7 +123,7 @@ class Extension implements ExtensionInterface
                             ]
                         ]
                     )
-                    ->variablePrototype()
+                    ->prototype('variable')
                 ->end()
             ->end()
         ;
@@ -132,37 +134,9 @@ class Extension implements ExtensionInterface
      */
     public function load(ContainerBuilder $container, array $config)
     {
-        $definition = new Definition(
-            JsonEncoder::class
-        );
-        $container->setDefinition(self::JSON_ENCODER_SERVICE_ID, $definition);
-
-        $this->loadService(FilePutContentsWrapper::class, $container);
-
-        $this->loadSpecificationsFinder(FeatureSpecificationsFinder::class, $container);
-        $this->loadSpecificationsFinder(ScenarioSpecificationsFinder::class, $container);
-        $this->loadService(ArgumentsBuilder::class, $container);
-
-        $this->loadService(Queue::class, $container);
-        $definition = new Definition(
-            WorkerPoll::class,
-            [
-                new Reference(Queue::SERVICE_ID),
-                new Reference(EventDispatcherExtension::DISPATCHER_ID),
-            ]
-        );
-        $container->setDefinition(WorkerPoll::SERVICE_ID, $definition);
-
-        $this->loadParallelController(
-            ParallelScenarioController::class,
-            ScenarioSpecificationsFinder::class,
-            $container
-        );
-       /* $this->loadParallelController(
-            ParallelFeatureController::class,
-            FeatureSpecificationsFinder::class,
-            $container
-        );*/
+        $locator = new FileLocator(__DIR__.'/Resources/config');
+        $loader = new YamlFileLoader($container, $locator);
+        $loader->load('services.yaml');
 
         $this->loadRerunController($container, $config['rerun_cache']);
     }
@@ -174,61 +148,7 @@ class Extension implements ExtensionInterface
     {
     }
 
-    /**
-     * @param string $className
-     */
-    private function loadSpecificationsFinder($className, ContainerBuilder $container)
-    {
-        $definition = new Definition(
-            $className,
-            [
-                new Reference(SuiteExtension::REGISTRY_ID),
-                new Reference(SpecificationExtension::FINDER_ID),
-            ]
-        );
-
-        $container->setDefinition($className::SERVICE_ID, $definition);
-    }
-
-    /**
-     * @param string $controllerClass
-     * @param string $specificationsFinderClass
-     */
-    private function loadParallelController($controllerClass, $specificationsFinderClass, ContainerBuilder $container)
-    {
-        ;
-        $definition = new Definition(
-            $controllerClass,
-            [
-                new Reference($controllerClass::SERVICE_ID . '.inner'),
-                new Reference($specificationsFinderClass::SERVICE_ID),
-                new Reference(ArgumentsBuilder::SERVICE_ID),
-                new Reference(WorkerPoll::SERVICE_ID),
-                new Reference(Queue::SERVICE_ID),
-                new Reference(EventDispatcherExtension::DISPATCHER_ID),
-                new Reference(HookExtension::DISPATCHER_ID),
-            //              new Reference(TesterExtension::EXERCISE_ID)
-                //new Reference(ParallelWorkerFactory::class),
-            ]
-        );
-
-        $definition
-            ->setDecoratedService(CliExtension::CONTROLLER_TAG . '.exercise');
-        $container->setDefinition($controllerClass::SERVICE_ID, $definition);
-    }
-
-    /**
-     * @param string $class
-     */
-    private function loadService($class, ContainerBuilder $container)
-    {
-        $definition = new Definition(
-            $class
-        );
-        $container->setDefinition($class::SERVICE_ID, $definition);
-    }
-
-    /**
+     /**
      * Loads rerun controller.
      *
      * @param string|null $cachePath
