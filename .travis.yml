@@ -13,6 +13,7 @@ php:
 #      env: REQUIRE_QUALITY_TOOLS=1
 
 install:
+  - composer update
   - composer install
 
 cache:
