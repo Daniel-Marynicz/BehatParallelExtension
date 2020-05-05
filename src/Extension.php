@@ -19,8 +19,10 @@ use DMarynicz\BehatParallelExtension\Task\ArgumentsBuilder;
 use DMarynicz\BehatParallelExtension\Task\Queue;
 use DMarynicz\BehatParallelExtension\Worker\WorkerPoll;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
@@ -132,6 +134,13 @@ class Extension implements ExtensionInterface
      */
     public function load(ContainerBuilder $container, array $config)
     {
+        $locator = new FileLocator(__DIR__.'/Resources/config');
+        $loader = new YamlFileLoader($container, $locator);
+        $loader->load('services.yaml');
+
+
+        return;
+
         $definition = new Definition(
             JsonEncoder::class
         );
