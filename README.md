@@ -1,6 +1,8 @@
 # Behat Parallel Extension
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Daniel-Marynicz/BehatParallelExtension/blob/master/LICENSE)
 [![Build Status](https://travis-ci.com/Daniel-Marynicz/BehatParallelExtension.svg?branch=master)](https://travis-ci.com/Daniel-Marynicz/BehatParallelExtension)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Daniel-Marynicz/BehatParallelExtension/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Daniel-Marynicz/BehatParallelExtension/?branch=master) 
 
 Note about PHP compatibility
 
