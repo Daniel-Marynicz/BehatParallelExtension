@@ -88,6 +88,9 @@ default:
 In first method you can configure unlimited workers with your php code.
 In second method if you want 16 workers then you must paste 16 elements in the array.
 
+### How to integrate this extension with symfony?
+
+TBD  
 
 ### Usage
 
