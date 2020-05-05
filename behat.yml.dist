@@ -4,14 +4,9 @@ default:
     suites:
         suite01:
             paths:
-                - '%paths.base%/tests/features/suite01'
+                - '%paths.base%/features'
             contexts:
-                - DMarynicz\Tests\Behat\Context\SimulateTestContext
-        suite02:
-            paths:
-                - '%paths.base%/tests/features/suite02'
-            contexts:
-                - DMarynicz\Tests\Behat\Context\SimulateTestContext
+                - DMarynicz\Tests\Behat\Context\ParallelBehatContext
     extensions:
         DMarynicz\BehatParallelExtension\Extension: ~
 
