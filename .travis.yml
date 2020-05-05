@@ -1,20 +1,43 @@
 language: php
 
 php:
-  - '5.6'
-  - '7.0'
-  - '7.1'
-  - '7.2'
-  - '7.3'
-  - '7.4'
+  - 5.6
+  - 7.0
+  - 7.1
+  - 7.2
+  - 7.3
+  - 7.4
+matrix:
+  include:
+    - php: 7.4
+      env: REQUIRE_QUALITY_TOOLS=1
+
+install:
+  - composer install
 
 cache:
   directories:
     - $HOME/.composer/cache
 
 before_install:
-  - phpenv config-rm xdebug.ini || echo "XDebug is not enabled"
+  - |
+    if [ "$REQUIRE_QUALITY_TOOLS" != "" ]; then
+      composer require --dev --no-update \
+        phpstan/phpstan \
+        squizlabs/php_codesniffer \
+        phpstan/phpstan-phpunit \
+        doctrine/coding-standard \
+        phpstan/phpstan-symfony \
+        phpstan/phpstan-doctrine
+    fi
+
 
 script:
-  - ./vendor/bin/phpunit
+  - ./vendor/bin/phpunit --fail-on-warning
+  - ./vendor/bin/behat --colors --strict --stop-on-failure
+  - |
+    if [ "$REQUIRE_QUALITY_TOOLS" != "" ]; then
+      ./vendor/bin/phpcs
+      ./vendor/bin/phpstan analyse
+    fi
 
