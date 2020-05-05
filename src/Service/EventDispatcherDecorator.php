@@ -4,8 +4,7 @@
 namespace DMarynicz\BehatParallelExtension\Service;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface as ContractsEventDispatcherInterface;
+use Behat\Testwork\EventDispatcher\TestworkEventDispatcher;
 
 class EventDispatcherDecorator
 {
@@ -14,7 +13,7 @@ class EventDispatcherDecorator
      */
     private $eventDispatcher;
 
-    public function __construct(EventDispatcherInterface $eventDispatcher)
+    public function __construct(TestworkEventDispatcher $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
     }
@@ -30,7 +29,7 @@ class EventDispatcherDecorator
      */
     public function dispatch($event, $eventName = null)
     {
-        if ($this->eventDispatcher instanceof ContractsEventDispatcherInterface) {
+        if (TestworkEventDispatcher::DISPATCHER_VERSION === 2) {
             return $this->eventDispatcher->dispatch($event, $eventName);
         }
 
