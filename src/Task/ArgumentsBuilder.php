@@ -7,6 +7,7 @@ use ReflectionClass;
 use ReflectionException;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Process\PhpExecutableFinder;
 
 class ArgumentsBuilder
 {
@@ -22,7 +23,12 @@ class ArgumentsBuilder
     public function buildArguments(InputInterface $input, $path)
     {
         $definition = $this->getInputDefinition($input);
-        $argv       = [$_SERVER['argv'][0]];
+        $phpFinder = new PhpExecutableFinder();
+        $php = $phpFinder->find();
+        if (false === $php) {
+            throw new Runtime('Unable to find the PHP executable.');
+        }
+        $argv       = [$php, BEHAT_BIN_PATH];
 
         foreach ($input->getOptions() as $name => $value) {
             if ($value === $definition->getOption($name)->getDefault()) {

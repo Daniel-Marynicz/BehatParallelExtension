@@ -26,7 +26,7 @@ class ParallelBehatContext implements Context
      *
      * @BeforeScenario
      */
-    public function prepareTestFolders()
+    public function findAndSetPhpBin()
     {
         $phpFinder = new PhpExecutableFinder();
         $php = $phpFinder->find();
