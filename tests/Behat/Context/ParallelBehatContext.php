@@ -4,15 +4,38 @@ namespace DMarynicz\Tests\Behat\Context;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
+use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
 use PHPUnit\Framework\Assert;
+use RuntimeException;
 
 class ParallelBehatContext implements Context
 {
     /**
+     * @var string
+     */
+    private $phpBin;
+
+    /**
      * @var Process
      */
     private $process;
+
+    /**
+     * Prepares test folders in the temporary directory.
+     *
+     * @BeforeScenario
+     */
+    public function prepareTestFolders()
+    {
+        $phpFinder = new PhpExecutableFinder();
+        $php = $phpFinder->find();
+        if (false === $php) {
+            throw new RuntimeException('Unable to find the PHP executable.');
+        }
+        $this->phpBin = $php;
+    }
+
 
     /**
      * Runs behat command with provided parameters
@@ -24,8 +47,9 @@ class ParallelBehatContext implements Context
     public function iRunBehat($argumentsString = '')
     {
         $cmd = sprintf(
-            '%s %s',
-            BEHAT_BIN_PATH,
+            '%s %s %s',
+            $this->phpBin,
+            escapeshellarg(BEHAT_BIN_PATH),
                 $argumentsString
         );
 
