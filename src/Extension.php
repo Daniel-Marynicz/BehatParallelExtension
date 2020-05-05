@@ -61,7 +61,7 @@ class Extension implements ExtensionInterface
                     )
                 ->end()
                 ->arrayNode('events')
-                    ->arrayPrototype()
+                    ->prototype('array')
                         ->children()
                             ->scalarNode('eventName')
                                 ->example(WorkerCreated::WORKER_CREATED)
@@ -84,7 +84,7 @@ class Extension implements ExtensionInterface
                                     ]
 
                                 ])
-                                ->scalarPrototype()
+                                ->prototype('scalar')
                             ->end()
                         ->end()
                     ->end()
@@ -123,7 +123,7 @@ class Extension implements ExtensionInterface
                             ]
                         ]
                     )
-                    ->variablePrototype()
+                    ->prototype('variable')
                 ->end()
             ->end()
         ;
