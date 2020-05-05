@@ -1,5 +1,11 @@
 
 services:
+  parallel_extension.event_dispatcher:
+    class: DMarynicz\BehatParallelExtension\Service\EventDispatcherDecorator
+    arguments:
+      #EventDispatcherExtension::DISPATCHER_ID
+      $eventDispatcher: '@event_dispatcher'
+
   parallel_extension.json_encoder:
     class: Symfony\Component\Serializer\Encoder\JsonEncoder
 
@@ -25,7 +31,7 @@ services:
     arguments:
       $queue: '@parallel_extension.queue'
       #EventDispatcherExtension::DISPATCHER_ID
-      $eventDispatcher: '@event_dispatcher'
+      $eventDispatcher: '@parallel_extension.event_dispatcher'
   cli.controller.parallel_extension.parallel_scenario_exercise:
     class: DMarynicz\BehatParallelExtension\Cli\ParallelScenarioController
     arguments:
@@ -34,8 +40,7 @@ services:
       $argumentsBuilder: '@parallel_extension.task.arguments_builder'
       $poll: '@parallel_extension.worker_poll'
       $queue: '@parallel_extension.queue'
-      #EventDispatcherExtension::DISPATCHER_ID
-      $eventDispatcher: '@event_dispatcher'
+      $eventDispatcher: '@parallel_extension.event_dispatcher'
     #CliExtension::CONTROLLER_TAG . '.exercise'
     decorates: 'cli.controller.exercise'
 
