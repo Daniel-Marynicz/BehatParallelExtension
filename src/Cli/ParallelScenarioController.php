@@ -21,7 +21,6 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Process\Process;
 
 class ParallelScenarioController implements Controller
@@ -43,7 +42,7 @@ class ParallelScenarioController implements Controller
     /** @var WorkerPoll */
     private $poll;
 
-    /** @var EventDispatcherInterface */
+    /** @var EventDispatcherDecorator */
     private $eventDispatcher;
 
     /** @var int */
@@ -162,13 +161,15 @@ class ParallelScenarioController implements Controller
         }
 
         $this->exitCode = 1;
-        $output = $process->getOutput() . $process->getErrorOutput();
+        $output         = $process->getOutput() . $process->getErrorOutput();
 
         $this->output->write("\n" . $output);
 
-        if ($this->input->getOption('stop-on-failure') !== false) {
-            $this->poll->stop();
+        if ($this->input->getOption('stop-on-failure') === false) {
+            return;
         }
+
+        $this->poll->stop();
     }
 
     /**

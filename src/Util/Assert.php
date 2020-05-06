@@ -36,12 +36,27 @@ class Assert
 
     /**
      * @param mixed $value
+     *
      * @return int
      */
     public static function assertInt($value)
     {
         if (! is_int($value)) {
             throw new UnexpectedValue('Expected int');
+        }
+
+        return $value;
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return bool mixed
+     */
+    public static function assetTrue($value)
+    {
+        if ($value === true) {
+            throw new UnexpectedValue('Expected true');
         }
 
         return $value;

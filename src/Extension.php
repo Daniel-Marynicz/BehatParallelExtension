@@ -2,29 +2,16 @@
 
 namespace DMarynicz\BehatParallelExtension;
 
-use Behat\Testwork\Cli\ServiceContainer\CliExtension;
-use Behat\Testwork\EventDispatcher\ServiceContainer\EventDispatcherExtension;
-use Behat\Testwork\Hook\ServiceContainer\HookExtension;
 use Behat\Testwork\ServiceContainer\Extension as ExtensionInterface;
 use Behat\Testwork\ServiceContainer\ExtensionManager;
-use Behat\Testwork\Specification\ServiceContainer\SpecificationExtension;
-use Behat\Testwork\Suite\ServiceContainer\SuiteExtension;
-use DMarynicz\BehatParallelExtension\Cli\ParallelScenarioController;
-use DMarynicz\BehatParallelExtension\Cli\RerunController;
 use DMarynicz\BehatParallelExtension\Event\WorkerCreated;
-use DMarynicz\BehatParallelExtension\Finder\ScenarioSpecificationsFinder;
-use DMarynicz\BehatParallelExtension\Service\FilePutContentsWrapper;
-use DMarynicz\BehatParallelExtension\Service\Finder\FeatureSpecificationsFinder;
-use DMarynicz\BehatParallelExtension\Task\ArgumentsBuilder;
-use DMarynicz\BehatParallelExtension\Task\Queue;
-use DMarynicz\BehatParallelExtension\Worker\WorkerPoll;
+use DMarynicz\BehatParallelExtension\Exception\UnexpectedValue;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 class Extension implements ExtensionInterface
 {
@@ -52,81 +39,9 @@ class Extension implements ExtensionInterface
     {
         $builder
             ->children()
-                ->scalarNode('rerun_cache')
-                    ->info('Sets the rerun cache path, must have same value as testers.rerun_cache')
-                    ->defaultValue(
-                        is_writable(sys_get_temp_dir())
-                            ? sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'behat_rerun_cache'
-                            : null
-                    )
-                ->end()
-                ->arrayNode('events')
-                    ->prototype('array')
-                        ->children()
-                            ->scalarNode('eventName')
-                                ->example(WorkerCreated::WORKER_CREATED)
-                                ->cannotBeEmpty()
-                            ->end()
-                            ->arrayNode('handler')
-                                ->info(
-                                    'By default class must have method __invoke, '
-                                    . 'if array have two elements then second element is the name '
-                                    .'for the method handler name'
-                                )
-                                ->cannotBeEmpty()
-                                ->example([
-                                    [
-                                        'App\Tests\Behat\Event\WorkerCreatedHandler'
-                                    ],
-                                    [
-                                        'App\Tests\Behat\Event\EventsHandler',
-                                        'handleWorkerCreated'
-                                    ]
-
-                                ])
-                                ->prototype('scalar')
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
-                ->end()
-                ->arrayNode('environments')
-                    ->example(
-                        [
-                            [
-                                'CACHE_DIR' => '00-test',
-                                'SYMFONY_SERVER_PORT' => 8000,
-                                'SYMFONY_SERVER_PID_FILE' => '.web-server-8000-pid',
-                                'DATABASE_URL' => 'mysql://db_user:db_password@127.0.0.1:3306/db_name_00?serverVersion=5.7',
-                                'SYMFONY_DOTENV_VARS' => '',
-                            ],
-                            [
-                                'CACHE_DIR' => '01-test',
-                                'SYMFONY_SERVER_PORT' => 8001,
-                                'SYMFONY_SERVER_PID_FILE' => '.web-server-8001-pid',
-                                'DATABASE_URL' => 'mysql://db_user:db_password@127.0.0.1:3306/db_name_01?serverVersion=5.7',
-                                'SYMFONY_DOTENV_VARS' => '',
-                            ],
-                            [
-                                'CACHE_DIR' => '02-test',
-                                'SYMFONY_SERVER_PORT' => 8002,
-                                'SYMFONY_SERVER_PID_FILE' => '.web-server-8002-pid',
-                                'DATABASE_URL' => 'mysql://db_user:db_password@127.0.0.1:3306/db_name_02?serverVersion=5.7',
-                                'SYMFONY_DOTENV_VARS' => '',
-                            ],
-                            [
-                                'CACHE_DIR' => '03-test',
-                                'SYMFONY_SERVER_PORT' => 8003,
-                                'SYMFONY_SERVER_PID_FILE' => '.web-server-8003-pid',
-                                'DATABASE_URL' => 'mysql://db_user:db_password@127.0.0.1:3306/db_name_03?serverVersion=5.7',
-                                'SYMFONY_DOTENV_VARS' => '',
-                            ]
-                        ]
-                    )
-                    ->prototype('variable')
-                ->end()
-            ->end()
-        ;
+                ->append($this->addEventsNode())
+                ->append($this->addEnvironmentsNode())
+            ->end();
     }
 
     /**
@@ -134,11 +49,9 @@ class Extension implements ExtensionInterface
      */
     public function load(ContainerBuilder $container, array $config)
     {
-        $locator = new FileLocator(__DIR__.'/Resources/config');
-        $loader = new YamlFileLoader($container, $locator);
+        $locator = new FileLocator(__DIR__ . '/Resources/config');
+        $loader  = new YamlFileLoader($container, $locator);
         $loader->load('services.yaml');
-
-        $this->loadRerunController($container, $config['rerun_cache']);
     }
 
     /**
@@ -148,20 +61,117 @@ class Extension implements ExtensionInterface
     {
     }
 
-     /**
-     * Loads rerun controller.
-     *
-     * @param string|null $cachePath
+    /**
+     * @return ArrayNodeDefinition
      */
-    private function loadRerunController(ContainerBuilder $container, $cachePath)
+    private function addEventsNode()
     {
-        $definition = new Definition(RerunController::class, [
-            new Reference(EventDispatcherExtension::DISPATCHER_ID),
-            new Reference(self::JSON_ENCODER_SERVICE_ID),
-            new Reference(FilePutContentsWrapper::SERVICE_ID),
-            $cachePath,
-            $container->getParameter('paths.base'),
-        ]);
-        $container->setDefinition(RerunController::SERVICE_ID, $definition);
+        $node = $this->getNewArrayNode('events');
+
+        // @phpstan-ignore-next-line
+        $node
+            ->prototype('array')
+                ->children()
+                    ->scalarNode('eventName')
+                        ->example(WorkerCreated::WORKER_CREATED)
+                        ->cannotBeEmpty()
+                    ->end()
+                    ->arrayNode('handler')
+                        ->info(
+                            'By default class must have method __invoke, '
+                            . 'if array have two elements then second element is the name '
+                            . 'for the method handler name'
+                        )
+                        ->cannotBeEmpty()
+                        ->example([
+                            ['App\Tests\Behat\Event\WorkerCreatedHandler'],
+                            [
+                                'App\Tests\Behat\Event\EventsHandler',
+                                'handleWorkerCreated',
+                            ],
+                        ])
+                    ->prototype('scalar')
+                    ->end()
+                ->end()
+            ->end();
+
+        return $node;
+    }
+
+    /**
+     * @return ArrayNodeDefinition|NodeDefinition
+     */
+    private function addEnvironmentsNode()
+    {
+        $node = $this->getNewArrayNode('environments');
+
+        $node
+            ->example(
+                [
+                    [
+                        'CACHE_DIR' => '00-test',
+                        'SYMFONY_SERVER_PORT' => 8000,
+                        'SYMFONY_SERVER_PID_FILE' => '.web-server-8000-pid',
+                        'DATABASE_URL' => 'mysql://db_user:db_password@127.0.0.1:3306/db_name_00?serverVersion=5.7',
+                        'SYMFONY_DOTENV_VARS' => '',
+                    ],
+                    [
+                        'CACHE_DIR' => '01-test',
+                        'SYMFONY_SERVER_PORT' => 8001,
+                        'SYMFONY_SERVER_PID_FILE' => '.web-server-8001-pid',
+                        'DATABASE_URL' => 'mysql://db_user:db_password@127.0.0.1:3306/db_name_01?serverVersion=5.7',
+                        'SYMFONY_DOTENV_VARS' => '',
+                    ],
+                    [
+                        'CACHE_DIR' => '02-test',
+                        'SYMFONY_SERVER_PORT' => 8002,
+                        'SYMFONY_SERVER_PID_FILE' => '.web-server-8002-pid',
+                        'DATABASE_URL' => 'mysql://db_user:db_password@127.0.0.1:3306/db_name_02?serverVersion=5.7',
+                        'SYMFONY_DOTENV_VARS' => '',
+                    ],
+                    [
+                        'CACHE_DIR' => '03-test',
+                        'SYMFONY_SERVER_PORT' => 8003,
+                        'SYMFONY_SERVER_PID_FILE' => '.web-server-8003-pid',
+                        'DATABASE_URL' => 'mysql://db_user:db_password@127.0.0.1:3306/db_name_03?serverVersion=5.7',
+                        'SYMFONY_DOTENV_VARS' => '',
+                    ],
+                ]
+            )
+            ->prototype('variable')
+        ->end();
+
+        return $node;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return ArrayNodeDefinition
+     */
+    private function getNewArrayNode($name)
+    {
+        if (method_exists(TreeBuilder::class, 'root')) {
+            // @phpstan-ignore-next-line
+            $treeBuilder = new TreeBuilder();
+
+            // @phpstan-ignore-next-line
+            $node = $treeBuilder->root($name);
+            if (! $node instanceof ArrayNodeDefinition) {
+                throw new UnexpectedValue('expected ArrayNodeDefinition');
+            }
+
+            return $node;
+        }
+
+        $treeBuilder = new TreeBuilder($name);
+
+        $node = $treeBuilder->getRootNode();
+
+        if (! $node instanceof ArrayNodeDefinition) {
+            throw new UnexpectedValue('expected ArrayNodeDefinition');
+        }
+
+        return $node;
     }
 }

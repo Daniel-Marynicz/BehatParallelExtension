@@ -11,7 +11,6 @@ use DMarynicz\BehatParallelExtension\Service\EventDispatcherDecorator;
 use DMarynicz\BehatParallelExtension\Task\Queue;
 use DMarynicz\BehatParallelExtension\Task\Task;
 use DMarynicz\BehatParallelExtension\Util\Assert;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Process\Process;
 
 class Worker
@@ -39,7 +38,7 @@ class Worker
 
     /**
      * @param string[] $env
-     * @param int $workerId
+     * @param int      $workerId
      */
     public function __construct(Queue $queue, $env, EventDispatcherDecorator $eventDispatcher, $workerId)
     {
@@ -140,12 +139,14 @@ class Worker
 
     /**
      * @param string[] $env
+     *
      * @return Worker
      */
     public function setEnv($env)
     {
         Assert::assertArray($env);
         $this->env = $env;
+
         return $this;
     }
 

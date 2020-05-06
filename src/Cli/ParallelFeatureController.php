@@ -5,7 +5,7 @@ namespace DMarynicz\BehatParallelExtension\Cli;
 use Behat\Testwork\Cli\Controller;
 use Behat\Testwork\Cli\ServiceContainer\CliExtension;
 use Behat\Testwork\Tester\Cli\ExerciseController;
-use DMarynicz\BehatParallelExtension\Service\FeatureSpecificationsFinder;
+use DMarynicz\BehatParallelExtension\Exception\Logic;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,15 +18,10 @@ class ParallelFeatureController implements Controller
     /** @var ExerciseController */
     private $decoratedExerciseController;
 
-    /** @var FeatureSpecificationsFinder */
-    private $specificationFinder;
-
     public function __construct(
-        ExerciseController $decoratedExerciseController,
-        FeatureSpecificationsFinder $specificationsFinder
+        ExerciseController $decoratedExerciseController
     ) {
         $this->decoratedExerciseController = $decoratedExerciseController;
-        $this->specificationFinder         = $specificationsFinder;
     }
 
     public function configure(SymfonyCommand $command)
@@ -45,7 +40,9 @@ class ParallelFeatureController implements Controller
     }
 
     /**
-     * @return int
+     * @return int|null
+     *
+     * @TODO
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
@@ -54,16 +51,6 @@ class ParallelFeatureController implements Controller
             return $this->decoratedExerciseController->execute($input, $output);
         }
 
-        $specs = $this->findSpecifications($input);
-
-        return 0;
-    }
-
-    /**
-     * @return array|string[]
-     */
-    private function findSpecifications(InputInterface $input)
-    {
-        return $this->specificationFinder->findFeatures($input->getArgument('path'));
+        throw new Logic('Not yet implemented');
     }
 }
