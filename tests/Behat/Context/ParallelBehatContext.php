@@ -4,21 +4,17 @@ namespace DMarynicz\Tests\Behat\Context;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
-use Symfony\Component\Process\PhpExecutableFinder;
-use Symfony\Component\Process\Process;
 use PHPUnit\Framework\Assert;
 use RuntimeException;
+use Symfony\Component\Process\PhpExecutableFinder;
+use Symfony\Component\Process\Process;
 
 class ParallelBehatContext implements Context
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $phpBin;
 
-    /**
-     * @var Process
-     */
+    /** @var Process */
     private $process;
 
     /**
@@ -29,20 +25,20 @@ class ParallelBehatContext implements Context
     public function findAndSetPhpBin()
     {
         $phpFinder = new PhpExecutableFinder();
-        $php = $phpFinder->find();
-        if (false === $php) {
+        $php       = $phpFinder->find();
+        if ($php === false) {
             throw new RuntimeException('Unable to find the PHP executable.');
         }
+
         $this->phpBin = $php;
     }
-
 
     /**
      * Runs behat command with provided parameters
      *
-     * @When /^I run "behat(?: ((?:\"|[^"])*))?"$/
-     *
      * @param string $argumentsString
+     *
+     * @When /^I run "behat(?: ((?:\"|[^"])*))?"$/
      */
     public function iRunBehat($argumentsString = '')
     {
@@ -50,7 +46,7 @@ class ParallelBehatContext implements Context
             '%s %s %s',
             $this->phpBin,
             escapeshellarg(BEHAT_BIN_PATH),
-                $argumentsString
+            $argumentsString
         );
 
         $this->processFromShellCommandline($cmd);
@@ -60,10 +56,10 @@ class ParallelBehatContext implements Context
     /**
      * Checks whether previously ran command passes|fails with provided output.
      *
-     * @Then /^it should (fail|pass) with:$/
-     *
      * @param string       $success "fail" or "pass"
      * @param PyStringNode $text    PyString text instance
+     *
+     * @Then /^it should (fail|pass) with:$/
      */
     public function itShouldPassWith($success, PyStringNode $text)
     {
@@ -74,20 +70,20 @@ class ParallelBehatContext implements Context
     /**
      * Checks whether previously ran command failed|passed.
      *
-     * @Then /^it should (fail|pass)$/
-     *
      * @param string $success "fail" or "pass"
+     *
+     * @Then /^it should (fail|pass)$/
      */
     public function itShouldFail($success)
     {
-        if ('fail' === $success) {
-            if (0 === $this->getExitCode()) {
+        if ($success === 'fail') {
+            if ($this->getExitCode() === 0) {
                 echo 'Actual output:' . PHP_EOL . PHP_EOL . $this->getOutput();
             }
 
             Assert::assertNotEquals(0, $this->getExitCode());
         } else {
-            if (0 !== $this->getExitCode()) {
+            if ($this->getExitCode() !== 0) {
                 echo 'Actual output:' . PHP_EOL . PHP_EOL . $this->getOutput();
             }
 
@@ -98,9 +94,9 @@ class ParallelBehatContext implements Context
     /**
      * Checks whether last command output contains provided string.
      *
-     * @Then the output should contain:
-     *
      * @param PyStringNode $text PyString text instance
+     *
+     * @Then the output should contain:
      */
     public function theOutputShouldContain(PyStringNode $text)
     {
@@ -150,14 +146,13 @@ class ParallelBehatContext implements Context
         $output = $this->process->getErrorOutput() . $this->process->getOutput();
 
         // Normalize the line endings and directory separators in the output
-        if ("\n" !== PHP_EOL) {
+        if (PHP_EOL !== "\n") {
             $output = str_replace(PHP_EOL, "\n", $output);
         }
 
         // Remove location of the project
-        $output = str_replace(realpath(dirname(dirname(__DIR__))).DIRECTORY_SEPARATOR, '', $output);
+        $output = str_replace(realpath(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR, '', $output);
 
-        return trim(preg_replace("/ +$/m", '', $output));
+        return trim(preg_replace('/ +$/m', '', $output));
     }
 }
-

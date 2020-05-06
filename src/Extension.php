@@ -2,29 +2,18 @@
 
 namespace DMarynicz\BehatParallelExtension;
 
-use Behat\Testwork\Cli\ServiceContainer\CliExtension;
 use Behat\Testwork\EventDispatcher\ServiceContainer\EventDispatcherExtension;
-use Behat\Testwork\Hook\ServiceContainer\HookExtension;
 use Behat\Testwork\ServiceContainer\Extension as ExtensionInterface;
 use Behat\Testwork\ServiceContainer\ExtensionManager;
-use Behat\Testwork\Specification\ServiceContainer\SpecificationExtension;
-use Behat\Testwork\Suite\ServiceContainer\SuiteExtension;
-use DMarynicz\BehatParallelExtension\Cli\ParallelScenarioController;
 use DMarynicz\BehatParallelExtension\Cli\RerunController;
 use DMarynicz\BehatParallelExtension\Event\WorkerCreated;
-use DMarynicz\BehatParallelExtension\Finder\ScenarioSpecificationsFinder;
 use DMarynicz\BehatParallelExtension\Service\FilePutContentsWrapper;
-use DMarynicz\BehatParallelExtension\Service\Finder\FeatureSpecificationsFinder;
-use DMarynicz\BehatParallelExtension\Task\ArgumentsBuilder;
-use DMarynicz\BehatParallelExtension\Task\Queue;
-use DMarynicz\BehatParallelExtension\Worker\WorkerPoll;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 class Extension implements ExtensionInterface
 {
@@ -71,17 +60,15 @@ class Extension implements ExtensionInterface
                                 ->info(
                                     'By default class must have method __invoke, '
                                     . 'if array have two elements then second element is the name '
-                                    .'for the method handler name'
+                                    . 'for the method handler name'
                                 )
                                 ->cannotBeEmpty()
                                 ->example([
-                                    [
-                                        'App\Tests\Behat\Event\WorkerCreatedHandler'
-                                    ],
+                                    ['App\Tests\Behat\Event\WorkerCreatedHandler'],
                                     [
                                         'App\Tests\Behat\Event\EventsHandler',
-                                        'handleWorkerCreated'
-                                    ]
+                                        'handleWorkerCreated',
+                                    ],
 
                                 ])
                                 ->prototype('scalar')
@@ -120,13 +107,12 @@ class Extension implements ExtensionInterface
                                 'SYMFONY_SERVER_PID_FILE' => '.web-server-8003-pid',
                                 'DATABASE_URL' => 'mysql://db_user:db_password@127.0.0.1:3306/db_name_03?serverVersion=5.7',
                                 'SYMFONY_DOTENV_VARS' => '',
-                            ]
+                            ],
                         ]
                     )
                     ->prototype('variable')
                 ->end()
-            ->end()
-        ;
+            ->end();
     }
 
     /**
@@ -134,8 +120,8 @@ class Extension implements ExtensionInterface
      */
     public function load(ContainerBuilder $container, array $config)
     {
-        $locator = new FileLocator(__DIR__.'/Resources/config');
-        $loader = new YamlFileLoader($container, $locator);
+        $locator = new FileLocator(__DIR__ . '/Resources/config');
+        $loader  = new YamlFileLoader($container, $locator);
         $loader->load('services.yaml');
     }
 
@@ -147,10 +133,10 @@ class Extension implements ExtensionInterface
     }
 
      /**
-     * Loads rerun controller.
-     *
-     * @param string|null $cachePath
-     */
+      * Loads rerun controller.
+      *
+      * @param string|null $cachePath
+      */
     private function loadRerunController(ContainerBuilder $container, $cachePath)
     {
         $definition = new Definition(RerunController::class, [

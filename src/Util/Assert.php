@@ -36,6 +36,7 @@ class Assert
 
     /**
      * @param mixed $value
+     *
      * @return int
      */
     public static function assertInt($value)

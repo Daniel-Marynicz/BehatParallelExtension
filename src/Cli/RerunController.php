@@ -2,16 +2,16 @@
 
 namespace DMarynicz\BehatParallelExtension\Cli;
 
+use Behat\Behat\Tester\Cli\RerunController as BehatRerunController;
 use Behat\Gherkin\Node\ScenarioLikeInterface;
 use Behat\Testwork\Cli\Controller;
 use DMarynicz\BehatParallelExtension\Event\AfterTaskTested;
 use DMarynicz\BehatParallelExtension\Event\ParallelTestCompleted;
 use DMarynicz\BehatParallelExtension\Service\EventDispatcherDecorator;
+use ReflectionClass;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Behat\Behat\Tester\Cli\RerunController as BehatRerunController;
-use ReflectionClass;
 
 class RerunController implements Controller
 {
@@ -29,7 +29,7 @@ class RerunController implements Controller
     public function __construct(BehatRerunController $decoratedController, EventDispatcherDecorator $eventDispatcher)
     {
         $this->decoratedController = $decoratedController;
-        $this->eventDispatcher = $eventDispatcher;
+        $this->eventDispatcher     = $eventDispatcher;
     }
 
     /**
@@ -85,10 +85,11 @@ class RerunController implements Controller
      */
     public function writeCache()
     {
-        if ( !$this->lines) {
+        if (! $this->lines) {
             return $this->decoratedController->writeCache();
         }
-        $ref = new ReflectionClass($this->decoratedController);
+
+        $ref      = new ReflectionClass($this->decoratedController);
         $property = $ref->getProperty('lines');
         $property->setAccessible(true);
         $property->setValue($this->decoratedController, $this->lines);

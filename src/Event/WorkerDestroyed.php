@@ -1,8 +1,6 @@
 <?php
 
-
 namespace DMarynicz\BehatParallelExtension\Event;
-
 
 class WorkerDestroyed extends Worker
 {

@@ -162,13 +162,15 @@ class ParallelScenarioController implements Controller
         }
 
         $this->exitCode = 1;
-        $output = $process->getOutput() . $process->getErrorOutput();
+        $output         = $process->getOutput() . $process->getErrorOutput();
 
         $this->output->write("\n" . $output);
 
-        if ($this->input->getOption('stop-on-failure') !== false) {
-            $this->poll->stop();
+        if ($this->input->getOption('stop-on-failure') === false) {
+            return;
         }
+
+        $this->poll->stop();
     }
 
     /**

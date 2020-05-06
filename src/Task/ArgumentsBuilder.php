@@ -23,12 +23,13 @@ class ArgumentsBuilder
     public function buildArguments(InputInterface $input, $path)
     {
         $definition = $this->getInputDefinition($input);
-        $phpFinder = new PhpExecutableFinder();
-        $php = $phpFinder->find();
-        if (false === $php) {
+        $phpFinder  = new PhpExecutableFinder();
+        $php        = $phpFinder->find();
+        if ($php === false) {
             throw new Runtime('Unable to find the PHP executable.');
         }
-        $argv       = [$php, BEHAT_BIN_PATH];
+
+        $argv = [$php, BEHAT_BIN_PATH];
 
         foreach ($input->getOptions() as $name => $value) {
             if ($value === $definition->getOption($name)->getDefault()) {

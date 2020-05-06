@@ -1,16 +1,13 @@
 <?php
 
-
 namespace DMarynicz\BehatParallelExtension\Service;
 
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use Behat\Testwork\EventDispatcher\TestworkEventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class EventDispatcherDecorator
 {
-    /**
-     * @var EventDispatcher
-     */
+    /** @var EventDispatcher */
     private $eventDispatcher;
 
     public function __construct(TestworkEventDispatcher $eventDispatcher)
@@ -37,9 +34,9 @@ class EventDispatcherDecorator
     }
 
     /**
-     * @param string $eventName
+     * @param string   $eventName
      * @param $listener
-     * @param int $priority,
+     * @param int      $priority,
      */
     public function addListener($eventName, $listener, $priority = 0)
     {

@@ -3,19 +3,13 @@
 namespace DMarynicz\BehatParallelExtension\Event;
 
 use Behat\Testwork\Event\Event;
-use DMarynicz\BehatParallelExtension\Util\Assert;
 use DMarynicz\BehatParallelExtension\Worker\Worker as Workman;
 
 abstract class Worker extends Event
 {
-    /**
-     * @var Workman
-     */
+    /** @var Workman */
     private $worker;
 
-    /**
-     * @param Workman $worker
-     */
     public function __construct(Workman $worker)
     {
         $this->worker = $worker;
@@ -36,5 +30,4 @@ abstract class Worker extends Event
     {
         return $this->workerId;
     }
-
 }
