@@ -137,8 +137,6 @@ class Extension implements ExtensionInterface
         $locator = new FileLocator(__DIR__.'/Resources/config');
         $loader = new YamlFileLoader($container, $locator);
         $loader->load('services.yaml');
-
-        $this->loadRerunController($container, $config['rerun_cache']);
     }
 
     /**

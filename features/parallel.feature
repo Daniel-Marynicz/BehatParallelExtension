@@ -1,9 +1,11 @@
 Feature: Parallel
+  As a programmer, I want to able test my tests in parallel mode.
+  And if test will fail then i want see my errors.
   Scenario: Test behat tests with successful result and -l option
     Given I run "behat --config tests/fixtures/successful/behat.yml.dist -l 20"
     Then it should pass
     And I should see progress bar
-  Scenario: Test behat tests with successful result and parallel option
+  Scenario: Test behat tests with successful result and --parallel option
     Given I run "behat --config tests/fixtures/successful/behat.yml.dist --parallel 20"
     Then it should pass
     And I should see progress bar
@@ -18,5 +20,3 @@ Feature: Parallel
     suite01/successful.feature:22
     """
     And I should see progress bar
-
-

@@ -44,3 +44,10 @@ services:
     #CliExtension::CONTROLLER_TAG . '.exercise'
     decorates: 'cli.controller.exercise'
 
+  cli.controller.parallel_extension.retun_controller:
+    class: DMarynicz\BehatParallelExtension\Cli\RerunController
+    arguments:
+      $decoratedController: '@cli.controller.parallel_extension.retun_controller.inner'
+      $eventDispatcher: '@parallel_extension.event_dispatcher'
+    decorates: 'cli.controller.rerun'
+
