@@ -7,10 +7,11 @@ php:
   - 7.2
   - 7.3
   - 7.4
-#matrix:
-#  include:
-#    - php: 7.4
-#      env: REQUIRE_QUALITY_TOOLS=1
+
+matrix:
+  include:
+    - php: 7.4
+      env: REQUIRE_QUALITY_TOOLS=1
 
 install:
   - composer update
