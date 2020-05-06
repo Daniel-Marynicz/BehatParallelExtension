@@ -5,6 +5,7 @@ namespace DMarynicz\Tests\Behat\Context;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
 use DMarynicz\BehatParallelExtension\Exception\Runtime;
+use DMarynicz\BehatParallelExtension\Exception\UnexpectedValue;
 use PHPUnit\Framework\Assert;
 use RuntimeException;
 use Symfony\Component\Process\PhpExecutableFinder;
@@ -164,7 +165,9 @@ class ParallelBehatContext implements Context
         $output = str_replace(realpath(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR, '', $output);
 
         $output = preg_replace('/ +$/m', '', $output);
-        Assert::assertIsString($output);
+        if (! is_string($output)) {
+            throw new UnexpectedValue('Expected string');
+        }
 
         return trim($output);
     }
