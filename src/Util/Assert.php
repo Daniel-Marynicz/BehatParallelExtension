@@ -47,4 +47,18 @@ class Assert
 
         return $value;
     }
+
+    /**
+     * @param mixed $value
+     *
+     * @return bool mixed
+     */
+    public static function assetTrue($value)
+    {
+        if ($value === true) {
+            throw new UnexpectedValue('Expected true');
+        }
+
+        return $value;
+    }
 }

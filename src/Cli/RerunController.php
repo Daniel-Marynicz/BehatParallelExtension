@@ -82,11 +82,15 @@ class RerunController implements Controller
 
     /**
      * Writes failed tests cache.
+     *
+     * @return void
      */
     public function writeCache()
     {
         if (! $this->lines) {
-            return $this->decoratedController->writeCache();
+            $this->decoratedController->writeCache();
+
+            return;
         }
 
         $ref      = new ReflectionClass($this->decoratedController);
@@ -94,6 +98,6 @@ class RerunController implements Controller
         $property->setAccessible(true);
         $property->setValue($this->decoratedController, $this->lines);
 
-        return $this->decoratedController->writeCache();
+        $this->decoratedController->writeCache();
     }
 }

@@ -30,16 +30,21 @@ class EventDispatcherDecorator
             return $this->eventDispatcher->dispatch($event, $eventName);
         }
 
+        // @phpstan-ignore-next-line
         return $this->eventDispatcher->dispatch($eventName, $event);
     }
 
     /**
+     * Adds an event listener that listens on the specified events.
+     *
      * @param string   $eventName
-     * @param $listener
+     * @param callable $listener
      * @param int      $priority,
+     *
+     * @return void
      */
     public function addListener($eventName, $listener, $priority = 0)
     {
-        return $this->eventDispatcher->addListener($eventName, $listener, $priority);
+        $this->eventDispatcher->addListener($eventName, $listener, $priority);
     }
 }

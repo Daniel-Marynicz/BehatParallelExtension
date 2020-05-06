@@ -29,6 +29,10 @@ class ArgumentsBuilder
             throw new Runtime('Unable to find the PHP executable.');
         }
 
+        if (! defined('BEHAT_BIN_PATH')) {
+            throw new Runtime('constant BEHAT_BIN_PATH is not defined.');
+        }
+
         $argv = [$php, BEHAT_BIN_PATH];
 
         foreach ($input->getOptions() as $name => $value) {

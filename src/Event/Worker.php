@@ -22,12 +22,4 @@ abstract class Worker extends Event
     {
         return $this->worker;
     }
-
-    /**
-     * @return int
-     */
-    public function getWorkerId()
-    {
-        return $this->workerId;
-    }
 }

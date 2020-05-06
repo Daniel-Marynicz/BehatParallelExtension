@@ -4,6 +4,7 @@ namespace DMarynicz\Tests\Behat\Context;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
+use DMarynicz\BehatParallelExtension\Exception\Runtime;
 use PHPUnit\Framework\Assert;
 use RuntimeException;
 use Symfony\Component\Process\PhpExecutableFinder;
@@ -14,7 +15,7 @@ class ParallelBehatContext implements Context
     /** @var string */
     private $phpBin;
 
-    /** @var Process */
+    /** @var Process<string> */
     private $process;
 
     /**
@@ -42,6 +43,10 @@ class ParallelBehatContext implements Context
      */
     public function iRunBehat($argumentsString = '')
     {
+        if (! defined('BEHAT_BIN_PATH')) {
+            throw new Runtime('constant BEHAT_BIN_PATH is not defined.');
+        }
+
         $cmd = sprintf(
             '%s %s %s',
             $this->phpBin,
@@ -128,7 +133,9 @@ class ParallelBehatContext implements Context
             $this->process = Process::fromShellCommandline($cmd);
         } else {
             // BC layer for symfony/process 4.1 and older
+            // @phpstan-ignore-next-line
             $this->process = new Process(null);
+            // @phpstan-ignore-next-line
             $this->process->setCommandLine($cmd);
         }
     }
@@ -141,6 +148,9 @@ class ParallelBehatContext implements Context
         return $this->process->getExitCode();
     }
 
+    /**
+     * @return string
+     */
     private function getOutput()
     {
         $output = $this->process->getErrorOutput() . $this->process->getOutput();
@@ -153,6 +163,9 @@ class ParallelBehatContext implements Context
         // Remove location of the project
         $output = str_replace(realpath(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR, '', $output);
 
-        return trim(preg_replace('/ +$/m', '', $output));
+        $output = preg_replace('/ +$/m', '', $output);
+        Assert::assertIsString($output);
+
+        return trim($output);
     }
 }
