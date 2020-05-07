@@ -9,8 +9,6 @@ environment:
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PHP_VERSION: 7.4.5
 install:
-  - ps: echo $Env:PATH
-  - ps: $Env:PATH = "c:/tools/php/"+$Env:PHP_VERSION+":"+$Env:PATH
   - ps: |
       #if (Test-Path "c:\tools\php") {
       #  Remove-Item -Path c:\tools\php -Recurse -Force
@@ -22,7 +20,7 @@ install:
         if (Test-Path "$path") {
           return
         }
-        appveyor-retry  choco install php --package-parameters="'/InstallDir:${path}'" --version $version
+        appveyor-retry  choco install php --package-parameters="'/InstallDir:${path}'" --no-progress --yes --version $version
       }
 
       function setupPhpIni($version)
@@ -48,8 +46,7 @@ install:
       setupPhpIni $Env:PHP_VERSION
       installComposer
 
-  - ps: echo $Env:PATH
-  - ps: $Env:PATH = "c:/tools/php/"+$Env:PHP_VERSION+":"+$Env:PATH
+  - ps: $Env:PATH = "c:/tools/php/"+$Env:PHP_VERSION+";"+$Env:PATH
   - ps: echo $Env:PATH
   - cd c:\projects\BehatParallelExtension
   - appveyor-retry composer self-update
