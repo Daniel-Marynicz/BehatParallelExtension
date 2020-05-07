@@ -7,7 +7,7 @@ environment:
   matrix:
     -
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      PHP_VERSION: 7.4
+      PHP_VERSION: 7.4.5
 install:
   - ps: |
       if (Test-Path "c:\tools\php") {
@@ -20,14 +20,35 @@ install:
         if (Test-Path "$path") {
           return
         }
-
-        echo appveyor-retry cinst --params "'/InstallDir:${path}'"  -y php --version $version
         appveyor-retry  choco install php --package-parameters="'/InstallDir:${path}'" --version $version
+      }
+
+      function setupPhpIni($version)
+      {
+        $path = "c:\tools\php\${version}"
         Get-ChildItem -Path "${path}"
         cd ${path}
+        copy php.ini-production php.ini
       }
-      installPhp $Env:PHP_VERSION
 
+      function installComposer
+      {
+        if (!(Test-Path C:\tools\composer)) {
+          New-Item -path c:\tools -name composer -itemtype directory
+        }
+        if (!(Test-Path c:\tools\composer\composer.phar)) {
+            appveyor-retry appveyor DownloadFile https://getcomposer.org/composer.phar -Filename C:\tools\composer\composer.phar
+            Set-Content -path 'C:\tools\composer\composer.bat' -Value ('@php C:\tools\composer\composer.phar %*')
+        }
+      }
+
+      installPhp $Env:PHP_VERSION
+      setupPhpIni $Env:PHP_VERSION
+      installComposer
+
+  - cd c:\projects\BehatParallelExtension
+  - appveyor-retry composer self-update
+  - appveyor-retry composer install --no-progress --ansi
 cache:
   - c:\tools\php
   - C:\tools\composer
