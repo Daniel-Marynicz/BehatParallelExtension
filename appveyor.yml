@@ -48,8 +48,10 @@ install:
       setupPhpIni $Env:PHP_VERSION
       installComposer
 
+  - ps: echo $Env:PATH
+  - ps: $Env:PATH = "c:/tools/php/"+$Env:PHP_VERSION+":"+$Env:PATH
+  - ps: echo $Env:PATH
   - cd c:\projects\BehatParallelExtension
-  - $Env:PATH = "c:\tools\php\"+$Env:PHP_VERSION+":"+$Env:PATH
   - appveyor-retry composer self-update
   - appveyor-retry composer install --no-progress --ansi
 cache:
