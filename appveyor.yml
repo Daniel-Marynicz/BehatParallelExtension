@@ -4,6 +4,7 @@ version: '{build}'
 clone_folder: c:\projects\BehatParallelExtension
 environment:
   PATH: C:\tools\php\%PHP_VERSION%;C:\tools\composer;%PATH%
+  COMPOSER_NO_INTERACTION: 1
   matrix:
     -
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
@@ -29,6 +30,7 @@ install:
         Get-ChildItem -Path "${path}"
         cd ${path}
         copy php.ini-production php.ini
+        Add-Content php.ini "`n extension=php_openssl.dll"
       }
 
       function installComposer
