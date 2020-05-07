@@ -11,10 +11,6 @@ environment:
       PHP_VERSION: 7.4.5
 install:
   - ps: |
-      #if (Test-Path "c:\tools\php") {
-      #  Remove-Item -Path c:\tools\php -Recurse -Force
-      #}
-
       function installPhp($version)
       {
         $path = "c:\tools\php\${version}"
@@ -68,5 +64,6 @@ build_script:
 test_script:
   - ps: $Env:PATH = "c:\tools\php\"+$Env:PHP_VERSION+";"+$Env:PATH
   - cd c:\projects\BehatParallelExtension
+  - php --version
   - php vendor/phpunit/phpunit/phpunit --fail-on-warning
   - php vendor/behat/behat/bin/behat  --strict --stop-on-failure
