@@ -3,14 +3,10 @@ clone_folder: c:\projects\BehatParallelExtension
 environment:
   PATH: c:\tools\php;C:\tools\composer;%PATH%
 install:
-  - sh: |
-      pwd
-      rm -rf c:\tools\php
-      if [[ -d c:\tools\php ]] ; then
-        appveyor-retry cinst --params '""/InstallDir:C:\tools\php""' --ignore-checksums -y php --version 7.4
-      fi
+  - ps: ''
 cache:
   - c:\tools\php
   - C:\tools\composer
 build_script:
-  - pwsh: ''
+  - ps: ls
+test: off
