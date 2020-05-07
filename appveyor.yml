@@ -1,0 +1,27 @@
+version: '{build}'
+clone_folder: c:\projects\BehatParallelExtension
+environment:
+  PATH: c:\tools\php;C:\tools\composer;%PATH%
+install:
+  - sh: |
+      if [[ -d c:\tools\php ]] ; then
+        appveyor-retry cinst --params '""/InstallDir:C:\tools\php""' --ignore-checksums -y php --version 7.4
+      fi
+  - ps: |
+
+      if (!(Test-Path c:\tools\php)) {
+        appveyor-retry cinst --params '""/InstallDir:C:\tools\php""' --ignore-checksums -y php --version 7.4
+        Get-ChildItem -Path c:\tools\php
+        cd c:\tools\php
+        copy php.ini-production php.ini
+
+        # download Composer
+        if (!(Test-Path C:\tools\composer)) {
+          New-Item -path c:\tools -name composer -itemtype directory
+        }
+      }
+cache:
+  - c:\tools\php
+  - C:\tools\composer
+build_script:
+  - pwsh: ''
