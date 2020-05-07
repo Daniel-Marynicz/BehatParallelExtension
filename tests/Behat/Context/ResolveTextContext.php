@@ -4,11 +4,12 @@ namespace DMarynicz\Tests\Behat\Context;
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeStepScope;
+use Behat\Gherkin\Node\ArgumentInterface;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\StepNode;
 use Behat\Gherkin\Node\TableNode;
-use ReflectionException;
 use ReflectionClass;
+use ReflectionException;
 
 abstract class ResolveTextContext implements Context
 {
@@ -16,20 +17,18 @@ abstract class ResolveTextContext implements Context
      * Replaces tokens in feature files
      *
      * @param string $text
+     *
      * @return string
      */
     abstract public function resolveText($text);
 
     /**
-     * @param BeforeStepScope $event
-     *
      * @throws ReflectionException
      *
      * @BeforeStep
      */
     public function resolveVarsContext(BeforeStepScope $event)
     {
-
         $step = $event->getStep();
         $args = $step->getArguments();
 
@@ -45,15 +44,16 @@ abstract class ResolveTextContext implements Context
                     break;
             }
         }
-        $this->setArguments($step, $newArguments) ;
+
+        $this->setArguments($step, $newArguments);
         $text = $this->resolveText($event->getStep()->getText());
         $this->setText($step, $text);
     }
 
     /**
-     * @param TableNode $tableNode
+     * @param TableNode<string> $tableNode
      *
-     * @return TableNode
+     * @return TableNode<string>
      */
     private function resolveTableNode(TableNode $tableNode)
     {
@@ -64,6 +64,7 @@ abstract class ResolveTextContext implements Context
             foreach ($lineValues as $lineValue) {
                 $newValues[] = $this->resolveText($lineValue);
             }
+
             $table[$lineNo] = $newValues;
         }
 
@@ -71,8 +72,6 @@ abstract class ResolveTextContext implements Context
     }
 
     /**
-     * @param PyStringNode $stringNode
-     *
      * @return PyStringNode
      */
     private function resolvePyStringNode(PyStringNode $stringNode)
@@ -83,12 +82,11 @@ abstract class ResolveTextContext implements Context
     }
 
     /**
-     * @param StepNode $stepNode
-     * @param array    $value
+     * @param ArgumentInterface[] $value
      *
      * @throws ReflectionException
      */
-    private function setArguments(StepNode $stepNode, array $value) : void
+    private function setArguments(StepNode $stepNode, array $value)
     {
         $reflection = new ReflectionClass($stepNode);
         $argProp    = $reflection->getProperty('arguments');
@@ -97,9 +95,6 @@ abstract class ResolveTextContext implements Context
     }
 
     /**
-     * @param StepNode $stepNode
-     * @param string   $value
-     *
      * @throws ReflectionException
      */
     private function setText(StepNode $stepNode, string $value)
