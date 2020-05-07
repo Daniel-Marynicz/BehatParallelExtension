@@ -3,7 +3,10 @@ clone_folder: c:\projects\BehatParallelExtension
 environment:
   PATH: c:\tools\php;C:\tools\composer;%PATH%
 install:
-  - ps: ''
+  - sh: |
+      ls
+      pwd
+
 cache:
   - c:\tools\php
   - C:\tools\composer
