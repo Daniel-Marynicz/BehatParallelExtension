@@ -9,7 +9,8 @@ environment:
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PHP_VERSION: 7.4.5
 install:
-  - $Env:PATH = "c:\tools\php\$Env:PHP_VERSION;$Env:PATH"
+  - $Env:PATH = "c:\tools\php\"+$Env:PHP_VERSION+":"+$Env:PATH
+  - echo $Env:PATH
   - ps: |
       #if (Test-Path "c:\tools\php") {
       #  Remove-Item -Path c:\tools\php -Recurse -Force
@@ -48,7 +49,7 @@ install:
       installComposer
 
   - cd c:\projects\BehatParallelExtension
-  - $Env:PATH = c:\tools\php\$Env:PHP_VERSION;$Env:PATH
+  - $Env:PATH = "c:\tools\php\"+$Env:PHP_VERSION+":"+$Env:PATH
   - appveyor-retry composer self-update
   - appveyor-retry composer install --no-progress --ansi
 cache:
