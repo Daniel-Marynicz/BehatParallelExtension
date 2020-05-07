@@ -11,7 +11,7 @@ environment:
 install:
   - ps: |
       if (Test-Path "c:\tools\php") {
-        Remove-Item --path c:\tools\php -recurse
+        Remove-Item -Path c:\tools\php -Recurse -Force
       }
 
       function installPhp($version)
