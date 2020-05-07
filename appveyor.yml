@@ -3,7 +3,7 @@ image:
 version: '{build}'
 clone_folder: c:\projects\BehatParallelExtension
 environment:
-  PATH: c:\tools\php;C:\tools\composer;%PATH%
+  PATH: C:\tools\composer;%PATH%
   matrix:
     -
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
@@ -47,6 +47,7 @@ install:
       installComposer
 
   - cd c:\projects\BehatParallelExtension
+  - $env:PATH = c:\tools\php\$Env:PHP_VERSION;$Env:PATH
   - appveyor-retry composer self-update
   - appveyor-retry composer install --no-progress --ansi
 cache:
