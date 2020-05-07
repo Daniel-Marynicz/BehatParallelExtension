@@ -61,6 +61,7 @@ cache:
   - '%LOCALAPPDATA%\Composer\files'
 platform:
   - x86
+build: off
 test_script:
   - ps: $Env:PATH = "c:\tools\php\"+$Env:PHP_VERSION+";"+$Env:PATH
   - cd c:\projects\BehatParallelExtension
