@@ -68,5 +68,5 @@ build_script:
 test_script:
   - ps: $Env:PATH = "c:\tools\php\"+$Env:PHP_VERSION+";"+$Env:PATH
   - cd c:\projects\BehatParallelExtension
-  - php ./vendor/bin/phpunit --fail-on-warning
-  - php ./vendor/bin/behat --strict --stop-on-failure
+  - php vendor/phpunit/phpunit/phpunit --fail-on-warning
+  - php vendor/behat/behat/bin/behat  --strict --stop-on-failure
