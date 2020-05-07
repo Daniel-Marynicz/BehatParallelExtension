@@ -20,7 +20,9 @@ install:
         if (Test-Path "$path") {
           return
         }
-        appveyor-retry cinst --params "'/InstallDir:${path}'"  -y php --version ${version}
+
+        #appveyor-retry cinst --params "'/InstallDir:${path}'"  -y php --version ${version}
+        appveyor-retry  choco install php --package-parameters="'/InstallDir:${path}'" --version ${version}
         Get-ChildItem -Path "${path}"
         cd ${path}
       }
