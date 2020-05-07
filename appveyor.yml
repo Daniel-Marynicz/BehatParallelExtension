@@ -30,6 +30,7 @@ install:
         Get-ChildItem -Path "${path}"
         cd ${path}
         copy php.ini-production php.ini
+        Add-Content php.ini "`n extension_dir=ext"
         Add-Content php.ini "`n extension=php_openssl.dll"
       }
 
