@@ -1,4 +1,4 @@
-name: PHP Composer
+name: PHP Tests
 
 on:
   push:
@@ -26,4 +26,4 @@ jobs:
     - name: Run PHPUnit
       run: ./vendor/bin/phpunit --fail-on-warning
     - name: Run Behat
-      run: /vendor/bin/behat --colors --strict --stop-on-failure
+      run: ./vendor/bin/behat --colors --strict --stop-on-failure
