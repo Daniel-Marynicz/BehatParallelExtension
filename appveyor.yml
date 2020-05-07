@@ -3,7 +3,7 @@ image:
 version: '{build}'
 clone_folder: c:\projects\BehatParallelExtension
 environment:
-  PATH: C:\tools\php\%PHP_VERSION%;C:\tools\composer;%PATH%
+  PATH: C:\tools\composer;%PATH%
   COMPOSER_NO_INTERACTION: 1
   matrix:
     -
@@ -32,6 +32,8 @@ install:
         copy php.ini-production php.ini
         Add-Content php.ini "`n extension_dir=ext"
         Add-Content php.ini "`n extension=php_openssl.dll"
+        Add-Content php.ini "`n extension=php_curl.dll"
+        Add-Content php.ini "`n extension=php_mbstring.dll"
       }
 
       function installComposer
@@ -49,8 +51,7 @@ install:
       setupPhpIni $Env:PHP_VERSION
       installComposer
 
-  - ps: $Env:PATH = "c:/tools/php/"+$Env:PHP_VERSION+";"+$Env:PATH
-  - ps: echo $Env:PATH
+  - ps: $Env:PATH = "c:\tools\php\"+$Env:PHP_VERSION+";"+$Env:PATH
   - cd c:\projects\BehatParallelExtension
   - appveyor-retry composer self-update
   - appveyor-retry composer install --no-progress --ansi
