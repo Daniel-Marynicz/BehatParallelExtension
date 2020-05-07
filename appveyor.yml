@@ -10,7 +10,10 @@ environment:
       PHP_VERSION: 7.4
 install:
   - ps: |
-      Remove-Item --path c:\tools\php -recurse
+      if (Test-Path "c:\tools\php") {
+        Remove-Item --path c:\tools\php -recurse
+      }
+
       function installPhp($version)
       {
         $path = "c:\tools\php\${version}"
