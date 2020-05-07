@@ -7,6 +7,7 @@ default:
                 - '%paths.base%/features'
             contexts:
                 - DMarynicz\Tests\Behat\Context\ParallelBehatContext
+                - DMarynicz\Tests\Behat\Context\ResolveDirectorySeparatorContext
     extensions:
         DMarynicz\BehatParallelExtension\Extension: ~
 

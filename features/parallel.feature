@@ -13,10 +13,10 @@ Feature: Parallel
     Given I run "behat --config tests/fixtures/fail/behat.yml.dist  -l 20"
     Then it should fail with:
     """
-    suite04/fail.feature:19
+    suite04<DIRECTORY_SEPARATOR>fail.feature:19
     """
     And it should fail with:
     """
-    suite01/successful.feature:22
+    suite01<DIRECTORY_SEPARATOR>successful.feature:22
     """
     And I should see progress bar

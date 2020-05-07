@@ -1,0 +1,70 @@
+image:
+  - Visual Studio 2019
+version: '{build}'
+clone_folder: c:\projects\BehatParallelExtension
+environment:
+  PATH: C:\tools\composer;%PATH%
+  COMPOSER_NO_INTERACTION: 1
+  matrix:
+    -
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PHP_VERSION: 7.4.5
+init:
+  - git config --global core.autocrlf input
+install:
+  - ps: |
+      function installPhp($version)
+      {
+        $path = "c:\tools\php\${version}"
+        if (Test-Path "$path") {
+          return
+        }
+        appveyor-retry  choco install php --package-parameters="'/InstallDir:${path}'" --no-progress --yes --version $version
+      }
+
+      function setupPhpIni($version)
+      {
+        $path = "c:\tools\php\${version}"
+        Get-ChildItem -Path "${path}"
+        cd ${path}
+        copy php.ini-production php.ini
+        Add-Content php.ini "`n extension_dir=ext"
+        Add-Content php.ini "`n extension=php_openssl.dll"
+        Add-Content php.ini "`n extension=php_curl.dll"
+        Add-Content php.ini "`n extension=php_mbstring.dll"
+      }
+
+      function installComposer
+      {
+        if (!(Test-Path C:\tools\composer)) {
+          New-Item -path c:\tools -name composer -itemtype directory
+        }
+        if (!(Test-Path c:\tools\composer\composer.phar)) {
+            appveyor-retry appveyor DownloadFile https://getcomposer.org/composer.phar -Filename C:\tools\composer\composer.phar
+            Set-Content -path 'C:\tools\composer\composer.bat' -Value ('@php C:\tools\composer\composer.phar %*')
+        }
+      }
+
+      installPhp $Env:PHP_VERSION
+      setupPhpIni $Env:PHP_VERSION
+      installComposer
+
+  - ps: $Env:PATH = "c:\tools\php\"+$Env:PHP_VERSION+";"+$Env:PATH
+  - cd c:\projects\BehatParallelExtension
+  - appveyor-retry composer self-update
+  - appveyor-retry composer install --no-progress --ansi
+cache:
+  - C:\ProgramData\chocolatey\bin -> appveyor.yml
+  - C:\ProgramData\chocolatey\lib -> appveyor.yml
+  - C:\tools\php -> appveyor.yml
+  - C:\tools\composer -> appveyor.yml
+  - '%LOCALAPPDATA%\Composer\files'
+platform:
+  - x86
+build: off
+test_script:
+  - ps: $Env:PATH = "c:\tools\php\"+$Env:PHP_VERSION+";"+$Env:PATH
+  - cd c:\projects\BehatParallelExtension
+  - php --version
+  - php vendor/phpunit/phpunit/phpunit --fail-on-warning
+  - php vendor/behat/behat/bin/behat  --strict --stop-on-failure
