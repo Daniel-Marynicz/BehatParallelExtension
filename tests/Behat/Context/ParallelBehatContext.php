@@ -69,6 +69,7 @@ class ParallelBehatContext implements Context
      */
     public function itShouldPassWith($success, PyStringNode $text)
     {
+
         $this->itShouldFail($success);
         $this->theOutputShouldContain($text);
     }
