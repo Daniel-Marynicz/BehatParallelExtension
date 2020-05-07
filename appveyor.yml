@@ -10,9 +10,9 @@ environment:
       PHP_VERSION: 7.4.5
 install:
   - ps: |
-      if (Test-Path "c:\tools\php") {
-        Remove-Item -Path c:\tools\php -Recurse -Force
-      }
+      #if (Test-Path "c:\tools\php") {
+      #  Remove-Item -Path c:\tools\php -Recurse -Force
+      #}
 
       function installPhp($version)
       {
@@ -47,7 +47,7 @@ install:
       installComposer
 
   - cd c:\projects\BehatParallelExtension
-  - $env:PATH = c:\tools\php\$Env:PHP_VERSION;$Env:PATH
+  - $Env:PATH = c:\tools\php\$Env:PHP_VERSION;$Env:PATH
   - appveyor-retry composer self-update
   - appveyor-retry composer install --no-progress --ansi
 cache:
