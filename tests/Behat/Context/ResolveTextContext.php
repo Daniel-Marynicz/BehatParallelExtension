@@ -95,9 +95,11 @@ abstract class ResolveTextContext implements Context
     }
 
     /**
+     * @param string $value
+     *
      * @throws ReflectionException
      */
-    private function setText(StepNode $stepNode, string $value)
+    private function setText(StepNode $stepNode, $value)
     {
         $reflection = new ReflectionClass($stepNode);
         $argProp    = $reflection->getProperty('text');
