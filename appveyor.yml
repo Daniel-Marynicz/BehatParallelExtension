@@ -26,8 +26,7 @@ install:
         Get-ChildItem -Path "${path}"
         cd ${path}
       }
-      Get-ChildItem env:
-      installPhp $PHP_VERSION
+      installPhp $Env:PHP_VERSION
 
 cache:
   - c:\tools\php
