@@ -106,7 +106,7 @@ class ParallelBehatContext implements Context
      */
     public function theOutputShouldContain(PyStringNode $text)
     {
-        Assert::assertContains(trim((string) $text), $this->getOutput());
+        Assert::assertContains((string) $text, $this->getOutput());
     }
 
     /**

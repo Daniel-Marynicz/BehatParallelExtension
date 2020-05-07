@@ -10,7 +10,7 @@ Feature: Parallel
     Then it should pass
     And I should see progress bar
   Scenario: Test behat tests with failed result
-    Given I run "behat --config tests/fixtures/fail/behat.yml.dist  -l 20 --no-colors"
+    Given I run "behat --config tests/fixtures/fail/behat.yml.dist  -l 20"
     Then it should fail with:
     """
     suite04<DIRECTORY_SEPARATOR>fail.feature:19
