@@ -9,20 +9,17 @@ environment:
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PHP_VERSION: 7.4
 install:
-  - sh: |
-      rm -rf C:\tools\php
-
-
-      function installPhp
+  - ps: |
+      Remove-Item --path c:\tools\php -recurse
+      function installPhp($version)
       {
-        local version=$1
-        local path="C:\tools\php\${version}"
-
-        if [[ ! -d "${path}" ]] ; then
-          appveyor-retry cinst --params '"/InstallDir:${path}"'  -y php --version 7.4
-          cd "${path}"
-          cp php.ini-production php.ini
-        fi
+        $path = "c:\tools\php\${version}"
+        if (Test-Path "$path") {
+          return
+        }
+        appveyor-retry cinst --params ""/InstallDir:${path}""  -y php --version ${version}
+        Get-ChildItem -Path "${path}"
+        cd ${path}
       }
       installPhp ${PHP_VERSION}
 
