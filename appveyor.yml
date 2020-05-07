@@ -52,8 +52,11 @@ install:
   - appveyor-retry composer self-update
   - appveyor-retry composer install --no-progress --ansi
 cache:
-  - c:\tools\php
-  - C:\tools\composer
+  - C:\ProgramData\chocolatey\bin -> appveyor.yml
+  - C:\ProgramData\chocolatey\lib -> appveyor.yml
+  - C:\tools\php -> appveyor.yml
+  - C:\tools\composer -> appveyor.yml
+  - '%LOCALAPPDATA%\Composer\files'
 platform:
   - x86
 build_script:
