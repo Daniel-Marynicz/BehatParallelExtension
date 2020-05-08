@@ -25,10 +25,17 @@ class WorkerPoll
     /** @var bool */
     private $started = false;
 
-    public function __construct(Queue $queue, EventDispatcherDecorator $eventDispatcher)
+    /** @var array<array<mixed>> */
+    private $environments;
+
+    /**
+     * @param array<array<mixed>> $environments
+     */
+    public function __construct(Queue $queue, EventDispatcherDecorator $eventDispatcher, $environments = [])
     {
         $this->queue           = $queue;
         $this->eventDispatcher = $eventDispatcher;
+        $this->environments    = $environments;
     }
 
     /**
@@ -49,8 +56,12 @@ class WorkerPoll
         }
 
         $this->started = true;
+
+        $this->setMaxWorkersToProperValue();
+
         for ($i = 0; $i< $this->maxWorkers; $i++) {
-            $worker = new Worker($this->queue, [], $this->eventDispatcher, $i);
+            $env    = $this->environments[$i];
+            $worker = new Worker($this->queue, $env, $this->eventDispatcher, $i);
             $worker->start();
             $this->workers[] = $worker;
         }
@@ -84,6 +95,14 @@ class WorkerPoll
     }
 
     /**
+     * @return int
+     */
+    public function getTotalWorkers()
+    {
+        return count($this->workers);
+    }
+
+    /**
      * @return bool
      */
     public function isStarted()
@@ -101,5 +120,15 @@ class WorkerPoll
     private function sleep()
     {
         usleep(1000);
+    }
+
+    private function setMaxWorkersToProperValue()
+    {
+        $envMaxWorkers = count($this->environments);
+        if ($envMaxWorkers <= 0 || $this->maxWorkers <= $envMaxWorkers) {
+            return;
+        }
+
+        $this->maxWorkers = $envMaxWorkers;
     }
 }
