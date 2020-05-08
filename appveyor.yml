@@ -64,14 +64,10 @@ install:
   - ps: $Env:PATH = "c:\tools\php\"+$Env:PHP_VERSION+";"+$Env:PATH
   - appveyor-retry composer self-update
   - ps: |
-      try {
-        composer global require "symfony/flex" --no-scripts --prefer-dist --no-progress --no-suggest --ansi
-      }
-      catch {
-        $error.clear()
-        "An error occurred."
-      }
-
+      echo $ErrorActionPreference
+      $ErrorActionPreference = "Continue"
+      composer global require "symfony/flex" --no-scripts --prefer-dist --no-progress --no-suggest --ansi
+  - echo $ErrorActionPreference
   - cd c:\projects\BehatParallelExtension
   - appveyor-retry composer install --no-progress --ansi
 cache:
