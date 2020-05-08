@@ -11,6 +11,7 @@ environment:
     -
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PHP_VERSION: 5.6.40
+      SKIP_SYMFONY_FLEX_INSTALL: 1
       A: 7.4.5
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PHP_VERSION: 7.3.17
@@ -65,12 +66,7 @@ install:
   - ps: $Env:PATH = "c:\tools\php\"+$Env:PHP_VERSION+";"+$Env:PATH
   - appveyor-retry composer self-update
   - cmd: |
-
-      composer global require "symfony/flex" --no-scripts --prefer-dist --no-progress --no-suggest --ansi
-
-
-
-
+      IF "%SKIP_SYMFONY_FLEX_INSTALL%"!="1" composer global require "symfony/flex" --no-scripts --prefer-dist --no-progress --no-suggest --ansi
   - cd c:\projects\BehatParallelExtension
   - appveyor-retry composer install --no-progress --ansi
 cache:
