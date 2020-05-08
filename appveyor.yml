@@ -68,6 +68,7 @@ install:
         composer global require "symfony/flex" --no-scripts --prefer-dist --no-progress --no-suggest --ansi
       }
       catch {
+        $error.clear()
         "An error occurred."
       }
 
