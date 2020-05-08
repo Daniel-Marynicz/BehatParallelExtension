@@ -10,7 +10,8 @@ environment:
   matrix:
     -
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      PHP_VERSION: 7.4.5
+      PHP_VERSION: 5.6.40
+      A: 7.4.5
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PHP_VERSION: 7.3.17
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
