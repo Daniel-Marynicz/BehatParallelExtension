@@ -8,6 +8,7 @@ default:
             contexts:
                 - DMarynicz\Tests\Behat\Context\ParallelBehatContext
                 - DMarynicz\Tests\Behat\Context\ResolveDirectorySeparatorContext
+                - DMarynicz\Tests\Behat\Context\EnvironmentContext
     extensions:
         DMarynicz\BehatParallelExtension\Extension: ~
 
