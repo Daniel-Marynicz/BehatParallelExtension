@@ -1,6 +1,7 @@
 image:
   - Visual Studio 2019
 version: '{build}'
+skip_branch_with_pr: true
 max_jobs: 12
 clone_folder: c:\projects\BehatParallelExtension
 matrix:
@@ -12,16 +13,22 @@ environment:
     -
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PHP_VERSION: 7.4.5
+      job_group: Tests
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PHP_VERSION: 7.3.17
+      job_group: Tests
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PHP_VERSION: 7.2.30
+      job_group: Tests
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PHP_VERSION: 7.1.33
+      job_group: Tests
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PHP_VERSION: 7.0.33
+      job_group: Tests
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PHP_VERSION: 5.6.40
+      job_group: Tests
 init:
   - git config --global core.autocrlf input
 install:
