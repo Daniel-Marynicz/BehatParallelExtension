@@ -4,6 +4,7 @@ namespace DMarynicz\Tests\Behat\Context;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
+use DMarynicz\BehatParallelExtension\Exception\Logic;
 use DMarynicz\Tests\Behat\Util\ReadWriteDataToFileWithLocking;
 use PHPUnit\Framework\Assert;
 
@@ -71,7 +72,10 @@ class EnvironmentContext implements Context
         sort($array);
 
         $actualCount = count($array);
-        Assert::assertIsInt($actualCount);
+        if (! is_int($actualCount)) {
+            throw new Logic('Expected int');
+        }
+
         Assert::assertCount($actualCount, $tableNode->getRows());
 
         foreach ($tableNode->getRows() as $index => $row) {
