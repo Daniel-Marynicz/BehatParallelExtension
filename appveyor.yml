@@ -2,6 +2,8 @@ image:
   - Visual Studio 2019
 version: '{build}'
 clone_folder: c:\projects\BehatParallelExtension
+matrix:
+  fast_finish: true
 environment:
   PATH: C:\tools\composer;%PATH%
   COMPOSER_NO_INTERACTION: 1
@@ -9,6 +11,16 @@ environment:
     -
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PHP_VERSION: 7.4.5
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PHP_VERSION: 7.3.17
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PHP_VERSION: 7.2.30
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PHP_VERSION: 7.1.33
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PHP_VERSION: 7.0.33
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PHP_VERSION: 5.6.40
 init:
   - git config --global core.autocrlf input
 install:
@@ -50,8 +62,9 @@ install:
       installComposer
 
   - ps: $Env:PATH = "c:\tools\php\"+$Env:PHP_VERSION+";"+$Env:PATH
-  - cd c:\projects\BehatParallelExtension
   - appveyor-retry composer self-update
+  - cmd: composer global require "symfony/flex" --no-scripts --prefer-dist --no-progress --no-suggest --ansi || exit 0
+  - cd c:\projects\BehatParallelExtension
   - appveyor-retry composer install --no-progress --ansi
 cache:
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
