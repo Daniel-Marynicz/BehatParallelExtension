@@ -1,6 +1,7 @@
 image:
   - Visual Studio 2019
 version: '{build}'
+max_jobs: 12
 clone_folder: c:\projects\BehatParallelExtension
 matrix:
   fast_finish: true
