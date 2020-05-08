@@ -62,6 +62,8 @@ install:
   - ps: $Env:PATH = "c:\tools\php\"+$Env:PHP_VERSION+";"+$Env:PATH
   - cd c:\projects\BehatParallelExtension
   - appveyor-retry composer self-update
+  - appveyor-retry composer global require "symfony/flex" --no-update --prefer-dist --no-progress --no-suggest --ansi
+  - appveyor-retry composer global update "symfony/flex"
   - appveyor-retry composer install --no-progress --ansi
 cache:
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
