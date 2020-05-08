@@ -52,6 +52,12 @@ class Extension implements ExtensionInterface
         $locator = new FileLocator(__DIR__ . '/Resources/config');
         $loader  = new YamlFileLoader($container, $locator);
         $loader->load('services.yaml');
+
+        $pollDefinition = $container->findDefinition('parallel_extension.worker_poll');
+        $pollDefinition->setArgument(
+            '$environments',
+            $config['environments']
+        );
     }
 
     /**

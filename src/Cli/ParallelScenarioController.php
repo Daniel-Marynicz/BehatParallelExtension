@@ -103,10 +103,6 @@ class ParallelScenarioController implements Controller
             return $this->decoratedExerciseController->execute($input, $output);
         }
 
-        $poolSize = $this->getMaxPoolSize($input);
-        $output->writeln(sprintf('Starting parallel scenario tests with %d workers', $poolSize));
-        $this->poll->setMaxWorkers($poolSize);
-
         $this->output = $output;
         $this->input  = $input;
 
@@ -128,9 +124,22 @@ class ParallelScenarioController implements Controller
         $this->progressBar->setMessage('<info>Starting</info>', 'feature');
         $this->progressBar->setMessage('', 'scenario');
         $this->progressBar->setFormat('custom');
-        $this->progressBar->start();
 
+        $poolSize = $this->getMaxPoolSize($input);
+        $output->writeln(sprintf('Starting parallel scenario tests with %d workers', $poolSize));
+        $this->poll->setMaxWorkers($poolSize);
         $this->poll->start();
+        $maxSize = $this->getMaxSizeFromParallelOption($input);
+        if ($maxSize > 0 && $this->poll->getTotalWorkers() !== $maxSize) {
+            $output->writeln(
+                sprintf(
+                    '<comment>Started poll with only %d workers</comment>',
+                    $this->poll->getTotalWorkers()
+                )
+            );
+        }
+
+        $this->progressBar->start();
         $this->poll->wait();
         $output->writeln('');
 
@@ -204,11 +213,19 @@ class ParallelScenarioController implements Controller
      */
     private function getMaxPoolSize(InputInterface $input)
     {
-        $maxSize = is_array($input->getOption('parallel')) ?
-            (int) $input->getOption('parallel')[0] :
-            (int) $input->getOption('parallel');
+        $maxSize = $this->getMaxSizeFromParallelOption($input);
         $maxSize = $maxSize > 0 ? $maxSize : $this->getNumberOfProcessingUnitsAvailable();
 
         return $maxSize;
+    }
+
+    /**
+     * @return int
+     */
+    private function getMaxSizeFromParallelOption(InputInterface $input)
+    {
+        return is_array($input->getOption('parallel')) ?
+            (int) $input->getOption('parallel')[0] :
+            (int) $input->getOption('parallel');
     }
 }

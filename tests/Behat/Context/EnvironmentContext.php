@@ -58,24 +58,27 @@ class EnvironmentContext implements Context
      * @param string            $filename
      * @param TableNode<string> $tableNode
      *
-     * @When the ordered data of the :filename json file should match:
+     * @When the ordered unique data of the :filename json file should match:
      */
-    public function theOrderedDataOfTheFileShouldMatch($filename, TableNode $tableNode)
+    public function theOrderedUniqueDataOfTheFileShouldMatch($filename, TableNode $tableNode)
     {
         $path   = $this->getRealPath($filename);
         $handle = new ReadWriteDataToFileWithLocking($path);
         $data   = $handle->read();
         $array  = json_decode($data);
 
-        $actualCount = count($array);
+        $array = array_unique($array);
+        sort($array);
 
+        $actualCount = count($array);
         Assert::assertIsInt($actualCount);
         Assert::assertCount($actualCount, $tableNode->getRows());
 
-        sort($array);
-        foreach ($tableNode as $index => $expectedText) {
+        foreach ($tableNode->getRows() as $index => $row) {
             Assert::assertArrayHasKey($index, $array);
-            Assert::assertEquals($expectedText, $array[$index]);
+            $expectedText = implode($row);
+            $actual       = $array[$index];
+            Assert::assertEquals($expectedText, $actual);
         }
     }
 
