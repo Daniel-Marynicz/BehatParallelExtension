@@ -66,7 +66,7 @@ install:
   - ps: $Env:PATH = "c:\tools\php\"+$Env:PHP_VERSION+";"+$Env:PATH
   - appveyor-retry composer self-update
   - cmd: |
-      IF "%SKIP_SYMFONY_FLEX_INSTALL%"!="1" composer global require "symfony/flex" --no-scripts --prefer-dist --no-progress --no-suggest --ansi
+      IF NOT DEFINED SKIP_SYMFONY_FLEX_INSTALL (composer global require "symfony/flex" --no-scripts --prefer-dist --no-progress --no-suggest --ansi)
   - cd c:\projects\BehatParallelExtension
   - appveyor-retry composer install --no-progress --ansi
 cache:
