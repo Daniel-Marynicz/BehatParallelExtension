@@ -65,9 +65,11 @@ install:
   - appveyor-retry composer self-update
   - ps: |
       try {
-        composer global require "symfony/flex" --prefer-dist --no-progress --no-suggest --ansi
+        composer global require "symfony/flex" --no-scripts --prefer-dist --no-progress --no-suggest --ansi
       }
-      catch { }
+      catch {
+        "An error occurred."
+      }
 
   - cd c:\projects\BehatParallelExtension
   - appveyor-retry composer install --no-progress --ansi
