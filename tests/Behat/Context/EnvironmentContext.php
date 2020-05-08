@@ -47,10 +47,19 @@ class EnvironmentContext implements Context
         $data = $handle->read();
 
         $array = json_decode($data);
-        Assert::assertIsArray($array);
+        if (! is_array($array)) {
+            throw new Logic('Expected array');
+        }
+
         $array[] = getenv($name);
         $data    = json_encode($array);
-        Assert::assertIsString($data);
+        if (! is_array($array)) {
+            throw new Logic('Expected array');
+        }
+
+        if (! is_string($data)) {
+            throw new Logic('Expected string');
+        }
 
         $handle->truncateAndWrite($data);
     }
