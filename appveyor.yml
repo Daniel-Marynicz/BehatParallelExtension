@@ -19,6 +19,7 @@ environment:
       PHP_VERSION: 7.0.33
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PHP_VERSION: 5.6.40
+      SKIP_INSTALL_FLEX: 1
 init:
   - git config --global core.autocrlf input
 install:
@@ -62,8 +63,11 @@ install:
   - ps: $Env:PATH = "c:\tools\php\"+$Env:PHP_VERSION+";"+$Env:PATH
   - cd c:\projects\BehatParallelExtension
   - appveyor-retry composer self-update
-  - appveyor-retry composer global require "symfony/flex" --no-update --prefer-dist --no-progress --no-suggest --ansi
-  - appveyor-retry composer global update "symfony/flex"
+  - ps: |
+      if (!$Env:SKIP_INSTALL_FLEX) {
+        appveyor-retry composer global require "symfony/flex" --no-update --prefer-dist --no-progress --no-suggest --ansi
+        appveyor-retry composer global update "symfony/flex"
+      }
   - appveyor-retry composer install --no-progress --ansi
 cache:
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
