@@ -3,22 +3,22 @@
 namespace DMarynicz\BehatParallelExtension\Service\Finder;
 
 use Behat\Testwork\Specification\GroupedSpecificationIterator;
-use Behat\Testwork\Specification\SpecificationFinder;
+use Behat\Testwork\Specification\SpecificationFinder as TestworkSpecificationFinder;
 use Behat\Testwork\Specification\SpecificationIterator;
 use Behat\Testwork\Suite\Suite;
 use Behat\Testwork\Suite\SuiteRepository;
 
-abstract class SpecificationsFinder
+class SpecificationsFinder
 {
     /** @var SuiteRepository */
     private $suiteRepository;
 
-    /** @var SpecificationFinder */
+    /** @var TestworkSpecificationFinder */
     private $specificationFinder;
 
     public function __construct(
         SuiteRepository $suiteRepository,
-        SpecificationFinder $specificationFinder
+        TestworkSpecificationFinder $specificationFinder
     ) {
         $this->suiteRepository     = $suiteRepository;
         $this->specificationFinder = $specificationFinder;

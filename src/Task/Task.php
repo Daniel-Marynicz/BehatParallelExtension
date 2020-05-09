@@ -24,15 +24,16 @@ class Task
     private $command;
 
     /**
-     * @param string $path
+     * @param string   $path
+     * @param string[] $command
      */
-    public function __construct(Suite $suite, FeatureNode $feature, $path, Scenario $scenario = null)
+    public function __construct(Suite $suite, FeatureNode $feature, $path, $command = [], Scenario $scenario = null)
     {
         $this->suite    = $suite;
         $this->feature  = $feature;
         $this->path     = $path;
+        $this->command  = $command;
         $this->scenario = $scenario;
-        $this->path     = $path;
     }
 
     /**
@@ -73,17 +74,5 @@ class Task
     public function getCommand()
     {
         return $this->command;
-    }
-
-    /**
-     * @param string[] $command
-     *
-     * @return Task
-     */
-    public function setCommand($command)
-    {
-        $this->command = $command;
-
-        return $this;
     }
 }

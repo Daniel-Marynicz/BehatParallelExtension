@@ -48,6 +48,14 @@ class ArgumentsBuilder
                 $argv[] = '--colors';
             }
 
+            if ($input->getOption('no-interaction')  === false) {
+                $argv[] = '--no-interaction';
+            }
+
+            if ($input->getOption('fail-on-undefined-step')  === false) {
+                $argv[] = '--fail-on-undefined-step';
+            }
+
             switch (gettype($value)) {
                 case 'boolean':
                     if ($value) {
