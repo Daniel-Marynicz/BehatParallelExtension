@@ -2,8 +2,8 @@
 
 namespace DMarynicz\BehatParallelExtension\Worker;
 
-use DMarynicz\BehatParallelExtension\Exception\Runtime;
 use DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator;
+use DMarynicz\BehatParallelExtension\Exception\Runtime;
 use DMarynicz\BehatParallelExtension\Task\Queue;
 
 class WorkerPoll
@@ -16,7 +16,7 @@ class WorkerPoll
     /** @var Queue */
     private $queue;
 
-    /** @var \DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator */
+    /** @var EventDispatcherDecorator */
     private $eventDispatcher;
 
     /** @var int */

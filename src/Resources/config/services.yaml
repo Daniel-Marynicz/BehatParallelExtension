@@ -1,6 +1,6 @@
 
 services:
-  DMarynicz\BehatParallelExtension\Service\EventDispatcherDecorator:
+  DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator:
     arguments:
       #EventDispatcherExtension::DISPATCHER_ID
       $eventDispatcher: '@event_dispatcher'
