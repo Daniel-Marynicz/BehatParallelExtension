@@ -26,7 +26,7 @@ class ParallelScenarioController implements Controller
 {
     const SERVICE_ID = 'cli.controller.parallel_extension.parallel_scenario_exercise';
 
-    /** @var ExerciseController */
+    /** @var Controller|ExerciseController */
     private $decoratedExerciseController;
 
     /** @var TaskFactory */
@@ -54,7 +54,7 @@ class ParallelScenarioController implements Controller
     private $input;
 
     public function __construct(
-        ExerciseController $decoratedExerciseController,
+        Controller $decoratedExerciseController,
         TaskFactory $taskFactory,
         WorkerPoll $poll,
         Queue $queue,

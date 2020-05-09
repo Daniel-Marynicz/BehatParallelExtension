@@ -23,10 +23,10 @@ class RerunController implements Controller
     /** @var array<string, array<string>> */
     private $lines = [];
 
-    /** @var BehatRerunController  */
+    /** @var Controller|BehatRerunController  */
     private $decoratedController;
 
-    public function __construct(BehatRerunController $decoratedController, EventDispatcherDecorator $eventDispatcher)
+    public function __construct(Controller $decoratedController, EventDispatcherDecorator $eventDispatcher)
     {
         $this->decoratedController = $decoratedController;
         $this->eventDispatcher     = $eventDispatcher;
@@ -88,15 +88,30 @@ class RerunController implements Controller
     public function writeCache()
     {
         if (! $this->lines) {
-            $this->decoratedController->writeCache();
+            $this->writeCacheByDecoratedController();
 
             return;
         }
 
-        $ref      = new ReflectionClass($this->decoratedController);
+        $ref = new ReflectionClass($this->decoratedController);
+        if (! $ref->hasProperty('lines')) {
+            $this->writeCacheByDecoratedController();
+
+            return;
+        }
+
         $property = $ref->getProperty('lines');
         $property->setAccessible(true);
         $property->setValue($this->decoratedController, $this->lines);
+
+        $this->writeCacheByDecoratedController();
+    }
+
+    private function writeCacheByDecoratedController()
+    {
+        if (! method_exists($this->decoratedController, 'writeCache')) {
+            return;
+        }
 
         $this->decoratedController->writeCache();
     }

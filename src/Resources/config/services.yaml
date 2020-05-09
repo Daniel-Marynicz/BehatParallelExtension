@@ -35,3 +35,11 @@ services:
       #CliExtension::CONTROLLER_TAG . '.rerun'
     decorates: 'cli.controller.rerun'
 
+
+  DMarynicz\BehatParallelExtension\Cli\SnippetsController:
+    autowire: true
+    arguments:
+      $decoratedController: '@DMarynicz\BehatParallelExtension\Cli\SnippetsController.inner'
+      $registry: '@snippet.registry'
+    decorates: 'cli.controller.exercise'
+
