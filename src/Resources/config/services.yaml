@@ -1,11 +1,16 @@
 
 services:
+
   DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator:
     arguments:
       #EventDispatcherExtension::DISPATCHER_ID
       $eventDispatcher: '@event_dispatcher'
 
-  DMarynicz\BehatParallelExtension\Task\ArgumentsBuilder: ~
+
+  parallel_extension.php_executable_finder:
+    class: Symfony\Component\Process\PhpExecutableFinder
+  DMarynicz\BehatParallelExtension\Task\ArgumentsBuilder:
+    $phpFinder: '@parallel_extension.php_executable_finder'
 
   DMarynicz\BehatParallelExtension\Service\Finder\SpecificationsFinder:
     arguments:

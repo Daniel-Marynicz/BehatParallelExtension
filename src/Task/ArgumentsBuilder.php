@@ -3,15 +3,19 @@
 namespace DMarynicz\BehatParallelExtension\Task;
 
 use DMarynicz\BehatParallelExtension\Exception\Runtime;
-use ReflectionClass;
 use ReflectionException;
-use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Process\PhpExecutableFinder;
 
-class ArgumentsBuilder
+final class ArgumentsBuilder
 {
-    const SERVICE_ID = 'parallel_extension.task.arguments_builder';
+    /** @var PhpExecutableFinder */
+    private $phpFinder;
+
+    public function __construct(PhpExecutableFinder $phpFinder)
+    {
+        $this->phpFinder = $phpFinder;
+    }
 
     /**
      * @param string $path
@@ -22,99 +26,130 @@ class ArgumentsBuilder
      */
     public function buildArguments(InputInterface $input, $path)
     {
-        $definition = $this->getInputDefinition($input);
-        $phpFinder  = new PhpExecutableFinder();
-        $php        = $phpFinder->find();
-        if ($php === false) {
-            throw new Runtime('Unable to find the PHP executable.');
+        $arguments = $this->buildFirstArguments();
+
+        $arguments = array_merge($arguments, $this->buildOptionArguments($input));
+        $arguments = array_merge($arguments, $this->buildRemainingArguments($input));
+
+        $arguments[] = $path;
+
+        return $arguments;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function buildFirstArguments()
+    {
+        return [$this->getPHPBin(), $this->getBehatBin()];
+    }
+
+    /**
+     * @return string[]
+     */
+    private function buildOptionArguments(InputInterface $input)
+    {
+        $arguments = [];
+
+        if ($input->getOption('no-interaction')  === false) {
+            $arguments[] = '--no-interaction';
         }
 
-        if (! defined('BEHAT_BIN_PATH')) {
-            throw new Runtime('constant BEHAT_BIN_PATH is not defined.');
+        if ($input->getOption('fail-on-undefined-step')  === false) {
+            $arguments[] = '--fail-on-undefined-step';
         }
-
-        $argv = [$php, BEHAT_BIN_PATH];
 
         foreach ($input->getOptions() as $name => $value) {
-            if ($value === $definition->getOption($name)->getDefault()) {
+            if (in_array($name, ['parallel', 'parallel-feature'])) {
                 continue;
             }
 
-            if (in_array($name, ['parallel', 'parallel-feature', 'colors'])) {
-                continue;
-            }
-
-            if ($input->getOption('no-colors')  === false) {
-                $argv[] = '--colors';
-            }
-
-            if ($input->getOption('no-interaction')  === false) {
-                $argv[] = '--no-interaction';
-            }
-
-            if ($input->getOption('fail-on-undefined-step')  === false) {
-                $argv[] = '--fail-on-undefined-step';
-            }
-
-            switch (gettype($value)) {
-                case 'boolean':
-                    if ($value) {
-                        $argv[] = '--' . $name;
-                    }
-
-                    break;
-                case 'integer':
-                case 'double':
-                case 'string':
-                    $argv[] = '--' . $name;
-                    $argv[] = $value;
-                    break;
-                case 'array':
-                    foreach ($value as $valueContent) {
-                        $argv[] = '--' . $name;
-                        if (! $valueContent) {
-                            continue;
-                        }
-
-                        $argv[] = $valueContent;
-                    }
-
-                    break;
-            }
+            $arguments = array_merge($arguments, $this->getArgumentsFromInputValue($name, $value));
         }
 
-        foreach ($input->getArguments() as $name => $value) {
-            if ($value === $definition->getArgument($name)->getDefault()) {
-                continue;
-            }
+        return $arguments;
+    }
 
+    /**
+     * @return string[]
+     *
+     * @throws ReflectionException
+     */
+    private function buildRemainingArguments(InputInterface $input)
+    {
+        $arguments = [];
+        foreach ($input->getArguments() as $name => $value) {
             if ($name === 'paths') {
                 continue;
             }
 
-            $argv[] = $value;
+            $arguments[] = $value;
         }
 
-        $argv[] = $path;
-
-        return $argv;
+        return $arguments;
     }
 
     /**
-     * @return InputDefinition
+     * @param string $name
+     * @param mixed  $value
      *
-     * @throws ReflectionException
+     * @return string[]
      */
-    private function getInputDefinition(InputInterface $input)
+    private function getArgumentsFromInputValue($name, $value)
     {
-        $ref = new ReflectionClass($input);
-        if (! $ref->hasProperty('definition')) {
-            throw new Runtime('Input must have definition property');
+        $arguments = [];
+        switch (gettype($value)) {
+            case 'boolean':
+                if ($value) {
+                    $arguments[] = '--' . $name;
+                }
+
+                break;
+            case 'integer':
+            case 'double':
+            case 'string':
+                $arguments[] = '--' . $name;
+                $arguments[] = $value;
+                break;
+            case 'array':
+                foreach ($value as $valueContent) {
+                    $arguments[] = '--' . $name;
+                    if (! $valueContent) {
+                        continue;
+                    }
+
+                    $arguments[] = $valueContent;
+                }
+
+                break;
         }
 
-        $defProp = $ref->getProperty('definition');
-        $defProp->setAccessible(true);
+        return $arguments;
+    }
 
-        return $defProp->getValue($input);
+    /**
+     * @return string
+     */
+    private function getBehatBin()
+    {
+        if (! defined('BEHAT_BIN_PATH')) {
+            throw new Runtime('constant BEHAT_BIN_PATH is not defined.');
+        }
+
+        return BEHAT_BIN_PATH;
+    }
+
+    /**
+     * @return string
+     */
+    private function getPHPBin()
+    {
+        $php = $this->phpFinder->find();
+
+        if (! is_string($php)) {
+            throw new Runtime('Unable to find the PHP executable.');
+        }
+
+        return $php;
     }
 }
