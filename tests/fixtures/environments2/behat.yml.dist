@@ -1,0 +1,26 @@
+default:
+    translation:
+        locale: en
+    suites:
+        suite01:
+            paths:
+                - '%paths.base%/suite01'
+            contexts:
+                - DMarynicz\Tests\Behat\Context\EnvironmentContext
+        suite02:
+            paths:
+                - '%paths.base%/suite02'
+            contexts:
+                - DMarynicz\Tests\Behat\Context\EnvironmentContext
+    extensions:
+        DMarynicz\BehatParallelExtension\Extension:
+            environments:
+                -
+                    WORKER_ID: 0
+                -
+                    WORKER_ID: 1
+                -
+                    WORKER_ID: 2
+                -
+                    WORKER_ID: 3
+

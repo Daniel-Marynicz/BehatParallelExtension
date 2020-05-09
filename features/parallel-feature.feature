@@ -5,10 +5,6 @@ Feature: Parallel-Feature
     Given I run "behat --config tests/fixtures/successful/behat.yml.dist --parallel-feature 20"
     Then it should pass
     And I should see progress bar
-  Scenario: Test behat tests with successful result and --parallel-feature option
-    Given I run "behat --config tests/fixtures/successful/behat.yml.dist --parallel-feature 20"
-    Then it should pass
-    And I should see progress bar
   Scenario: Test behat tests with failed result
     Given I run "behat --config tests/fixtures/fail/behat.yml.dist  --parallel-feature 20"
     Then it should fail with:
