@@ -2,14 +2,14 @@
 
 namespace DMarynicz\Tests\Task;
 
-use DMarynicz\BehatParallelExtension\Task\ArgumentsBuilder;
+use DMarynicz\BehatParallelExtension\Task\TaskArgumentsBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Process\PhpExecutableFinder;
 
-class ArgumentsBuilderTest extends TestCase
+class TaskArgumentsBuilderTest extends TestCase
 {
     protected function setUp()
     {
@@ -36,7 +36,7 @@ class ArgumentsBuilderTest extends TestCase
         $input  = $this->createInputInterfaceMock($options, $arguments);
         $finder = $this->createPhpExecutableFinder($phpPath);
 
-        $builder = new ArgumentsBuilder($finder);
+        $builder = new TaskArgumentsBuilder($finder);
         $actual  = $builder->buildArguments($input, $path);
 
         $this->assertEquals($expected, $actual);

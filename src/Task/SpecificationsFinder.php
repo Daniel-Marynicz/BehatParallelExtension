@@ -1,6 +1,6 @@
 <?php
 
-namespace DMarynicz\BehatParallelExtension\Service\Finder;
+namespace DMarynicz\BehatParallelExtension\Task;
 
 use Behat\Testwork\Specification\GroupedSpecificationIterator;
 use Behat\Testwork\Specification\SpecificationFinder as TestworkSpecificationFinder;
@@ -8,7 +8,7 @@ use Behat\Testwork\Specification\SpecificationIterator;
 use Behat\Testwork\Suite\Suite;
 use Behat\Testwork\Suite\SuiteRepository;
 
-class SpecificationsFinder
+class SpecificationsFinder implements TestworkSpecificationsFinder
 {
     /** @var SuiteRepository */
     private $suiteRepository;
@@ -43,7 +43,7 @@ class SpecificationsFinder
      *
      * @return SpecificationIterator[]
      */
-    public function findSpecifications($path)
+    private function findSpecifications($path)
     {
         return $this->findSuitesSpecifications($this->getAvailableSuites(), $path);
     }
@@ -56,7 +56,7 @@ class SpecificationsFinder
      *
      * @return SpecificationIterator[]
      */
-    protected function findSuitesSpecifications($suites, $locator)
+    private function findSuitesSpecifications($suites, $locator)
     {
         return $this->specificationFinder->findSuitesSpecifications($suites, $locator);
     }
@@ -66,7 +66,7 @@ class SpecificationsFinder
      *
      * @return Suite[]
      */
-    protected function getAvailableSuites()
+    private function getAvailableSuites()
     {
         return $this->suiteRepository->getSuites();
     }

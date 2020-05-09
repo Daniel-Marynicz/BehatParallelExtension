@@ -2,19 +2,18 @@
 
 namespace DMarynicz\BehatParallelExtension\Task;
 
-use DMarynicz\BehatParallelExtension\Service\Finder\SpecificationsFinder;
 use ReflectionException;
 use Symfony\Component\Console\Input\InputInterface;
 
 final class FeatureTaskFactory implements TaskFactory
 {
-    /** @var SpecificationsFinder */
+    /** @var TestworkSpecificationsFinder */
     private $finder;
 
     /** @var ArgumentsBuilder */
     private $argumentsBuilder;
 
-    public function __construct(SpecificationsFinder $finder, ArgumentsBuilder $argumentsBuilder)
+    public function __construct(TestworkSpecificationsFinder $finder, ArgumentsBuilder $argumentsBuilder)
     {
         $this->finder           = $finder;
         $this->argumentsBuilder = $argumentsBuilder;

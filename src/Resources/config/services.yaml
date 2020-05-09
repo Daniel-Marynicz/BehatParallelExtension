@@ -9,13 +9,17 @@ services:
 
   parallel_extension.php_executable_finder:
     class: Symfony\Component\Process\PhpExecutableFinder
-  DMarynicz\BehatParallelExtension\Task\ArgumentsBuilder:
+  DMarynicz\BehatParallelExtension\Task\TaskArgumentsBuilder:
     $phpFinder: '@parallel_extension.php_executable_finder'
 
-  DMarynicz\BehatParallelExtension\Service\Finder\SpecificationsFinder:
+  DMarynicz\BehatParallelExtension\Task\ArgumentsBuilder: '@DMarynicz\BehatParallelExtension\Task\TaskArgumentsBuilder'
+
+  DMarynicz\BehatParallelExtension\Task\SpecificationsFinder:
     arguments:
       $suiteRepository: '@suite.registry'
       $specificationFinder: '@specifications.finder'
+
+  DMarynicz\BehatParallelExtension\Task\TestworkSpecificationsFinder: '@DMarynicz\BehatParallelExtension\Task\SpecificationsFinder'
 
   DMarynicz\BehatParallelExtension\Task\ScenarioTaskFactory:
     autowire: true
