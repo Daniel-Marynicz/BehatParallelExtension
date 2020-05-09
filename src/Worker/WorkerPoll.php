@@ -60,7 +60,7 @@ class WorkerPoll
         $this->setMaxWorkersToProperValue();
 
         for ($i = 0; $i< $this->maxWorkers; $i++) {
-            $env    = $this->environments[$i];
+            $env    = isset($this->environments[$i]) ? $this->environments[$i] : [];
             $worker = new Worker($this->queue, $env, $this->eventDispatcher, $i);
             $worker->start();
             $this->workers[] = $worker;

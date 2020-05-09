@@ -9,11 +9,10 @@ use DMarynicz\BehatParallelExtension\Event\AfterTaskTested;
 use DMarynicz\BehatParallelExtension\Event\BeforeTaskTested;
 use DMarynicz\BehatParallelExtension\Event\ParallelTestCompleted;
 use DMarynicz\BehatParallelExtension\Exception\UnexpectedValue;
-use DMarynicz\BehatParallelExtension\Finder\ScenarioSpecificationsFinder;
 use DMarynicz\BehatParallelExtension\Service\EventDispatcherDecorator;
-use DMarynicz\BehatParallelExtension\Task\ArgumentsBuilder;
 use DMarynicz\BehatParallelExtension\Task\Queue;
 use DMarynicz\BehatParallelExtension\Task\Task;
+use DMarynicz\BehatParallelExtension\Task\TaskFactory;
 use DMarynicz\BehatParallelExtension\Worker\WorkerPoll;
 use ReflectionException;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
@@ -30,11 +29,8 @@ class ParallelScenarioController implements Controller
     /** @var ExerciseController */
     private $decoratedExerciseController;
 
-    /** @var ScenarioSpecificationsFinder */
-    private $specificationFinder;
-
-    /** @var ArgumentsBuilder */
-    private $argumentsBuilder;
+    /** @var TaskFactory */
+    private $taskFactory;
 
     /** @var Queue */
     private $queue;
@@ -59,15 +55,13 @@ class ParallelScenarioController implements Controller
 
     public function __construct(
         ExerciseController $decoratedExerciseController,
-        ScenarioSpecificationsFinder $specificationsFinder,
-        ArgumentsBuilder $argumentsBuilder,
+        TaskFactory $taskFactory,
         WorkerPoll $poll,
         Queue $queue,
         EventDispatcherDecorator $eventDispatcher
     ) {
         $this->decoratedExerciseController = $decoratedExerciseController;
-        $this->specificationFinder         = $specificationsFinder;
-        $this->argumentsBuilder            = $argumentsBuilder;
+        $this->taskFactory                 = $taskFactory;
         $this->queue                       = $queue;
         $this->poll                        = $poll;
         $this->eventDispatcher             = $eventDispatcher;
@@ -109,9 +103,8 @@ class ParallelScenarioController implements Controller
         $this->eventDispatcher->addListener(BeforeTaskTested::BEFORE, [$this, 'beforeTaskTested']);
         $this->eventDispatcher->addListener(AfterTaskTested::AFTER, [$this, 'afterTaskTested']);
 
-        $tasks = $this->findScenarios($input);
+        $tasks = $this->createTasks($input);
         foreach ($tasks as $task) {
-            $task->setCommand($this->argumentsBuilder->buildArguments($input, $task->getPath()));
             $this->queue->enqueue($task);
         }
 
@@ -184,14 +177,14 @@ class ParallelScenarioController implements Controller
     /**
      * @return Task[]
      */
-    private function findScenarios(InputInterface $input)
+    private function createTasks(InputInterface $input)
     {
         $path = $input->hasArgument('path') ? $input->getArgument('path') : null;
         if (! is_string($path) && $path !== null) {
             throw new UnexpectedValue('Expected string or null');
         }
 
-        return $this->specificationFinder->findScenarios($path);
+        return $this->taskFactory->createTasks($input, $path);
     }
 
     /**

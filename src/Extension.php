@@ -6,6 +6,7 @@ use Behat\Testwork\ServiceContainer\Extension as ExtensionInterface;
 use Behat\Testwork\ServiceContainer\ExtensionManager;
 use DMarynicz\BehatParallelExtension\Event\WorkerCreated;
 use DMarynicz\BehatParallelExtension\Exception\UnexpectedValue;
+use DMarynicz\BehatParallelExtension\Worker\WorkerPoll;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -53,7 +54,7 @@ class Extension implements ExtensionInterface
         $loader  = new YamlFileLoader($container, $locator);
         $loader->load('services.yaml');
 
-        $pollDefinition = $container->findDefinition('parallel_extension.worker_poll');
+        $pollDefinition = $container->findDefinition(WorkerPoll::class);
         $pollDefinition->setArgument(
             '$environments',
             $config['environments']

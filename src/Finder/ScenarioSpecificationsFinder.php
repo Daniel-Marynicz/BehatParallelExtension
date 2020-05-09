@@ -25,6 +25,7 @@ class ScenarioSpecificationsFinder extends SpecificationsFinder
                         $suite->getSuite(),
                         $feature,
                         sprintf('%s:%s', $feature->getFile(), $scenario->getLine()),
+                        [],
                         $scenario
                     );
                 }
