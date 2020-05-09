@@ -50,7 +50,7 @@ class SnippetsController implements Controller
 
         $failOnUndefinedSteps = $input->getOption('fail-on-undefined-step') !== false;
 
-        if ($result === 0 && $failOnUndefinedSteps && $this->hasUndefinedSteps()) {
+        if ($result === 0 && $failOnUndefinedSteps && $this->hasUndefinedStepsOrSnippets()) {
             $output->writeln('<error>Tests has undefined steps!</error>');
 
             return 1;
@@ -62,8 +62,11 @@ class SnippetsController implements Controller
     /**
      * @return bool
      */
-    private function hasUndefinedSteps()
+    private function hasUndefinedStepsOrSnippets()
     {
-        return count($this->registry->getUndefinedSteps()) > 0;
+        $undefined = $this->registry->getUndefinedSteps();
+        $snippets  = $this->registry->getSnippets();
+
+        return count($undefined) > 0 || count($snippets) > 0;
     }
 }

@@ -1,0 +1,27 @@
+default:
+    translation:
+        locale: en
+    suites:
+        suite01:
+            paths:
+                - '%paths.base%/suite01'
+            contexts:
+                - DMarynicz\Tests\Behat\Context\SimulateTestContext
+        suite02:
+            paths:
+                - '%paths.base%/suite02'
+            contexts:
+                - DMarynicz\Tests\Behat\Context\SimulateTestContext
+        suite03:
+            paths:
+                - '%paths.base%/suite03'
+            contexts:
+                - DMarynicz\Tests\Behat\Context\SimulateTestContext
+        suite04:
+            paths:
+                - '%paths.base%/suite04'
+            contexts:
+                - DMarynicz\Tests\Behat\Context\SimulateTestContext
+    extensions:
+        DMarynicz\BehatParallelExtension\Extension: ~
+
