@@ -7,7 +7,7 @@ use DMarynicz\BehatParallelExtension\Event\BeforeTaskTested;
 use DMarynicz\BehatParallelExtension\Event\WorkerCreated;
 use DMarynicz\BehatParallelExtension\Event\WorkerDestroyed;
 use DMarynicz\BehatParallelExtension\Exception\Runtime;
-use DMarynicz\BehatParallelExtension\Service\EventDispatcherDecorator;
+use DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator;
 use DMarynicz\BehatParallelExtension\Task\Queue;
 use DMarynicz\BehatParallelExtension\Task\Task;
 use DMarynicz\BehatParallelExtension\Util\Assert;
@@ -21,7 +21,7 @@ class Worker
     /** @var Queue */
     private $queue;
 
-    /** @var EventDispatcherDecorator */
+    /** @var \DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator */
     private $eventDispatcher;
 
     /** @var bool */

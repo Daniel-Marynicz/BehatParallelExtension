@@ -7,7 +7,7 @@ use Behat\Gherkin\Node\ScenarioLikeInterface;
 use Behat\Testwork\Cli\Controller;
 use DMarynicz\BehatParallelExtension\Event\AfterTaskTested;
 use DMarynicz\BehatParallelExtension\Event\ParallelTestCompleted;
-use DMarynicz\BehatParallelExtension\Service\EventDispatcherDecorator;
+use DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator;
 use ReflectionClass;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

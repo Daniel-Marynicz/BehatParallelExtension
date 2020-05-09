@@ -1,6 +1,6 @@
 <?php
 
-namespace DMarynicz\BehatParallelExtension\Service;
+namespace DMarynicz\BehatParallelExtension\Event;
 
 use Behat\Testwork\EventDispatcher\TestworkEventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcher;

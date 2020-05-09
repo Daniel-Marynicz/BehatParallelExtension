@@ -9,7 +9,7 @@ use DMarynicz\BehatParallelExtension\Event\AfterTaskTested;
 use DMarynicz\BehatParallelExtension\Event\BeforeTaskTested;
 use DMarynicz\BehatParallelExtension\Event\ParallelTestCompleted;
 use DMarynicz\BehatParallelExtension\Exception\UnexpectedValue;
-use DMarynicz\BehatParallelExtension\Service\EventDispatcherDecorator;
+use DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator;
 use DMarynicz\BehatParallelExtension\Task\Queue;
 use DMarynicz\BehatParallelExtension\Task\Task;
 use DMarynicz\BehatParallelExtension\Task\TaskFactory;
@@ -33,7 +33,7 @@ abstract class ParallelController
     /** @var WorkerPoll */
     protected $poll;
 
-    /** @var EventDispatcherDecorator */
+    /** @var \DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator */
     protected $eventDispatcher;
 
     /** @var int */
