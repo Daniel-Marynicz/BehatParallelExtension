@@ -76,7 +76,7 @@ class Worker
             null,
             $this->env,
             null,
-            120
+            null
         );
         $this->currentProcess->setPty(true);
         $this->currentProcess->start();
