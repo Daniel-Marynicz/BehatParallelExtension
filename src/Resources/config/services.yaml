@@ -15,6 +15,9 @@ services:
   DMarynicz\BehatParallelExtension\Task\ScenarioTaskFactory:
     autowire: true
 
+  DMarynicz\BehatParallelExtension\Task\FeatureTaskFactory:
+    autowire: true
+
   DMarynicz\BehatParallelExtension\Task\Queue: ~
 
   DMarynicz\BehatParallelExtension\Worker\WorkerPoll:
@@ -23,9 +26,16 @@ services:
   DMarynicz\BehatParallelExtension\Cli\ParallelScenarioController:
     autowire: true
     arguments:
-      $decoratedExerciseController: '@DMarynicz\BehatParallelExtension\Cli\ParallelScenarioController.inner'
+      $decoratedController: '@DMarynicz\BehatParallelExtension\Cli\ParallelScenarioController.inner'
       $taskFactory: '@DMarynicz\BehatParallelExtension\Task\ScenarioTaskFactory'
     #CliExtension::CONTROLLER_TAG . '.exercise'
+    decorates: 'cli.controller.exercise'
+
+  DMarynicz\BehatParallelExtension\Cli\ParallelFeatureController:
+    autowire: true
+    arguments:
+      $decoratedController: '@DMarynicz\BehatParallelExtension\Cli\ParallelFeatureController.inner'
+      $taskFactory: '@DMarynicz\BehatParallelExtension\Task\FeatureTaskFactory'
     decorates: 'cli.controller.exercise'
 
   DMarynicz\BehatParallelExtension\Cli\RerunController:
