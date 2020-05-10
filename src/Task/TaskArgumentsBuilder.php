@@ -59,15 +59,16 @@ final class TaskArgumentsBuilder implements ArgumentsBuilder
             $arguments[] = '--fail-on-undefined-step';
         }
 
+        $argumentsFromInputValue = [];
         foreach ($input->getOptions() as $name => $value) {
             if (in_array($name, ['parallel', 'parallel-feature'])) {
                 continue;
             }
 
-            $arguments = array_merge($arguments, $this->getArgumentsFromInputValue($name, $value));
+            $argumentsFromInputValue[] = $this->getArgumentsFromInputValue($name, $value);
         }
 
-        return $arguments;
+        return array_merge($arguments, ...$argumentsFromInputValue);
     }
 
     /**

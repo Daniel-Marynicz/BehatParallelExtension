@@ -9,7 +9,7 @@ use DMarynicz\BehatParallelExtension\Event\WorkerCreated;
 use DMarynicz\BehatParallelExtension\Event\WorkerDestroyed;
 use DMarynicz\BehatParallelExtension\Exception\Runtime;
 use DMarynicz\BehatParallelExtension\Task\Queue;
-use DMarynicz\BehatParallelExtension\Task\Task;
+use DMarynicz\BehatParallelExtension\Task\TaskEntity;
 use DMarynicz\BehatParallelExtension\Util\Assert;
 use Symfony\Component\Process\Process;
 
@@ -30,7 +30,7 @@ class Worker
     /** @var Process<string, string>|null */
     private $currentProcess;
 
-    /** @var Task|null */
+    /** @var TaskEntity|null */
     private $currentTask;
 
     /** @var int */
@@ -62,8 +62,8 @@ class Worker
 
     private function next()
     {
-        $this->currentTask = $this->queue->dequeue();
-        if (! $this->currentTask instanceof Task) {
+        $this->currentTask = $this->queue->shift();
+        if (! $this->currentTask instanceof TaskEntity) {
             $this->stop();
 
             return;

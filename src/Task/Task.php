@@ -6,7 +6,7 @@ use Behat\Gherkin\Node\FeatureNode;
 use Behat\Gherkin\Node\ScenarioLikeInterface as Scenario;
 use Behat\Testwork\Suite\Suite;
 
-class Task
+final class Task implements TaskEntity
 {
     /** @var Suite */
     private $suite;

@@ -22,7 +22,7 @@ final class FeatureTaskFactory implements TaskFactory
     /**
      * @param string|null $path
      *
-     * @return Task[]
+     * @return TaskEntity[]
      *
      * @throws ReflectionException
      */

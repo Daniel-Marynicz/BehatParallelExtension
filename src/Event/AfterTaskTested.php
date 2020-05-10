@@ -3,14 +3,14 @@
 namespace DMarynicz\BehatParallelExtension\Event;
 
 use Behat\Testwork\Event\Event;
-use DMarynicz\BehatParallelExtension\Task\Task;
+use DMarynicz\BehatParallelExtension\Task\TaskEntity;
 use Symfony\Component\Process\Process;
 
 class AfterTaskTested extends Event
 {
     const AFTER = 'parallel_extension.after_task_tested';
 
-    /** @var Task */
+    /** @var TaskEntity */
     private $task;
 
     /** @var Process<string, string> */
@@ -19,14 +19,14 @@ class AfterTaskTested extends Event
     /**
      * @param Process<string, string> $process
      */
-    public function __construct(Task $task, Process $process)
+    public function __construct(TaskEntity $task, Process $process)
     {
         $this->task    = $task;
         $this->process = $process;
     }
 
     /**
-     * @return Task
+     * @return TaskEntity
      */
     public function getTask()
     {
