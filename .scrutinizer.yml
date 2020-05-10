@@ -26,8 +26,9 @@ build:
             - 'true'
         override:
           - command: ./vendor/bin/phpunit  --coverage-clover clover.xml
-            file: clover.xml
-            format: clover
+            coverage:
+              file: clover.xml
+              format: clover
 checks:
   php: true
 coding_style:
