@@ -11,7 +11,7 @@ use DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator;
 use DMarynicz\BehatParallelExtension\Event\ParallelTestCompleted;
 use DMarynicz\BehatParallelExtension\Exception\UnexpectedValue;
 use DMarynicz\BehatParallelExtension\Task\Queue;
-use DMarynicz\BehatParallelExtension\Task\Task;
+use DMarynicz\BehatParallelExtension\Task\TaskEntity;
 use DMarynicz\BehatParallelExtension\Task\TaskFactory;
 use DMarynicz\BehatParallelExtension\Worker\WorkerPoll;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -80,7 +80,7 @@ abstract class ParallelController
 
         $tasks = $this->createTasks($input);
         foreach ($tasks as $task) {
-            $this->queue->enqueue($task);
+            $this->queue->dispatch($task);
         }
 
         $this->progressBar = new ProgressBar($output, count($tasks));
@@ -155,7 +155,7 @@ abstract class ParallelController
     abstract protected function getParallelOption(InputInterface $input);
 
     /**
-     * @return Task[]
+     * @return TaskEntity[]
      */
     private function createTasks(InputInterface $input)
     {

@@ -9,7 +9,7 @@ interface TaskFactory
     /**
      * @param string|null $path
      *
-     * @return Task[]
+     * @return TaskEntity[]
      */
     public function createTasks(InputInterface $input, $path);
 }

@@ -27,7 +27,8 @@ services:
   DMarynicz\BehatParallelExtension\Task\FeatureTaskFactory:
     autowire: true
 
-  DMarynicz\BehatParallelExtension\Task\Queue: ~
+  DMarynicz\BehatParallelExtension\Task\TaskQueue: ~
+  DMarynicz\BehatParallelExtension\Task\Queue: '@DMarynicz\BehatParallelExtension\Task\TaskQueue'
 
   DMarynicz\BehatParallelExtension\Worker\WorkerPoll:
     autowire: true

@@ -4,39 +4,29 @@ namespace DMarynicz\BehatParallelExtension\Task;
 
 use Countable;
 
-class Queue implements Countable
+interface Queue extends Countable
 {
-    const SERVICE_ID = 'parallel_extension.queue';
-
-    /** @var Task[] */
-    private $elements = [];
-
-    public function enqueue(Task $task)
-    {
-        $this->elements[] = $task;
-    }
+    /**
+     * Dispatch new task in to queue
+     */
+    public function dispatch(TaskEntity $task);
 
     /**
      * @return bool
      */
-    public function isEmpty()
-    {
-        return empty($this->elements);
-    }
+    public function isEmpty();
 
     /**
-     * @return Task|null
+     * Shift the next element off of the queue.
+     *
+     * @return TaskEntity|null
      */
-    public function dequeue()
-    {
-        return array_shift($this->elements);
-    }
+    public function shift();
 
     /**
-     * @inheritDoc
+     * Count elements of an queue
+     *
+     * @return int
      */
-    public function count()
-    {
-        return count($this->elements);
-    }
+    public function count();
 }
