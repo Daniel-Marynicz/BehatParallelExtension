@@ -9,20 +9,6 @@ class Assert
     /**
      * @param mixed $value
      *
-     * @return string
-     */
-    public static function assertString($value)
-    {
-        if (! is_string($value)) {
-            throw new UnexpectedValue('Expected string');
-        }
-
-        return $value;
-    }
-
-    /**
-     * @param mixed $value
-     *
      * @return array<mixed>
      */
     public static function assertArray($value)
@@ -43,20 +29,6 @@ class Assert
     {
         if (! is_int($value)) {
             throw new UnexpectedValue('Expected int');
-        }
-
-        return $value;
-    }
-
-    /**
-     * @param mixed $value
-     *
-     * @return bool mixed
-     */
-    public static function assetTrue($value)
-    {
-        if ($value === true) {
-            throw new UnexpectedValue('Expected true');
         }
 
         return $value;
