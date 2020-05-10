@@ -31,16 +31,16 @@
   },
   "scripts": {
     "phpcs": [
-      "./vendor/bin/phpcs"
+      "phpcs"
     ],
     "phpcbf": [
-      "./vendor/bin/phpcbf"
+      "phpcbf"
     ],
     "phpcbfWithoutErrorCode": [
-      "./vendor/bin/phpcbf || true"
+      "phpcbf || true"
     ],
     "phpstan": [
-      "./vendor/bin/phpstan analyse"
+      "phpstan analyse"
     ],
     "phpunit": [
       "./vendor/bin/phpunit --fail-on-warning "

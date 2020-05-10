@@ -28,14 +28,14 @@ final class ScenarioTaskFactory implements TaskFactory
      */
     public function createTasks(InputInterface $input, $path = null)
     {
-        $suites = $this->finder->findGroupedSpecifications($path);
-        $tasks  = [];
-        foreach ($suites as $suite) {
-            foreach ($suite as $feature) {
+        $specifications = $this->finder->findGroupedSpecifications($path);
+        $tasks          = [];
+        foreach ($specifications as $spec) {
+            foreach ($spec as $feature) {
                 foreach ($feature->getScenarios() as $scenario) {
                     $testPath = sprintf('%s:%s', $feature->getFile(), $scenario->getLine());
                     $tasks[]  = new Task(
-                        $suite->getSuite(),
+                        $spec->getSuite(),
                         $feature,
                         $testPath,
                         $this->argumentsBuilder->buildArguments($input, $testPath),
