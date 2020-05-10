@@ -2,7 +2,7 @@
 
 namespace DMarynicz\BehatParallelExtension\Cli;
 
-use Behat\Behat\Snippet\SnippetRegistry;
+use Behat\Behat\Snippet\SnippetRepository;
 use Behat\Testwork\Cli\Controller;
 use Behat\Testwork\Tester\Cli\ExerciseController;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
@@ -15,13 +15,13 @@ class SnippetsController implements Controller
     /** @var Controller|ExerciseController */
     private $decoratedController;
 
-    /** @var SnippetRegistry */
+    /** @var SnippetRepository */
     private $registry;
 
     /**
      * @param Controller|ExerciseController $decoratedController
      */
-    public function __construct(Controller $decoratedController, SnippetRegistry $registry)
+    public function __construct(Controller $decoratedController, SnippetRepository $registry)
     {
         $this->decoratedController = $decoratedController;
         $this->registry            = $registry;

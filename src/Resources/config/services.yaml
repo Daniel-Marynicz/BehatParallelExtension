@@ -33,6 +33,8 @@ services:
   DMarynicz\BehatParallelExtension\Worker\WorkerPoll:
     autowire: true
 
+  DMarynicz\BehatParallelExtension\Worker\Poll: '@DMarynicz\BehatParallelExtension\Worker\WorkerPoll'
+
   DMarynicz\BehatParallelExtension\Cli\ParallelScenarioController:
     autowire: true
     arguments:

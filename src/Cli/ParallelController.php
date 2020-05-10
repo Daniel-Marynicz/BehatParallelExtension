@@ -13,7 +13,7 @@ use DMarynicz\BehatParallelExtension\Exception\UnexpectedValue;
 use DMarynicz\BehatParallelExtension\Task\Queue;
 use DMarynicz\BehatParallelExtension\Task\TaskEntity;
 use DMarynicz\BehatParallelExtension\Task\TaskFactory;
-use DMarynicz\BehatParallelExtension\Worker\WorkerPoll;
+use DMarynicz\BehatParallelExtension\Worker\Poll;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -30,7 +30,7 @@ abstract class ParallelController
     /** @var Queue */
     protected $queue;
 
-    /** @var WorkerPoll */
+    /** @var Poll */
     protected $poll;
 
     /** @var EventDispatcherDecorator */
@@ -51,7 +51,7 @@ abstract class ParallelController
     public function __construct(
         Controller $decoratedController,
         TaskFactory $taskFactory,
-        WorkerPoll $poll,
+        Poll $poll,
         Queue $queue,
         EventDispatcherDecorator $eventDispatcher
     ) {
