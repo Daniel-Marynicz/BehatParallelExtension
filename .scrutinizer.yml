@@ -17,13 +17,13 @@ build:
             command: phpcs-run
     tests: true
     coverage:
+      environment:
+        php:
+          version: 7.4
+      project_setup:
+        override:
+          - 'true'
       tests:
-        environment:
-          php:
-            version: 7.4
-        project_setup:
-          override:
-            - 'true'
         override:
           - command: ./vendor/bin/phpunit  --coverage-clover clover.xml
             coverage:
