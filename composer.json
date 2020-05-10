@@ -15,8 +15,9 @@
     "symfony/yaml": "^2.7.52 || ^3.0 || ^4.0 || ^5.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^5.0 || ^6.0 || ^7.0 || ^8.0",
-    "ext-json": "*"
+    "phpunit/phpunit": "^5.0 || ^6.0 || ^7.0",
+    "ext-json": "*",
+    "dg/bypass-finals": "^1.1 || ^1.2"
   },
   "autoload": {
     "psr-4": {
@@ -30,16 +31,16 @@
   },
   "scripts": {
     "phpcs": [
-      "./vendor/bin/phpcs"
+      "phpcs"
     ],
     "phpcbf": [
-      "./vendor/bin/phpcbf"
+      "phpcbf"
     ],
     "phpcbfWithoutErrorCode": [
-      "./vendor/bin/phpcbf || true"
+      "phpcbf || true"
     ],
     "phpstan": [
-      "./vendor/bin/phpstan analyse"
+      "phpstan analyse"
     ],
     "phpunit": [
       "./vendor/bin/phpunit --fail-on-warning "

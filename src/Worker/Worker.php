@@ -4,10 +4,10 @@ namespace DMarynicz\BehatParallelExtension\Worker;
 
 use DMarynicz\BehatParallelExtension\Event\AfterTaskTested;
 use DMarynicz\BehatParallelExtension\Event\BeforeTaskTested;
+use DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator;
 use DMarynicz\BehatParallelExtension\Event\WorkerCreated;
 use DMarynicz\BehatParallelExtension\Event\WorkerDestroyed;
 use DMarynicz\BehatParallelExtension\Exception\Runtime;
-use DMarynicz\BehatParallelExtension\Service\EventDispatcherDecorator;
 use DMarynicz\BehatParallelExtension\Task\Queue;
 use DMarynicz\BehatParallelExtension\Task\Task;
 use DMarynicz\BehatParallelExtension\Util\Assert;

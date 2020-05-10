@@ -1,16 +1,25 @@
 
 services:
-  DMarynicz\BehatParallelExtension\Service\EventDispatcherDecorator:
+
+  DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator:
     arguments:
       #EventDispatcherExtension::DISPATCHER_ID
       $eventDispatcher: '@event_dispatcher'
 
-  DMarynicz\BehatParallelExtension\Task\ArgumentsBuilder: ~
 
-  DMarynicz\BehatParallelExtension\Service\Finder\SpecificationsFinder:
+  parallel_extension.php_executable_finder:
+    class: Symfony\Component\Process\PhpExecutableFinder
+  DMarynicz\BehatParallelExtension\Task\TaskArgumentsBuilder:
+    $phpFinder: '@parallel_extension.php_executable_finder'
+
+  DMarynicz\BehatParallelExtension\Task\ArgumentsBuilder: '@DMarynicz\BehatParallelExtension\Task\TaskArgumentsBuilder'
+
+  DMarynicz\BehatParallelExtension\Task\SpecificationsFinder:
     arguments:
       $suiteRepository: '@suite.registry'
       $specificationFinder: '@specifications.finder'
+
+  DMarynicz\BehatParallelExtension\Task\TestworkSpecificationsFinder: '@DMarynicz\BehatParallelExtension\Task\SpecificationsFinder'
 
   DMarynicz\BehatParallelExtension\Task\ScenarioTaskFactory:
     autowire: true
