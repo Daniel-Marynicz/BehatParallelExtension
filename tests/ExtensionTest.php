@@ -15,7 +15,7 @@ class ExtensionTest extends TestCase
     public function test()
     {
         $extension = new Extension();
-        $this->assertIsString($extension->getConfigKey());
+        $this->assertEquals('parallel_extension', $extension->getConfigKey());
         $extension->initialize(new ExtensionManager([], null));
         $arrayBuilder = $this->createMock(ArrayNodeDefinition::class);
         $nodeBuilder  = $this->createMock(NodeBuilder::class);
