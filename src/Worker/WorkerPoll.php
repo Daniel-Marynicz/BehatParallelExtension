@@ -6,7 +6,7 @@ use DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator;
 use DMarynicz\BehatParallelExtension\Exception\Runtime;
 use DMarynicz\BehatParallelExtension\Task\Queue;
 
-class WorkerPoll
+class WorkerPoll implements Poll
 {
     const SERVICE_ID = 'parallel_extension.worker_poll';
 
@@ -61,7 +61,7 @@ class WorkerPoll
 
         for ($i = 0; $i< $this->maxWorkers; $i++) {
             $env    = isset($this->environments[$i]) ? $this->environments[$i] : [];
-            $worker = new Worker($this->queue, $env, $this->eventDispatcher, $i);
+            $worker = new TaskWorker($this->queue, $env, $this->eventDispatcher, $i);
             $worker->start();
             $this->workers[] = $worker;
         }
