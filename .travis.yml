@@ -32,7 +32,7 @@ cache:
   - "$HOME/bin"
 before_install:
 - |
-  set -e ;
+  set -ex ;
 
   if [[ ! -z "$REINSTALL_TOOLS" ]] ; then
     rm -rf $HOME/bin
