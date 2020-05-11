@@ -4,7 +4,7 @@ namespace DMarynicz\BehatParallelExtension\Util;
 
 use Symfony\Component\Process\Process;
 
-class SymfonyProcessFactory implements ProcessFactory
+final class SymfonyProcessFactory implements ProcessFactory
 {
     /**
      * @param array<string>      $command
