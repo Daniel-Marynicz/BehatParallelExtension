@@ -26,6 +26,11 @@ class DetermineNumberOfProcessingUnitsTest extends TestCase
     public function testWindowsEnvMethod($expected)
     {
         putenv('NUMBER_OF_PROCESSORS=' . $expected);
+        if (stripos(PHP_OS, 'WIN') === 0) {
+            //on windows we can't change this env variable
+            $expected = getenv('NUMBER_OF_PROCESSORS');
+        }
+
         $testedObject = new DetermineNumberOfProcessingUnits();
         $actual       = $testedObject->getNumberOfProcessingUnits();
         $this->assertEquals($expected, $actual);
