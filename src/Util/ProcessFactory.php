@@ -10,7 +10,7 @@ interface ProcessFactory
      * @param array<string>      $command
      * @param string|null        $cwd
      * @param array<string>|null $environment
-     * @param null               $input
+     * @param mixed|null         $input
      * @param float|int|null     $timeout
      *
      * @return Process<string, string>
