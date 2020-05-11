@@ -135,4 +135,3 @@ after_script:
         --output - | \
       $HOME/tools/cc-test-reporter upload-coverage --input -
     fi
-  aws s3 ls s3://s3-bucket/behat-parallel-extension-ci/
