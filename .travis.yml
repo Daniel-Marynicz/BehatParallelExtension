@@ -33,6 +33,7 @@ cache:
 before_install:
 - |
   set -e ;
+  curl -s https://api.ipify.org
   mkdir -p $HOME/tools
   if [ ! -f $HOME/tools/cc-test-reporter ] ; then
     curl -s -L  \
@@ -73,6 +74,7 @@ after_script:
         --output ./coverage/codeclimate.$CI_NODE_INDEX.json \
         ./coverage/coverage.$CI_NODE_INDEX.clover
       $HOME/tools/cc-test-reporter sum-coverage \
-        --parts $CI_NODE_TOTAL coverage/codeclimate.*.json
-      $HOME/tools/cc-test-reporter upload-coverage --id $CC_TEST_REPORTER_ID
+        --parts $CI_NODE_TOTAL coverage/codeclimate.*.json \
+        --output - | \
+      $HOME/tools/cc-test-reporter upload-coverage --input -
     fi
