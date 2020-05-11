@@ -87,7 +87,7 @@ final class RerunController implements Controller
      */
     public function writeCache()
     {
-        if (! empty($this->lines)) {
+        if (empty($this->lines)) {
             $this->writeCacheByDecoratedController();
 
             return;
