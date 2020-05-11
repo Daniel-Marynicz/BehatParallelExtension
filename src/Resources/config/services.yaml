@@ -10,7 +10,11 @@ services:
   parallel_extension.php_executable_finder:
     class: Symfony\Component\Process\PhpExecutableFinder
   DMarynicz\BehatParallelExtension\Task\TaskArgumentsBuilder:
-    $phpFinder: '@parallel_extension.php_executable_finder'
+    arguments:
+      $phpFinder: '@parallel_extension.php_executable_finder'
+
+  DMarynicz\BehatParallelExtension\Util\DetermineNumberOfProcessingUnits: ~
+  DMarynicz\BehatParallelExtension\Util\CanDetermineNumberOfProcessingUnits: '@DMarynicz\BehatParallelExtension\Util\DetermineNumberOfProcessingUnits'
 
   DMarynicz\BehatParallelExtension\Task\ArgumentsBuilder: '@DMarynicz\BehatParallelExtension\Task\TaskArgumentsBuilder'
 
