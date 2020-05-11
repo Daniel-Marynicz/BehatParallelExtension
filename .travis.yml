@@ -79,10 +79,6 @@ before_install:
   =vYOk
   -----END PGP PUBLIC KEY BLOCK-----
   EOF
-
-
-  ls
-
 - |
 
   if [[ ! -L $HOME/bin/aws ]] &&  [[ ! -e $HOME/bin/aws   ]]; then
