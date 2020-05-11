@@ -4,7 +4,7 @@ namespace DMarynicz\BehatParallelExtension\Util;
 
 use Symfony\Component\Process\Process;
 
-class SymfonyProcessFactory implements ProcessFactory
+interface ProcessFactory
 {
     /**
      * @param array<string>      $command
@@ -21,7 +21,5 @@ class SymfonyProcessFactory implements ProcessFactory
         $environment = null,
         $input = null,
         $timeout = 60
-    ) {
-        return new Process($command, $cwd, $environment, $input, $timeout);
-    }
+    );
 }
