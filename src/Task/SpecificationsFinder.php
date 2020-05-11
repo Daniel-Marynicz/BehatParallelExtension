@@ -28,6 +28,8 @@ class SpecificationsFinder implements TestworkSpecificationsFinder
      * @param string|null $path
      *
      * @return GroupedSpecificationIterator[]
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function findGroupedSpecifications($path)
     {

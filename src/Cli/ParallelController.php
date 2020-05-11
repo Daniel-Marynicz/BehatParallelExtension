@@ -68,6 +68,11 @@ abstract class ParallelController
     }
 
     /**
+     * @return bool|string|string[]|null
+     */
+    abstract protected function getParallelOption(InputInterface $input);
+
+    /**
      * @return int|null
      */
     public function execute(InputInterface $input, OutputInterface $output)
@@ -80,45 +85,7 @@ abstract class ParallelController
         $this->output = $output;
         $this->input  = $input;
 
-        $this->eventDispatcher->addListener(BeforeTaskTested::BEFORE, [$this, 'beforeTaskTested']);
-        $this->eventDispatcher->addListener(AfterTaskTested::AFTER, [$this, 'afterTaskTested']);
-
-        $tasks = $this->createTasks($input);
-        foreach ($tasks as $task) {
-            $this->queue->dispatch($task);
-        }
-
-        $this->progressBar = new ProgressBar($output, count($tasks));
-        ProgressBar::setFormatDefinition(
-            'custom',
-            " %feature%\n  %scenario%\n %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s%"
-        );
-
-        $this->progressBar->setMessage('<info>Starting</info>', 'feature');
-        $this->progressBar->setMessage('', 'scenario');
-        $this->progressBar->setFormat('custom');
-
-        $poolSize = $this->getMaxPoolSize($input);
-        $output->writeln(sprintf('Starting parallel scenario tests with %d workers', $poolSize));
-        $this->poll->setMaxWorkers($poolSize);
-        $this->poll->start();
-        $maxSize = $this->getMaxSizeFromParallelOption($input);
-        if ($maxSize > 0 && $this->poll->getTotalWorkers() !== $maxSize) {
-            $output->writeln(
-                sprintf(
-                    '<comment>Started poll with only %d workers</comment>',
-                    $this->poll->getTotalWorkers()
-                )
-            );
-        }
-
-        $this->progressBar->start();
-        $this->poll->wait();
-        $output->writeln('');
-
-        $this->eventDispatcher->dispatch(new ParallelTestCompleted(), ParallelTestCompleted::COMPLETED);
-
-        return $this->exitCode;
+        return $this->parallelExecute();
     }
 
     public function beforeTaskTested(BeforeTaskTested $beforeTaskTested)
@@ -155,21 +122,79 @@ abstract class ParallelController
     }
 
     /**
-     * @return bool|string|string[]|null
+     * @return int
      */
-    abstract protected function getParallelOption(InputInterface $input);
+    private function parallelExecute()
+    {
+        $this->addEventListeners();
+        $this->setupTasksWithProgressBar();
+        $this->startPoll();
+        $this->progressBar->start();
+        $this->poll->wait();
+        $this->output->writeln('');
+
+        $this->eventDispatcher->dispatch(new ParallelTestCompleted(), ParallelTestCompleted::COMPLETED);
+
+        return $this->exitCode;
+    }
+
+    private function addEventListeners()
+    {
+        $this->eventDispatcher->addListener(BeforeTaskTested::BEFORE, [$this, 'beforeTaskTested']);
+        $this->eventDispatcher->addListener(AfterTaskTested::AFTER, [$this, 'afterTaskTested']);
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    private function setupTasksWithProgressBar()
+    {
+        $tasks = $this->createTasks();
+        foreach ($tasks as $task) {
+            $this->queue->dispatch($task);
+        }
+
+        $this->progressBar = new ProgressBar($this->output, count($tasks));
+        ProgressBar::setFormatDefinition(
+            'custom',
+            " %feature%\n  %scenario%\n %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s%"
+        );
+
+        $this->progressBar->setMessage('<info>Starting</info>', 'feature');
+        $this->progressBar->setMessage('', 'scenario');
+        $this->progressBar->setFormat('custom');
+    }
+
+    private function startPoll()
+    {
+        $poolSize = $this->getMaxPoolSize();
+        $this->output->writeln(sprintf('Starting parallel scenario tests with %d workers', $poolSize));
+        $this->poll->setMaxWorkers($poolSize);
+        $this->poll->start();
+        $maxSize = $this->getMaxSizeFromParallelOption();
+        if ($maxSize <= 0 || $this->poll->getTotalWorkers() === $maxSize) {
+            return;
+        }
+
+        $this->output->writeln(
+            sprintf(
+                '<comment>Started poll with only %d workers</comment>',
+                $this->poll->getTotalWorkers()
+            )
+        );
+    }
 
     /**
      * @return TaskEntity[]
      */
-    private function createTasks(InputInterface $input)
+    private function createTasks()
     {
-        $path = $input->hasArgument('path') ? $input->getArgument('path') : null;
+        $path = $this->input->hasArgument('path') ? $this->input->getArgument('path') : null;
         if (! is_string($path) && $path !== null) {
             throw new UnexpectedValue('Expected string or null');
         }
 
-        return $this->taskFactory->createTasks($input, $path);
+        return $this->taskFactory->createTasks($this->input, $path);
     }
 
     /**
@@ -183,9 +208,9 @@ abstract class ParallelController
     /**
      * @return int
      */
-    private function getMaxPoolSize(InputInterface $input)
+    private function getMaxPoolSize()
     {
-        $maxSize = $this->getMaxSizeFromParallelOption($input);
+        $maxSize = $this->getMaxSizeFromParallelOption();
         $maxSize = $maxSize > 0 ? $maxSize : $this->getNumberOfProcessingUnitsAvailable();
 
         return $maxSize;
@@ -194,9 +219,9 @@ abstract class ParallelController
     /**
      * @return int
      */
-    private function getMaxSizeFromParallelOption(InputInterface $input)
+    private function getMaxSizeFromParallelOption()
     {
-        $option = $this->getParallelOption($input);
+        $option = $this->getParallelOption($this->input);
 
         return is_array($option) ?
             (int) $option[0] :
