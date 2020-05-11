@@ -59,16 +59,16 @@ final class TaskArgumentsBuilder implements ArgumentsBuilder
             $arguments[] = '--fail-on-undefined-step';
         }
 
-        $argumentsFromInputValue = [];
+        $argsFromInputValue = [];
         foreach ($input->getOptions() as $name => $value) {
             if (in_array($name, ['parallel', 'parallel-feature'])) {
                 continue;
             }
 
-            $argumentsFromInputValue[] = $this->getArgumentsFromInputValue($name, $value);
+            $argsFromInputValue[] = $this->getArgumentsFromInputValue($name, $value);
         }
 
-        return array_merge($arguments, ...$argumentsFromInputValue);
+        return array_merge($arguments, ...$argsFromInputValue);
     }
 
     /**
@@ -98,34 +98,68 @@ final class TaskArgumentsBuilder implements ArgumentsBuilder
      */
     private function getArgumentsFromInputValue($name, $value)
     {
-        $arguments = [];
         switch (gettype($value)) {
             case 'boolean':
-                if ($value) {
-                    $arguments[] = '--' . $name;
-                }
-
-                break;
+                return $this->getBoolArgument($name, $value);
+            case 'array':
+                return $this->getArrayArguments($name, $value);
             case 'integer':
             case 'double':
             case 'string':
-                $arguments[] = '--' . $name;
-                $arguments[] = $value;
-                break;
-            case 'array':
-                foreach ($value as $valueContent) {
-                    $arguments[] = '--' . $name;
-                    if (! $valueContent) {
-                        continue;
-                    }
+                return $this->getStringArguments($name, (string) $value);
+            default:
+                return [];
+        }
+    }
 
-                    $arguments[] = $valueContent;
-                }
+    /**
+     * @param string $name
+     * @param bool   $value
+     *
+     * @return array|string[]
+     */
+    private function getBoolArgument($name, $value)
+    {
+        if ($value) {
+            return ['--' . $name];
+        }
 
-                break;
+        return [];
+    }
+
+    /**
+     * @param string         $name
+     * @param array|string[] $value
+     *
+     * @return array|string[]
+     */
+    private function getArrayArguments($name, $value)
+    {
+        $arguments = [];
+        foreach ($value as $valueContent) {
+            $arguments[] = '--' . $name;
+            if (! $valueContent) {
+                continue;
+            }
+
+            $arguments[] = $valueContent;
         }
 
         return $arguments;
+    }
+
+    /**
+     * @param string $name
+     * @param string $value
+     *
+     * @return array|string[]
+     */
+    private function getStringArguments($name, $value)
+    {
+        return [
+            '--' . $name,
+            $value,
+        ];
     }
 
     /**

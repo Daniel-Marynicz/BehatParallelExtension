@@ -33,6 +33,7 @@ final class DetermineNumberOfProcessingUnits implements CanDetermineNumberOfProc
             return null;
         }
 
+        $matches = null;
         preg_match_all('/^processor\s+:\s+\d+/m', $cpuInfo, $matches);
 
         $result = count($matches[0]);

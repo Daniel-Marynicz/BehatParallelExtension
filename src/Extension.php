@@ -172,8 +172,7 @@ class Extension implements ExtensionInterface
         }
 
         $treeBuilder = new TreeBuilder($name);
-
-        $node = $treeBuilder->getRootNode();
+        $node        = $treeBuilder->getRootNode();
 
         if (! $node instanceof ArrayNodeDefinition) {
             throw new UnexpectedValue('expected ArrayNodeDefinition');

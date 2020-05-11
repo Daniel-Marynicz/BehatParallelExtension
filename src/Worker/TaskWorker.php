@@ -8,9 +8,9 @@ use DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator;
 use DMarynicz\BehatParallelExtension\Event\WorkerCreated;
 use DMarynicz\BehatParallelExtension\Event\WorkerDestroyed;
 use DMarynicz\BehatParallelExtension\Exception\Runtime;
+use DMarynicz\BehatParallelExtension\Exception\UnexpectedValue;
 use DMarynicz\BehatParallelExtension\Task\Queue;
 use DMarynicz\BehatParallelExtension\Task\TaskEntity;
-use DMarynicz\BehatParallelExtension\Util\Assert;
 use DMarynicz\BehatParallelExtension\Util\ProcessFactory;
 use DMarynicz\BehatParallelExtension\Util\SymfonyProcessFactory;
 use Symfony\Component\Process\Process;
@@ -55,7 +55,10 @@ class TaskWorker implements Worker
         $this->environment     = $environment;
         $this->queue           = $queue;
         $this->eventDispatcher = $eventDispatcher;
-        Assert::assertInt($workerId);
+        if (! is_int($workerId)) {
+            throw new UnexpectedValue('Expected int');
+        }
+
         $this->workerId = $workerId;
         $this->eventDispatcher->dispatch(new WorkerCreated($this), WorkerCreated::WORKER_CREATED);
         if (! $processFactory instanceof ProcessFactory) {
@@ -137,7 +140,10 @@ class TaskWorker implements Worker
      */
     public function setEnvironment($env)
     {
-        Assert::assertArray($env);
+        if (! is_array($env)) {
+            throw new UnexpectedValue('Expected array');
+        }
+
         $this->environment = $env;
 
         return $this;
