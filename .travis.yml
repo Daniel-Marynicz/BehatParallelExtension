@@ -32,8 +32,7 @@ cache:
   - "$HOME/bin"
 before_install:
 - |
-  set -ex ;
-
+  set -e ;
   if [[ ! -z "$REINSTALL_TOOLS" ]] ; then
     rm -rf $HOME/bin
   fi
@@ -46,9 +45,13 @@ before_install:
       -o $HOME/bin/cc-test-reporter
   fi
   chmod +x $HOME/bin/cc-test-reporter
+  sha1sum ~/bin/cc-test-reporter
   sha1sum ~/bin/cc-test-reporter  | grep $CC_TEST_REPORTER_SHA1
+  echo asdad
+- |
+
   if [[ ! -L $HOME/bin/aws ]] &&  [[ ! -e $HOME/bin/aws   ]]; then
-    cat <<EOF > aws-public.key
+  cat <<EOF > aws-public.key
   -----BEGIN PGP PUBLIC KEY BLOCK-----
 
   mQINBF2Cr7UBEADJZHcgusOJl7ENSyumXh85z0TRV0xJorM2B/JL0kHOyigQluUG
@@ -79,6 +82,7 @@ before_install:
   =vYOk
   -----END PGP PUBLIC KEY BLOCK-----
   EOF
+
     gpg --import aws-public.key
 
     curl -s -L \
