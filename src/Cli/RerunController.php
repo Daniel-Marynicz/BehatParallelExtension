@@ -73,7 +73,7 @@ final class RerunController implements Controller
         }
 
         $line = $featureFile;
-        if ($scenarioLine) {
+        if ($scenarioLine !== null) {
             $line .= ':' . $scenarioLine;
         }
 
@@ -87,7 +87,7 @@ final class RerunController implements Controller
      */
     public function writeCache()
     {
-        if (! $this->lines) {
+        if (! empty($this->lines)) {
             $this->writeCacheByDecoratedController();
 
             return;
