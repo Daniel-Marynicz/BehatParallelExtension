@@ -13,11 +13,11 @@ use DMarynicz\BehatParallelExtension\Exception\UnexpectedValue;
 use DMarynicz\BehatParallelExtension\Task\Queue;
 use DMarynicz\BehatParallelExtension\Task\TaskEntity;
 use DMarynicz\BehatParallelExtension\Task\TaskFactory;
+use DMarynicz\BehatParallelExtension\Util\CanDetermineNumberOfProcessingUnits;
 use DMarynicz\BehatParallelExtension\Worker\Poll;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
 
 abstract class ParallelController
 {
@@ -48,18 +48,23 @@ abstract class ParallelController
     /** @var InputInterface */
     protected $input;
 
+    /** @var CanDetermineNumberOfProcessingUnits */
+    protected $numberOfCores;
+
     public function __construct(
         Controller $decoratedController,
         TaskFactory $taskFactory,
         Poll $poll,
         Queue $queue,
-        EventDispatcherDecorator $eventDispatcher
+        EventDispatcherDecorator $eventDispatcher,
+        CanDetermineNumberOfProcessingUnits $numberOfCores
     ) {
         $this->decoratedController = $decoratedController;
         $this->taskFactory         = $taskFactory;
         $this->queue               = $queue;
         $this->poll                = $poll;
         $this->eventDispatcher     = $eventDispatcher;
+        $this->numberOfCores       = $numberOfCores;
     }
 
     /**
@@ -172,13 +177,7 @@ abstract class ParallelController
      */
     private function getNumberOfProcessingUnitsAvailable()
     {
-        $nproc = new Process(['nproc']);
-        $nproc->run();
-        if (! $nproc->isSuccessful()) {
-            return 1;
-        }
-
-        return (int) trim($nproc->getOutput());
+        return $this->numberOfCores->getNumberOfProcessingUnits();
     }
 
     /**

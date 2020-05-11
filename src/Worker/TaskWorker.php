@@ -11,6 +11,8 @@ use DMarynicz\BehatParallelExtension\Exception\Runtime;
 use DMarynicz\BehatParallelExtension\Task\Queue;
 use DMarynicz\BehatParallelExtension\Task\TaskEntity;
 use DMarynicz\BehatParallelExtension\Util\Assert;
+use DMarynicz\BehatParallelExtension\Util\ProcessFactory;
+use DMarynicz\BehatParallelExtension\Util\SymfonyProcessFactory;
 use Symfony\Component\Process\Process;
 
 class TaskWorker implements Worker
@@ -36,18 +38,31 @@ class TaskWorker implements Worker
     /** @var int */
     private $workerId;
 
+    /** @var ProcessFactory */
+    private $processFactory;
+
     /**
      * @param string[] $environment
      * @param int      $workerId
      */
-    public function __construct(Queue $queue, $environment, EventDispatcherDecorator $eventDispatcher, $workerId)
-    {
+    public function __construct(
+        Queue $queue,
+        $environment,
+        EventDispatcherDecorator $eventDispatcher,
+        $workerId,
+        ProcessFactory $processFactory = null
+    ) {
         $this->environment     = $environment;
         $this->queue           = $queue;
         $this->eventDispatcher = $eventDispatcher;
         Assert::assertInt($workerId);
         $this->workerId = $workerId;
         $this->eventDispatcher->dispatch(new WorkerCreated($this), WorkerCreated::WORKER_CREATED);
+        if (! $processFactory instanceof ProcessFactory) {
+            $processFactory = new SymfonyProcessFactory();
+        }
+
+        $this->processFactory = $processFactory;
     }
 
     public function start()
@@ -158,7 +173,7 @@ class TaskWorker implements Worker
 
         $before = new BeforeTaskTested($this->currentTask);
         $this->eventDispatcher->dispatch($before, BeforeTaskTested::BEFORE);
-        $this->currentProcess = new Process(
+        $this->currentProcess = $this->processFactory->createNewProcess(
             $this->currentTask->getCommand(),
             null,
             $this->environment,

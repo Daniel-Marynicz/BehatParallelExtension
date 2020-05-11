@@ -5,9 +5,11 @@ namespace DMarynicz\Tests\Worker;
 use DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator;
 use DMarynicz\BehatParallelExtension\Task\Queue;
 use DMarynicz\BehatParallelExtension\Task\TaskEntity;
+use DMarynicz\BehatParallelExtension\Util\ProcessFactory;
 use DMarynicz\BehatParallelExtension\Worker\TaskWorker;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Process\Process;
 
 class TaskWorkerTest extends TestCase
 {
@@ -22,11 +24,17 @@ class TaskWorkerTest extends TestCase
             ->method('shift')
             ->willReturn($task);
 
+        $processFactory = $this->createMock(ProcessFactory::class);
+        $processFactory
+            ->method('createNewProcess')
+            ->willReturn($this->createMock(Process::class));
+
         $worker = new TaskWorker(
             $queue,
             ['some' => 'env'],
             $this->createEventDispatcherDecoratorMock(),
-            258
+            258,
+            $processFactory
         );
         $worker->start();
         $worker->wait();

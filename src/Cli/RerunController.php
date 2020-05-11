@@ -13,7 +13,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class RerunController implements Controller
+final class RerunController implements Controller
 {
     const SERVICE_ID = 'cli.controller.parallel_extension.re_run_controller';
 
