@@ -1,5 +1,6 @@
 # Behat Parallel Extension
 
+![Packagist Version](https://img.shields.io/packagist/v/dmarynicz/behat-parallel-extension?label=version)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Daniel-Marynicz/BehatParallelExtension/blob/master/LICENSE)
 [![Unix Status](https://img.shields.io/travis/com/Daniel-Marynicz/BehatParallelExtension)](https://travis-ci.com/Daniel-Marynicz/BehatParallelExtension)
 [![Windows status](https://ci.appveyor.com/api/projects/status/i2y6sjmi6ae0xa7l/branch/master?svg=true)](https://ci.appveyor.com/project/Daniel-Marynicz/behat-parallel-extension/branch/master)
