@@ -1,4 +1,5 @@
-# Behat Parallel Extension
+Behat Parallel Extension
+======
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Daniel-Marynicz/BehatParallelExtension/blob/master/LICENSE)
 [![Unix Status](https://img.shields.io/travis/com/Daniel-Marynicz/BehatParallelExtension)](https://travis-ci.com/Daniel-Marynicz/BehatParallelExtension)
@@ -8,19 +9,57 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/82e68e2002a9ab8840ef/maintainability)](https://codeclimate.com/github/Daniel-Marynicz/BehatParallelExtension/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/82e68e2002a9ab8840ef/test_coverage)](https://codeclimate.com/github/Daniel-Marynicz/BehatParallelExtension/test_coverage)
 
-### Introduction
-This tool is for a speedup behat 3.x  tests by executing this tests in parallel mode.
+## Intro
+
+This extension is for an executing behat 3.x tests in parallel mode.
+
+![Alt text](parallel.apng?raw=true "with parallel")
+
+
+ speedup behat 3.x tests by executing this tests in parallel mode.
+
+
+
+### Features
+
+Extension can execute tests in parallel mode. Also, supports behat standard option `--rerun` for rerunning failed tests. 
+
+## Tools and Coding standards
+
+The extension uses the following coding standards and quality tools:
+
+#### Doctrine Coding Standard
+
+ The [Doctrine Coding Standard] with some exceptions for php 5.6 compatibility.
+ The [Doctrine Coding Standard] is a set of rules for [PHP_CodeSniffer]. It is based on [PSR-1]
+ and [PSR-2] , with some noticeable exceptions/differences/extensions.
+ 
+ For more information about Doctrine Coding Standard please follow the documentation: 
+ 
+ https://www.doctrine-project.org/projects/doctrine-coding-standard/en/latest/reference/index.html#introduction
+
+#### PHPStan at level max
+
+ [PHPStan] A php framework for autotesting your business expectations. PHPStan focuses on finding errors in your code without actually running it. It catches whole classes of bugs even
+  before you write tests for the code. It moves PHP closer to compiled languages in the sense that the correctness of
+   each line of the code can be checked before you run the actual line.
+#### PHPUnit
+
+ [PHPUnit] The PHP Testing Framework with tests in directory [tests](tests)
+#### Behat
+
+You can find [Behat] tests in directory [features](features)  and fixtures in [tests/fixtures](tests/fixtures) and some 
+classes for behat tests in directory [tests/Behat](tests/Behat).
+
+## Requirements
 
 ### PHP compatibility
-This tool requires php 5.6+ or higher.
-
+This tool requires php `5.6` or higher.
 The main reason for choosing php 5.6 is to be able to share this tool with more programmers :)
+And some symfony framework components in versions `^2.7.52 || ^3.0 || ^4.0 || ^5.0.8` more info about requremnts 
+you can find in the [composer.json](composer.json).
 
-### Work
-
-Currently, Work in progress, but the packagist package will soon be available.
-
-### Screenshots
+## Screenshots
 
 With parallel
 ![Alt text](with-parallel.png?raw=true "with parallel")
@@ -30,27 +69,17 @@ Without parallel
 ![Alt text](without-parallel.png?raw=true "without parallel")
 
 
-### Installing Behat Parallel Extension
+## Installing Behat Parallel Extension
 
-It will be by composer manager. TBD
-
-### Configuration (Todo, it might still change)
-
-Setting the environment variables can by be will done with your handler.
-
-
-```yaml
-default:
-    extensions:
-        DMarynicz\BehatParallelExtension\Extension:
-          events:
-            -
-              eventName: parallel_extension.worker_created
-              handler:
-                - App\Tests\Behat\Event\WorkerCreatedHandler
-                - handleWorkerCreated
+The most convenient way to install Behat Parallel Extension is by using Composer:
+```
+composer  require --dev dmarynicz/behat-parallel-extension
 ```
 
+
+### 
+
+Setting the environment variables can by be will done with your handler.
 Or by directly by configuring workers:
 
 ```yaml
@@ -92,11 +121,11 @@ default:
 In first method you can configure unlimited workers with your php code.
 In second method if you want 16 workers then you must paste 16 elements in the array.
 
-### How to integrate this extension with symfony?
+## How to integrate this extension with symfony?
 
 TBD  
 
-### Usage
+## Usage
 
 Use "--parallel" or "-l" parameter to specify number of concurrent workers. For example:
 
@@ -109,3 +138,20 @@ Use "--parallel" or "-l" parameter to specify number of concurrent workers. For 
   ```
 
 
+[//]: # 
+   [PHP]: <https://www.php.net>
+   [Symfony]: <http://symfony.com>
+   [Docker]: <https://www.docker.com/>
+   [Docker Compose]: <https://www.docker.com/>
+   [PHPUnit]: <https://phpunit.de>
+   [Composer]: <https://getcomposer.org>
+   [PHP_CodeSniffer]:  <https://github.com/squizlabs/PHP_CodeSniffer>
+   [PHPStan]:   <https://github.com/phpstan/phpstan>
+   [Doctrine Coding Standard]:   <https://www.doctrine-project.org/projects/doctrine-coding-standard/en/6.0/reference/index.html#introduction>
+   [PSR-2]: <https://www.php-fig.org/psr/psr-2/>
+   [PSR-1]: <https://www.php-fig.org/psr/psr-1/>
+   [PSR-12]: <https://www.php-fig.org/psr/psr-12/>
+   [Behat]: <https://behat.org/>
+   [Deptrac]: <https://github.com/sensiolabs-de/deptrac>
+   [KnpPaginatorBundle]: <https://github.com/KnpLabs/KnpPaginatorBundle>
+   [Behatch contexts]: https://github.com/Behatch/contexts 
