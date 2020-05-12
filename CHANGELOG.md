@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [0.1.1] - 2020-05-12
 ### Fixed
-  * [#52](https://github.com/Daniel-Marynicz/BehatParallelExtension/pull/52)  Fix composer dependency problems with symfony 5
+  * [#52](https://github.com/Daniel-Marynicz/BehatParallelExtension/pull/52)  Fix composer dependency problems with Symfony 5
 
 ## [0.1.0] - 2020-05-12
 ### Added
