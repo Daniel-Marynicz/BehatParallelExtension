@@ -9,7 +9,7 @@ use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SigintController implements Controller
+final class SigintController implements Controller
 {
     /** @var EventDispatcherDecorator */
     private $eventDispatcherDecorator;
@@ -36,7 +36,6 @@ class SigintController implements Controller
         }
 
         declare(ticks = 1);
-        pcntl_async_signals(true);
         pcntl_signal(SIGINT, [$this, 'abortTests']);
 
         return null;
@@ -48,8 +47,6 @@ class SigintController implements Controller
     public function abortTests()
     {
         $this->eventDispatcherDecorator->dispatch(new ParallelTestsAborted(), ParallelTestsAborted::ABORTED);
-
-        exit(1);
     }
 
     /**
