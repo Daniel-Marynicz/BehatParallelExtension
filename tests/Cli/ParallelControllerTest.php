@@ -99,6 +99,12 @@ abstract class ParallelControllerTest extends ControllerTest
         $this->assertEquals($expectedScenarioTitle, $progressBar->getMessage('scenario'));
     }
 
+    public function testParallelTestsAborted()
+    {
+        $this->poll->expects($this->once())->method('stop');
+        $this->controller->parallelTestsAborted();
+    }
+
     /**
      * @return array<array<string|null>>
      */

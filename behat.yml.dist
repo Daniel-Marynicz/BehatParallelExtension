@@ -1,4 +1,7 @@
 default:
+    gherkin:
+        filters:
+            tags: ~@skip
     translation:
         locale: en
     suites:
@@ -9,6 +12,7 @@ default:
                 - DMarynicz\Tests\Behat\Context\ParallelBehatContext
                 - DMarynicz\Tests\Behat\Context\ResolveDirectorySeparatorContext
                 - DMarynicz\Tests\Behat\Context\EnvironmentContext
+                - DMarynicz\Tests\Behat\Context\SimulateTestContext
     extensions:
         DMarynicz\BehatParallelExtension\Extension: ~
 

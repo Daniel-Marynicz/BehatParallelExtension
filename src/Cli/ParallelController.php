@@ -8,7 +8,8 @@ use Behat\Testwork\Tester\Cli\ExerciseController;
 use DMarynicz\BehatParallelExtension\Event\AfterTaskTested;
 use DMarynicz\BehatParallelExtension\Event\BeforeTaskTested;
 use DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator;
-use DMarynicz\BehatParallelExtension\Event\ParallelTestCompleted;
+use DMarynicz\BehatParallelExtension\Event\ParallelTestsAborted;
+use DMarynicz\BehatParallelExtension\Event\ParallelTestsCompleted;
 use DMarynicz\BehatParallelExtension\Exception\UnexpectedValue;
 use DMarynicz\BehatParallelExtension\Task\Queue;
 use DMarynicz\BehatParallelExtension\Task\TaskEntity;
@@ -121,6 +122,11 @@ abstract class ParallelController
         $this->poll->stop();
     }
 
+    public function parallelTestsAborted()
+    {
+        $this->poll->stop();
+    }
+
     /**
      * @return int
      */
@@ -133,7 +139,7 @@ abstract class ParallelController
         $this->poll->wait();
         $this->output->writeln('');
 
-        $this->eventDispatcher->dispatch(new ParallelTestCompleted(), ParallelTestCompleted::COMPLETED);
+        $this->eventDispatcher->dispatch(new ParallelTestsCompleted(), ParallelTestsCompleted::COMPLETED);
 
         return $this->exitCode;
     }
@@ -142,6 +148,7 @@ abstract class ParallelController
     {
         $this->eventDispatcher->addListener(BeforeTaskTested::BEFORE, [$this, 'beforeTaskTested']);
         $this->eventDispatcher->addListener(AfterTaskTested::AFTER, [$this, 'afterTaskTested']);
+        $this->eventDispatcher->addListener(ParallelTestsAborted::ABORTED, [$this, 'parallelTestsAborted']);
     }
 
     /**

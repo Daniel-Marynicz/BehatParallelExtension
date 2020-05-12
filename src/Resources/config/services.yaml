@@ -6,6 +6,10 @@ services:
       #EventDispatcherExtension::DISPATCHER_ID
       $eventDispatcher: '@event_dispatcher'
 
+  DMarynicz\BehatParallelExtension\Cli\SigintController:
+    autowire: true
+    tags:
+      - { name: cli.controller, priority: 9999 }
 
   parallel_extension.php_executable_finder:
     class: Symfony\Component\Process\PhpExecutableFinder
