@@ -102,7 +102,7 @@ after_script:
       aws s3 sync coverage/ "s3://behat-parallel-extension-ci/cc-coverage/$TRAVIS_BUILD_NUMBER"
       aws s3 sync "s3://behat-parallel-extension-ci/cc-coverage/$TRAVIS_BUILD_NUMBER" coverage/
 
-      if (( $(ls coverage/codeclimate.*.json | wc -l ) >= 5 )) ; then
+      if (( $(ls coverage/codeclimate.*.json | wc -l ) >= $CI_NODE_TOTAL )) ; then
         cc-test-reporter sum-coverage \
           --parts $CI_NODE_TOTAL coverage/codeclimate.*.json \
           --output - | \
