@@ -12,11 +12,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class SigintController implements Controller
 {
     /** @var EventDispatcherDecorator */
-    private $eventDispatcherDecorator;
+    private $eventDispatcher;
 
-    public function __construct(EventDispatcherDecorator $eventDispatcherDecorator)
+    public function __construct(EventDispatcherDecorator $eventDispatcher)
     {
-        $this->eventDispatcherDecorator = $eventDispatcherDecorator;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -48,7 +48,7 @@ final class SigintController implements Controller
      */
     public function abortTests()
     {
-        $this->eventDispatcherDecorator->dispatch(new ParallelTestsAborted(), ParallelTestsAborted::ABORTED);
+        $this->eventDispatcher->dispatch(new ParallelTestsAborted(), ParallelTestsAborted::ABORTED);
     }
 
     /**
