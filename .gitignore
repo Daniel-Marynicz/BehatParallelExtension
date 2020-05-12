@@ -2,3 +2,4 @@
 /.phpcs-cache
 /.phpunit.result.cache
 /test.json
+/composer.lock
