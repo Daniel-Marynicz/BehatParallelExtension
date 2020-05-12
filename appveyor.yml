@@ -52,6 +52,7 @@ install:
         Add-Content php.ini "`n extension=php_openssl.dll"
         Add-Content php.ini "`n extension=php_curl.dll"
         Add-Content php.ini "`n extension=php_mbstring.dll"
+        Add-Content php.ini "`n extension=php_pcntl.dll"
       }
 
       function installComposer
