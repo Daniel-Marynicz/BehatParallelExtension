@@ -35,8 +35,10 @@ final class SigintController implements Controller
             return null;
         }
 
-        declare(ticks = 1);
-        pcntl_signal(SIGINT, [$this, 'abortTests']);
+        if ($this->isSystemSupportsPcntl()) {
+            declare(ticks = 1);
+            pcntl_signal(SIGINT, [$this, 'abortTests']);
+        }
 
         return null;
     }
@@ -55,5 +57,15 @@ final class SigintController implements Controller
     private function isParallelModeEnabled(InputInterface $input)
     {
         return $input->getOption('parallel') !== false || $input->getOption('parallel-feature');
+    }
+
+    /**
+     * Windows system's does not have pcntl extension
+     *
+     * @return bool
+     */
+    private function isSystemSupportsPcntl()
+    {
+        return function_exists('pcntl_signal');
     }
 }
