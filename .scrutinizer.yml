@@ -16,7 +16,20 @@ build:
           -
             command: phpcs-run
     tests: true
-    coverage:
+    coverage56:
+      environment:
+        php:
+          version: 5.6
+      project_setup:
+        override:
+          - 'true'
+      tests:
+        override:
+          - command: ./vendor/bin/phpunit  --coverage-clover clover.xml
+            coverage:
+              file: clover.xml
+              format: clover
+    coverage74:
       environment:
         php:
           version: 7.4
