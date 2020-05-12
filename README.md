@@ -5,7 +5,8 @@
 [![Windows status](https://ci.appveyor.com/api/projects/status/i2y6sjmi6ae0xa7l/branch/master?svg=true)](https://ci.appveyor.com/project/Daniel-Marynicz/behat-parallel-extension/branch/master)
 [![Scrutinizer Code Coverage](https://img.shields.io/scrutinizer/coverage/g/Daniel-Marynicz/BehatParallelExtension)](https://scrutinizer-ci.com/g/Daniel-Marynicz/BehatParallelExtension/?branch=master)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/quality/g/Daniel-Marynicz/BehatParallelExtension)](https://scrutinizer-ci.com/g/Daniel-Marynicz/BehatParallelExtension/?branch=master)
-
+[![Maintainability](https://api.codeclimate.com/v1/badges/82e68e2002a9ab8840ef/maintainability)](https://codeclimate.com/github/Daniel-Marynicz/BehatParallelExtension/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/82e68e2002a9ab8840ef/test_coverage)](https://codeclimate.com/github/Daniel-Marynicz/BehatParallelExtension/test_coverage)
 
 ### Introduction
 This tool is for a speedup behat 3.x  tests by executing this tests in parallel mode.

@@ -1,44 +1,111 @@
 language: php
 
-php:
-  - 5.6
-  - 7.0
-  - 7.1
-  - 7.2
-  - 7.3
+env:
+  global:
+    - CI_NODE_TOTAL=5
 
 matrix:
   include:
-    - php: 7.4
-      env: REQUIRE_QUALITY_TOOLS=1
+  - php: 5.6
+    env:
+      - CI_NODE_INDEX=0
+  - php: 7.0
+    env:
+      - CI_NODE_INDEX=1
+  - php: 7.1
+    env:
+      - CI_NODE_INDEX=2
+  - php: 7.2
+    env:
+      - CI_NODE_INDEX=3
+  - php: 7.4
+    env:
+      - REQUIRE_QUALITY_TOOLS=1
+      - CI_NODE_INDEX=4
 
 install:
-  - composer update
-  - composer install
-
+- composer update
+- composer install
 cache:
   directories:
-    - $HOME/.composer/cache
-
+  - "$HOME/.composer/cache"
+  - "$HOME/bin"
 before_install:
-  - |
-    if [ "$REQUIRE_QUALITY_TOOLS" != "" ]; then
-      composer require --dev --no-update \
-        phpstan/phpstan \
-        squizlabs/php_codesniffer \
-        phpstan/phpstan-phpunit \
-        doctrine/coding-standard \
-        phpstan/phpstan-symfony \
-        phpstan/phpstan-doctrine
-    fi
+- |
+  set -e ;
+  if [[ ! -z "$REINSTALL_TOOLS" ]] ; then
+    rm -rf $HOME/bin
+  fi
 
+  mkdir -p $HOME/bin
+
+- |
+  if [ ! -f $HOME/bin/cc-test-reporter ] ; then
+    curl -s -L  \
+      https://codeclimate.com/downloads/test-reporter/test-reporter-0.8.0-linux-amd64 \
+      -o $HOME/bin/cc-test-reporter
+  fi
+  chmod +x $HOME/bin/cc-test-reporter
+  sha1sum ~/bin/cc-test-reporter  | grep $CC_TEST_REPORTER_SHA1
+
+- |
+
+  if [[ ! -L $HOME/bin/aws ]] &&  [[ ! -e $HOME/bin/aws   ]]; then
+    gpg --import .awscli-public.key
+
+    curl -s -L \
+      "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" \
+      -o "awscliv2.zip"
+    curl -s -L \
+        "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip.sig" \
+        -o "awscliv2.zip.sig"
+    gpg --verify awscliv2.zip.sig  awscliv2.zip
+    unzip  awscliv2.zip
+    ./aws/install  --bin-dir ~/bin --install-dir ~/bin/aws-cli --update
+    rm -rf aws awscliv2.zip awscliv2.zip.sig aws-public.key
+    aws --version
+  fi
+
+- |
+  set -e ;
+  if [ "$REQUIRE_QUALITY_TOOLS" != "" ]; then
+    composer require --dev --no-update \
+      phpstan/phpstan \
+      squizlabs/php_codesniffer \
+      phpstan/phpstan-phpunit \
+      doctrine/coding-standard \
+      phpstan/phpstan-symfony \
+      phpstan/phpstan-doctrine
+  fi
+
+before_script:
+  - cc-test-reporter before-build
+  - mkdir -p coverage
 
 script:
-  - ./vendor/bin/phpunit --fail-on-warning
-  - ./vendor/bin/behat --colors --strict --stop-on-failure
+- ./vendor/bin/phpunit --fail-on-warning --coverage-clover ./coverage/coverage.$CI_NODE_INDEX.clover
+- "./vendor/bin/behat --colors --strict --stop-on-failure"
+- |
+  if [ "$REQUIRE_QUALITY_TOOLS" != "" ]; then
+    ./vendor/bin/phpcs
+    ./vendor/bin/phpstan analyse
+  fi
+after_script:
   - |
-    if [ "$REQUIRE_QUALITY_TOOLS" != "" ]; then
-      ./vendor/bin/phpcs
-      ./vendor/bin/phpstan analyse
-    fi
+    set -e ;
+     if [[ "$TRAVIS_TEST_RESULT" == 0 ]] &&  [[ ! -z "$CC_TEST_REPORTER_ID" ]] ; then
+      cc-test-reporter format-coverage \
+        --input-type clover \
+        --output ./coverage/codeclimate.$CI_NODE_INDEX.json \
+        ./coverage/coverage.$CI_NODE_INDEX.clover
 
+      aws s3 sync coverage/ "s3://behat-parallel-extension-ci/cc-coverage/$TRAVIS_BUILD_NUMBER"
+      aws s3 sync "s3://behat-parallel-extension-ci/cc-coverage/$TRAVIS_BUILD_NUMBER" coverage/
+
+      if (( $(ls coverage/codeclimate.*.json | wc -l ) >= $CI_NODE_TOTAL )) ; then
+        cc-test-reporter sum-coverage \
+          --parts $CI_NODE_TOTAL coverage/codeclimate.*.json \
+          --output - | \
+          cc-test-reporter upload-coverage --input -
+      fi
+    fi
