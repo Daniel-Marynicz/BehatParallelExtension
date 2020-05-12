@@ -46,8 +46,6 @@ interface Poll
 
     /**
      * Stops poll
-     *
-     * @return mixed
      */
     public function stop();
 }

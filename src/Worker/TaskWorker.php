@@ -122,7 +122,7 @@ class TaskWorker implements Worker
             return;
         }
 
-        $this->currentProcess->stop(0);
+        $this->currentProcess->stop();
     }
 
     /**
@@ -186,7 +186,6 @@ class TaskWorker implements Worker
             null,
             null
         );
-        $this->currentProcess->setPty(true);
         $this->currentProcess->start();
     }
 }
