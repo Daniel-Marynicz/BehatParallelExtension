@@ -56,7 +56,7 @@ final class SigintController implements Controller
      */
     private function isParallelModeEnabled(InputInterface $input)
     {
-        return $input->getOption('parallel') !== false || $input->getOption('parallel-feature');
+        return $input->getOption('parallel') !== false || $input->getOption('parallel-feature') !== false;
     }
 
     /**
