@@ -26,7 +26,7 @@ If you Properly integrate your app with this extension then it can be dramatical
 
 ### Main modes
 
-Behat Parallel Extension can work i two main modes:
+Behat Parallel Extension can work in two main modes:
 
 * **Parallel scenario** witch can be enabled by option `--parallel` or  `-l`.
 * **Parallel feature** to enable this you need use behat option `--parallel-feature`.
@@ -38,9 +38,7 @@ Behat Parallel Extension can work i two main modes:
 ### PHP compatibility
 
 This Behat extension requires php `5.6` or higher.
-The main reason for choosing php 5.6 is to be able to share this tool with more programmers :)
-And some symfony framework components in versions `^2.7.52 || ^3.0 || ^4.0 || ^5.0.8` more info about requirements
-you can find in the [composer.json](composer.json).
+The main reason for choosing php 5.6 is to be able to share this tool with more programmers :).
 
 ## Installing Behat Parallel Extension
 
@@ -61,7 +59,7 @@ You can then activate and configure the extension in your `behat.yml` or `behat.
 In the array `environments` you can set you environment vars for each worker.
 From this `environments` array depends on how much maximum you can run Workers.
 If you do note set  `environments` array  then you can run an unlimited amount of Workers.
-If the `environmental` array is defined, the maximum number of employees is the size of this array.
+If the `environmental` array is defined, the maximum number of workers is the size of this array.
 
 Example for maximum 4 Workers:
 
