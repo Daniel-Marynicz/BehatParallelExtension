@@ -7,7 +7,7 @@ use Behat\Gherkin\Node\ScenarioLikeInterface;
 use Behat\Testwork\Cli\Controller;
 use DMarynicz\BehatParallelExtension\Event\AfterTaskTested;
 use DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator;
-use DMarynicz\BehatParallelExtension\Event\ParallelTestCompleted;
+use DMarynicz\BehatParallelExtension\Event\ParallelTestsCompleted;
 use ReflectionClass;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -49,7 +49,7 @@ final class RerunController implements Controller
             AfterTaskTested::AFTER,
             [$this, 'collectFailedTask']
         );
-        $this->eventDispatcher->addListener(ParallelTestCompleted::COMPLETED, [$this, 'writeCache']);
+        $this->eventDispatcher->addListener(ParallelTestsCompleted::COMPLETED, [$this, 'writeCache']);
 
         return $this->decoratedController->execute($input, $output);
     }

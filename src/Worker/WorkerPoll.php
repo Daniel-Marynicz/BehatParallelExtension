@@ -76,6 +76,8 @@ class WorkerPoll implements Poll
                 $worker->wait();
             }
 
+            pcntl_signal_dispatch();
+
             $this->sleep();
         }
     }

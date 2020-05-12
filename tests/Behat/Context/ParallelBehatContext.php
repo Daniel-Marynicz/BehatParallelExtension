@@ -60,6 +60,38 @@ class ParallelBehatContext implements Context
     }
 
     /**
+     * Starts behat command in non blocking way with provided parameters
+     *
+     * @param string $argumentsString
+     *
+     * @When /^I start "behat(?: ((?:\"|[^"])*))?"$/
+     */
+    public function iStartBehat($argumentsString = '')
+    {
+        if (! defined('BEHAT_BIN_PATH')) {
+            throw new Runtime('constant BEHAT_BIN_PATH is not defined.');
+        }
+
+        $cmd = sprintf(
+            '%s %s %s',
+            $this->phpBin,
+            escapeshellarg(BEHAT_BIN_PATH),
+            $argumentsString
+        );
+
+        $this->processFromShellCommandline($cmd);
+        $this->process->start();
+    }
+
+    /**
+     * @Then /^I send a SIGINT signal to behat process$/
+     */
+    public function iSendSigintSignalToBehatProcess()
+    {
+        $this->process->signal(SIGINT);
+    }
+
+    /**
      * Checks whether previously ran command passes|fails with provided output.
      *
      * @param string       $success "fail" or "pass"
