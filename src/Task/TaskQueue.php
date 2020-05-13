@@ -4,8 +4,6 @@ namespace DMarynicz\BehatParallelExtension\Task;
 
 class TaskQueue implements Queue
 {
-    const SERVICE_ID = 'parallel_extension.queue';
-
     /** @var TaskEntity[] */
     private $elements = [];
 

@@ -8,8 +8,6 @@ use DMarynicz\BehatParallelExtension\Task\Queue;
 
 class WorkerPoll implements Poll
 {
-    const SERVICE_ID = 'parallel_extension.worker_poll';
-
     /** @var array<Worker> */
     private $workers = [];
 

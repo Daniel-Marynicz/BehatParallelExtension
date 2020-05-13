@@ -16,8 +16,6 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class Extension implements ExtensionInterface
 {
-    const JSON_ENCODER_SERVICE_ID = 'parallel_extension.json_encoder';
-
     /**
      * @return string
      */
