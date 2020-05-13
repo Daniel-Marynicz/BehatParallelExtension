@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Removed
-  * [#53](https://github.com/Daniel-Marynicz/BehatParallelExtension/pull/53)  Remove unused const
+  * [#54](https://github.com/Daniel-Marynicz/BehatParallelExtension/pull/54)  Remove unused const
 
 
 ## [0.1.1] - 2020-05-12
