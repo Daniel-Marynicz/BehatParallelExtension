@@ -15,8 +15,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class RerunController implements Controller
 {
-    const SERVICE_ID = 'cli.controller.parallel_extension.re_run_controller';
-
     /** @var EventDispatcherDecorator */
     private $eventDispatcher;
 

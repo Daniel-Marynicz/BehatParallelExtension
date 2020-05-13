@@ -3,7 +3,6 @@ services:
 
   DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator:
     arguments:
-      #EventDispatcherExtension::DISPATCHER_ID
       $eventDispatcher: '@event_dispatcher'
 
   DMarynicz\BehatParallelExtension\Cli\SigintController:
@@ -48,7 +47,6 @@ services:
     arguments:
       $decoratedController: '@DMarynicz\BehatParallelExtension\Cli\ParallelScenarioController.inner'
       $taskFactory: '@DMarynicz\BehatParallelExtension\Task\ScenarioTaskFactory'
-    #CliExtension::CONTROLLER_TAG . '.exercise'
     decorates: 'cli.controller.exercise'
 
   DMarynicz\BehatParallelExtension\Cli\ParallelFeatureController:
@@ -62,7 +60,6 @@ services:
     autowire: true
     arguments:
       $decoratedController: '@DMarynicz\BehatParallelExtension\Cli\RerunController.inner'
-      #CliExtension::CONTROLLER_TAG . '.rerun'
     decorates: 'cli.controller.rerun'
 
 
