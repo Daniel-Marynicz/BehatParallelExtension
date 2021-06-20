@@ -186,7 +186,7 @@ The extension uses the following coding standards and quality tools:
 
  The [Doctrine Coding Standard] with some exceptions for php 5.6 compatibility.
  The [Doctrine Coding Standard] is a set of rules for [PHP_CodeSniffer]. It is based on [PSR-1]
- and [PSR-2] , with some noticeable exceptions/differences/extensions.
+ and [PSR-12] , with some noticeable exceptions/differences/extensions.
 
  For more information about Doctrine Coding Standard please follow the documentation:
 
@@ -215,9 +215,9 @@ classes for behat tests in directory [tests/Behat](tests/Behat).
    [Composer]: <https://getcomposer.org>
    [PHP_CodeSniffer]:  <https://github.com/squizlabs/PHP_CodeSniffer>
    [PHPStan]:   <https://github.com/phpstan/phpstan>
-   [Doctrine Coding Standard]:   <https://www.doctrine-project.org/projects/doctrine-coding-standard/en/6.0/reference/index.html#introduction>
-   [PSR-2]: <https://www.php-fig.org/psr/psr-2/>
+   [Doctrine Coding Standard]:   <https://www.doctrine-project.org/projects/doctrine-coding-standard/en/8.2/reference/index.html#introduction>
    [PSR-1]: <https://www.php-fig.org/psr/psr-1/>
+   [PSR-12]: <https://www.php-fig.org/psr/psr-12/>
    [Behat]: <https://behat.org/>
    [SymfonyExtension]: <https://github.com/FriendsOfBehat/SymfonyExtension>
    [MinkExtension]: <https://github.com/FriendsOfBehat/MinkExtension>

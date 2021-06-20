@@ -74,7 +74,7 @@ before_install:
       phpstan/phpstan \
       squizlabs/php_codesniffer \
       phpstan/phpstan-phpunit \
-      doctrine/coding-standard \
+      doctrine/coding-standard:^8.0 \
       phpstan/phpstan-symfony \
       phpstan/phpstan-doctrine
   fi

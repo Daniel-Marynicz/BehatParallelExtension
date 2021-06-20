@@ -19,7 +19,7 @@ class TaskQueueTest extends TestCase
             $this->assertCount($expectedCount, $queue);
         }
 
-        for ($expectedCount=9; $expectedCount>0; --$expectedCount) {
+        for ($expectedCount = 9; $expectedCount > 0; --$expectedCount) {
             $this->assertEquals($this->createMock(TaskEntity::class), $queue->shift());
             $this->assertFalse($queue->isEmpty());
             $this->assertCount($expectedCount, $queue);

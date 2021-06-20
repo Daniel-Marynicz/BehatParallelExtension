@@ -36,7 +36,7 @@ final class SigintController implements Controller
         }
 
         if ($this->isSystemSupportsPcntl()) {
-            declare(ticks = 1);
+            declare(ticks=1);
             pcntl_signal(SIGINT, [$this, 'abortTests']);
         }
 
