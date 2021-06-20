@@ -30,6 +30,6 @@ jobs:
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
     - name: Run PHPUnit
-      run: phpunit --fail-on-warning
+      run: ./vendor/bin/phpunit --fail-on-warning
     - name: Run Behat
       run: ./vendor/bin/behat --colors --strict --stop-on-failure
