@@ -20,6 +20,8 @@ build:
       environment:
         php:
           version: 7.4
+        variables:
+          XDEBUG_MODE: coverage
       project_setup:
         override:
           - 'true'
