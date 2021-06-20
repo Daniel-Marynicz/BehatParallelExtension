@@ -19,6 +19,7 @@
         <exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint" />
         <exclude name="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue.NullabilitySymbolRequired" />
         <exclude name="SlevomatCodingStandard.ControlStructures.RequireNullCoalesceOperator.NullCoalesceOperatorNotUsed" />
+        <exclude name="PSR12.Properties.ConstantVisibility.NotFound" />
     </rule>
 
     <file>src/</file>

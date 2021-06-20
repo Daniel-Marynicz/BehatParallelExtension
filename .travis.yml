@@ -4,7 +4,7 @@ env:
   global:
     - CI_NODE_TOTAL=5
 
-matrix:
+jobs:
   include:
   - php: 5.6
     env:
@@ -22,6 +22,7 @@ matrix:
     env:
       - REQUIRE_QUALITY_TOOLS=1
       - CI_NODE_INDEX=4
+      - XDEBUG_MODE=coverage
 
 install:
 - composer update
@@ -73,7 +74,7 @@ before_install:
       phpstan/phpstan \
       squizlabs/php_codesniffer \
       phpstan/phpstan-phpunit \
-      doctrine/coding-standard \
+      doctrine/coding-standard:^8.0 \
       phpstan/phpstan-symfony \
       phpstan/phpstan-doctrine
   fi

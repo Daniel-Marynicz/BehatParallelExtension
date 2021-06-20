@@ -57,7 +57,7 @@ class WorkerPoll implements Poll
 
         $this->setMaxWorkersToProperValue();
 
-        for ($i = 0; $i< $this->maxWorkers; $i++) {
+        for ($i = 0; $i < $this->maxWorkers; $i++) {
             $env    = isset($this->environments[$i]) ? $this->environments[$i] : [];
             $worker = new TaskWorker($this->queue, $env, $this->eventDispatcher, $i);
             $worker->start();

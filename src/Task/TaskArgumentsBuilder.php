@@ -101,12 +101,15 @@ final class TaskArgumentsBuilder implements ArgumentsBuilder
         switch (gettype($value)) {
             case 'boolean':
                 return $this->getBoolArgument($name, $value);
+
             case 'array':
                 return $this->getArrayArguments($name, $value);
+
             case 'integer':
             case 'double':
             case 'string':
                 return $this->getStringArguments($name, (string) $value);
+
             default:
                 return [];
         }
