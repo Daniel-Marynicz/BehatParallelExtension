@@ -22,6 +22,7 @@ matrix:
     env:
       - REQUIRE_QUALITY_TOOLS=1
       - CI_NODE_INDEX=4
+      - XDEBUG_MODE=coverage
 
 install:
 - composer update
