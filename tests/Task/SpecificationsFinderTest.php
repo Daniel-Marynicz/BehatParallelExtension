@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 class SpecificationsFinderTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         BypassFinals::enable();
     }

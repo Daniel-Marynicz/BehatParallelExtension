@@ -7,7 +7,7 @@ use DMarynicz\BehatParallelExtension\Task\TaskEntity;
 
 class ParallelFeatureControllerTest extends ParallelControllerTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->controller = new ParallelFeatureController(

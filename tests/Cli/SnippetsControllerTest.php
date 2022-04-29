@@ -11,7 +11,7 @@ class SnippetsControllerTest extends ControllerTest
     /** @var MockObject|SnippetRepository */
     private $snippetRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->snippetRepository = $this->createMock(SnippetRepository::class);

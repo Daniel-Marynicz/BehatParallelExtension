@@ -49,7 +49,7 @@ class DetermineNumberOfProcessingUnitsTest extends TestCase
         ];
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $value = getenv('NUMBER_OF_PROCESSORS');
         if (! is_string($value)) {
@@ -59,7 +59,7 @@ class DetermineNumberOfProcessingUnitsTest extends TestCase
         $this->numberOfPressersEnvValue = $value;
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         putenv('NUMBER_OF_PROCESSORS=' . $this->numberOfPressersEnvValue);
     }

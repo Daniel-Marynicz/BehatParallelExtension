@@ -39,7 +39,7 @@ abstract class ParallelControllerTest extends ControllerTest
 
     abstract public function testExecute();
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->taskFactory              = $this->createMock(TaskFactory::class);

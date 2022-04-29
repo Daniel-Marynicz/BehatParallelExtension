@@ -11,7 +11,7 @@ use Symfony\Component\Process\PhpExecutableFinder;
 
 class TaskArgumentsBuilderTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (defined('BEHAT_BIN_PATH')) {
             return;

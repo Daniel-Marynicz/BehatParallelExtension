@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class EventDispatcherDecoratorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         BypassFinals::enable();
     }

@@ -7,7 +7,7 @@ use DMarynicz\BehatParallelExtension\Task\TaskEntity;
 
 class ParallelScenarioControllerTest extends ParallelControllerTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->controller = new ParallelScenarioController(

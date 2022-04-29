@@ -22,7 +22,7 @@ class RerunControllerTest extends ControllerTest
     /** @var RerunController */
     protected $controller;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->eventsDispatcher = $this->createMock(EventDispatcherDecorator::class);
