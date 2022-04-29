@@ -11,8 +11,7 @@ jobs:
     strategy:
       matrix:
         os: ['ubuntu-18.04', 'ubuntu-20.04']
-        version: [ '7.4']
-        #version: [ '7.4', '8.0', '8.1']
+        version: [ '7.4', '8.0', '8.1']
         include:
           - os: 'ubuntu-18.04'
             version: '7.2'
