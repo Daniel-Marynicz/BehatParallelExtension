@@ -138,7 +138,7 @@ class ParallelBehatContext implements Context
      */
     public function theOutputShouldContain(PyStringNode $text)
     {
-        Assert::assertContains((string) $text, $this->getOutput());
+        Assert::assertStringContainsString((string) $text, $this->getOutput());
     }
 
     /**
@@ -146,7 +146,7 @@ class ParallelBehatContext implements Context
      */
     public function iShouldSeeProgressBar()
     {
-        Assert::assertContains('[============================] 100%', $this->getOutput());
+        Assert::assertStringContainsString('[============================] 100%', $this->getOutput());
     }
 
     /**
