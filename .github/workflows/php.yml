@@ -7,11 +7,42 @@ on:
     branches: [ main ]
 
 jobs:
+  quality:
+    runs-on: 'ubuntu-20.04'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-quality-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-quality-php
+      - name: Require symfony quality tools
+        run: |
+          composer require --dev --no-update \
+            phpstan/phpstan \
+            squizlabs/php_codesniffer \
+            phpstan/phpstan-phpunit \
+            doctrine/coding-standard:^8.0 \
+            phpstan/phpstan-symfony
+      - name: Run phpcs
+        run: ./vendor/bin/phpcs
+      - name: Run phpstan
+        run: ./vendor/bin/phpstan analyse
+
   test:
+    needs: quality
     strategy:
       matrix:
         os: ['ubuntu-18.04', 'ubuntu-20.04']
         version: [ '7.4', '8.0', '8.1']
+        symfony: ['^4.0', '^5.0', '^6.0']
         include:
           - os: 'ubuntu-18.04'
             version: '7.2'
@@ -38,12 +69,20 @@ jobs:
     - name: Validate composer.json and composer.lock
       run: composer validate
 
+    - name: Require symfony
+      if: ${{ matrix.symfony }}
+      run: |
+        composer require  --no-update symfony/process:${{ matrix.symfony }} \
+          symfony/console:${{ matrix.symfony }}	\
+          symfony/serializer:${{ matrix.symfony }} \
+          symfony/dependency-injection:${{ matrix.symfony }} \
+          symfony/event-dispatcher:${{ matrix.symfony }} \
+          symfony/yaml:${{ matrix.symfony }} \
+          symfony/expression-language:${{ matrix.symfony }}
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
-
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
-
     - name: Run PHPUnit
       run: ./vendor/bin/phpunit --fail-on-warning
     - name: Run Behat
