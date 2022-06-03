@@ -17,17 +17,15 @@ abstract class ResolveTextContext implements Context
      * Replaces tokens in feature files
      *
      * @param string $text
-     *
-     * @return string
      */
-    abstract public function resolveText($text);
+    abstract public function resolveText($text): string;
 
     /**
      * @throws ReflectionException
      *
      * @BeforeStep
      */
-    public function resolveVarsContext(BeforeStepScope $event)
+    public function resolveVarsContext(BeforeStepScope $event): void
     {
         $step = $event->getStep();
         $args = $step->getArguments();
@@ -55,7 +53,7 @@ abstract class ResolveTextContext implements Context
      *
      * @return TableNode<string>
      */
-    private function resolveTableNode(TableNode $tableNode)
+    private function resolveTableNode(TableNode $tableNode): TableNode
     {
         $table = $tableNode->getTable();
 
@@ -71,10 +69,7 @@ abstract class ResolveTextContext implements Context
         return new TableNode($table);
     }
 
-    /**
-     * @return PyStringNode
-     */
-    private function resolvePyStringNode(PyStringNode $stringNode)
+    private function resolvePyStringNode(PyStringNode $stringNode): PyStringNode
     {
         $newStringNode = $this->resolveText($stringNode->getRaw());
 
@@ -86,7 +81,7 @@ abstract class ResolveTextContext implements Context
      *
      * @throws ReflectionException
      */
-    private function setArguments(StepNode $stepNode, array $value)
+    private function setArguments(StepNode $stepNode, array $value): void
     {
         $reflection = new ReflectionClass($stepNode);
         $argProp    = $reflection->getProperty('arguments');
@@ -99,7 +94,7 @@ abstract class ResolveTextContext implements Context
      *
      * @throws ReflectionException
      */
-    private function setText(StepNode $stepNode, $value)
+    private function setText(StepNode $stepNode, $value): void
     {
         $reflection = new ReflectionClass($stepNode);
         $argProp    = $reflection->getProperty('text');

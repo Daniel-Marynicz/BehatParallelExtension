@@ -26,7 +26,7 @@ abstract class ControllerTest extends TestCase
     /** @var MockObject|SymfonyCommand */
     protected $command;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->decoratedController = $this->createMock(Controller::class);
         $this->input               = $this->createMock(InputInterface::class);

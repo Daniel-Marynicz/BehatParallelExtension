@@ -11,7 +11,7 @@ use Symfony\Component\Process\PhpExecutableFinder;
 
 class TaskArgumentsBuilderTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (defined('BEHAT_BIN_PATH')) {
             return;
@@ -31,7 +31,7 @@ class TaskArgumentsBuilderTest extends TestCase
      *
      * @dataProvider buildArgumentsProvider
      */
-    public function testBuildArguments($options, $arguments, $phpPath, $path, $expected)
+    public function testBuildArguments($options, $arguments, $phpPath, $path, $expected): void
     {
         $input  = $this->createInputInterfaceMock($options, $arguments);
         $finder = $this->createPhpExecutableFinder($phpPath);
@@ -45,7 +45,7 @@ class TaskArgumentsBuilderTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function buildArgumentsProvider()
+    public function buildArgumentsProvider(): array
     {
         return [
             [

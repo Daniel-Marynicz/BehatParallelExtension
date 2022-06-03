@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class LogicTest extends TestCase
 {
-    public function test()
+    public function test(): void
     {
         $this->expectException(Logic::class);
 

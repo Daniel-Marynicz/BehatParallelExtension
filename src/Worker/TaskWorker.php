@@ -68,7 +68,7 @@ class TaskWorker implements Worker
         $this->processFactory = $processFactory;
     }
 
-    public function start()
+    public function start(): void
     {
         if ($this->isStarted()) {
             throw new Runtime('Worker is already started');
@@ -78,7 +78,7 @@ class TaskWorker implements Worker
         $this->next();
     }
 
-    public function wait()
+    public function wait(): void
     {
         if ($this->isRunning()) {
             return;
@@ -99,23 +99,17 @@ class TaskWorker implements Worker
         $this->next();
     }
 
-    /**
-     * @return bool
-     */
-    public function isRunning()
+    public function isRunning(): bool
     {
         return $this->currentProcess && $this->currentProcess->isRunning();
     }
 
-    /**
-     * @return bool
-     */
-    public function isStarted()
+    public function isStarted(): bool
     {
         return $this->started;
     }
 
-    public function stop()
+    public function stop(): void
     {
         $this->started = false;
         if (! ($this->currentProcess instanceof Process)) {
@@ -149,10 +143,7 @@ class TaskWorker implements Worker
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getWorkerId()
+    public function getWorkerId(): int
     {
         return $this->workerId;
     }
@@ -162,13 +153,13 @@ class TaskWorker implements Worker
         $this->eventDispatcher->dispatch(new WorkerDestroyed($this), WorkerCreated::WORKER_CREATED);
     }
 
-    private function clearCurrent()
+    private function clearCurrent(): void
     {
         $this->currentTask    = null;
         $this->currentProcess = null;
     }
 
-    private function next()
+    private function next(): void
     {
         $this->currentTask = $this->queue->shift();
         if (! $this->currentTask instanceof TaskEntity) {

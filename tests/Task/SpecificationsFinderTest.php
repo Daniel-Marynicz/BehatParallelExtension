@@ -12,17 +12,18 @@ use PHPUnit\Framework\TestCase;
 
 class SpecificationsFinderTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         BypassFinals::enable();
     }
 
-    public function testFindGroupedSpecifications()
+    public function testFindGroupedSpecifications(): void
     {
         $suiteRepository = $this->createMock(SuiteRepository::class);
-        $testworkFinder  = $this->createMock(TestworkSpecificationFinder::class);
-        $suite           = $this->createMock(Suite::class);
-        $suiteIterator   = $this->createMock(SpecificationIterator::class);
+        /** @phpstan-ignore-next-line */
+        $testworkFinder = $this->createMock(TestworkSpecificationFinder::class);
+        $suite          = $this->createMock(Suite::class);
+        $suiteIterator  = $this->createMock(SpecificationIterator::class);
 
         $suite->method('getName')
             ->willReturn('some-name');

@@ -7,7 +7,7 @@ class ResolveDirectorySeparatorContext extends ResolveTextContext
     /**
      * {@inheritdoc}
      */
-    public function resolveText($text)
+    public function resolveText($text): string
     {
         return str_replace(
             ['<DIRECTORY_SEPARATOR>'],

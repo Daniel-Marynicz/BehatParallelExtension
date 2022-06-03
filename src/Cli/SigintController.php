@@ -19,10 +19,7 @@ final class SigintController implements Controller
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configure(SymfonyCommand $command)
+    public function configure(SymfonyCommand $command): void
     {
     }
 
@@ -46,25 +43,20 @@ final class SigintController implements Controller
     /**
      * Dispatches AFTER exercise event and exits program.
      */
-    public function abortTests()
+    public function abortTests(): void
     {
         $this->eventDispatcher->dispatch(new ParallelTestsAborted(), ParallelTestsAborted::ABORTED);
     }
 
-    /**
-     * @return bool
-     */
-    private function isParallelModeEnabled(InputInterface $input)
+    private function isParallelModeEnabled(InputInterface $input): bool
     {
         return $input->getOption('parallel') !== false || $input->getOption('parallel-feature') !== false;
     }
 
     /**
      * Windows system's does not have pcntl extension
-     *
-     * @return bool
      */
-    private function isSystemSupportsPcntl()
+    private function isSystemSupportsPcntl(): bool
     {
         return function_exists('pcntl_signal');
     }

@@ -15,7 +15,7 @@ class FeatureTaskFactoryTest extends TaskFactoryTest
      *
      * @dataProvider createTasksProvider
      */
-    public function testCreateTasks($specsToMock)
+    public function testCreateTasks($specsToMock): void
     {
         $finder           = $this->createSpecificationsFinderMock($specsToMock);
         $argumentsBuilder = $this->createArgumentsBuilderMock();
