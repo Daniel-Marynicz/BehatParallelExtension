@@ -7,7 +7,7 @@ use DMarynicz\BehatParallelExtension\Task\TaskEntity;
 
 class ParallelFeatureControllerTest extends ParallelControllerTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->controller = new ParallelFeatureController(
@@ -20,7 +20,7 @@ class ParallelFeatureControllerTest extends ParallelControllerTest
         );
     }
 
-    public function testExecute()
+    public function testExecute(): void
     {
         $taskEntity = $this->createMock(TaskEntity::class);
         $this->taskFactory->method('createTasks')->willReturn([$taskEntity]);

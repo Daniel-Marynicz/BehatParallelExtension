@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class WorkerDestroyedTest extends TestCase
 {
-    public function testWorkerDestroyed()
+    public function testWorkerDestroyed(): void
     {
         $testedObject = new WorkerDestroyed($this->createMock(Worker::class));
         $this->assertEquals($this->createMock(Worker::class), $testedObject->getWorker());

@@ -15,7 +15,7 @@ class TaskTest extends TestCase
      *
      * @dataProvider dataProvider
      */
-    public function testTask($testWithScenario)
+    public function testTask($testWithScenario): void
     {
         //Suite $suite, FeatureNode $feature, $path, $command = [], Scenario $scenario = null
         $suite   = $this->createMock(Suite::class);

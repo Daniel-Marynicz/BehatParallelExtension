@@ -26,7 +26,7 @@ class EnvironmentContext implements Context
      *
      * @When I create empty json file in :filename
      */
-    public function iCreateEmptyJsonFile($filename)
+    public function iCreateEmptyJsonFile($filename): void
     {
         $path   = $this->getRealPath($filename);
         $handle = new ReadWriteDataToFileWithLocking($path, 'w+b');
@@ -39,7 +39,7 @@ class EnvironmentContext implements Context
      *
      * @When I append the value of the environment variable :name variable to json :filename
      */
-    public function iAppendEnvironmentVariableToJson($name, $filename)
+    public function iAppendEnvironmentVariableToJson($name, $filename): void
     {
         $path   = $this->getRealPath($filename);
         $handle = new ReadWriteDataToFileWithLocking($path);
@@ -70,7 +70,7 @@ class EnvironmentContext implements Context
      *
      * @When the ordered unique data of the :filename json file should match:
      */
-    public function theOrderedUniqueDataOfTheFileShouldMatch($filename, TableNode $tableNode)
+    public function theOrderedUniqueDataOfTheFileShouldMatch($filename, TableNode $tableNode): void
     {
         $path   = $this->getRealPath($filename);
         $handle = new ReadWriteDataToFileWithLocking($path);
@@ -97,18 +97,13 @@ class EnvironmentContext implements Context
 
     /**
      * @param string $filename
-     *
-     * @return string
      */
-    private function getRealPath($filename)
+    private function getRealPath($filename): string
     {
         return $this->getRealFilesPath() . DIRECTORY_SEPARATOR . $filename;
     }
 
-    /**
-     * @return string
-     */
-    private function getRealFilesPath()
+    private function getRealFilesPath(): string
     {
         $path = $this->filesPath ? $this->filesPath : '';
         $path = realpath($path);

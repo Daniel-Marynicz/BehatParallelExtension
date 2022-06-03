@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class UnexpectedValueTest extends TestCase
 {
-    public function test()
+    public function test(): void
     {
         $this->expectException(UnexpectedValue::class);
 

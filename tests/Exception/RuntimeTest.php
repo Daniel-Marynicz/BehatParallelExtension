@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class RuntimeTest extends TestCase
 {
-    public function test()
+    public function test(): void
     {
         $this->expectException(Runtime::class);
 

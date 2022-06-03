@@ -7,7 +7,7 @@ class TaskQueue implements Queue
     /** @var TaskEntity[] */
     private $elements = [];
 
-    public function dispatch(TaskEntity $task)
+    public function dispatch(TaskEntity $task): void
     {
         $this->elements[] = $task;
     }
@@ -32,10 +32,8 @@ class TaskQueue implements Queue
 
     /**
      * Count elements of an queue
-     *
-     * @return int
      */
-    public function count()
+    public function count(): int
     {
         return count($this->elements);
     }

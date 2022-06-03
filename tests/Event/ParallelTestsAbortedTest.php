@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class ParallelTestsAbortedTest extends TestCase
 {
-    public function test()
+    public function test(): void
     {
         new ParallelTestsAborted();
         $this->assertTrue(true);

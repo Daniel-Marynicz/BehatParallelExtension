@@ -24,17 +24,11 @@ class Extension implements ExtensionInterface
         return 'parallel_extension';
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function initialize(ExtensionManager $extensionManager)
+    public function initialize(ExtensionManager $extensionManager): void
     {
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function configure(ArrayNodeDefinition $builder)
+    public function configure(ArrayNodeDefinition $builder): void
     {
         $builder
             ->children()
@@ -46,7 +40,7 @@ class Extension implements ExtensionInterface
     /**
      * @param mixed[] $config
      */
-    public function load(ContainerBuilder $container, array $config)
+    public function load(ContainerBuilder $container, array $config): void
     {
         $locator = new FileLocator(__DIR__ . '/Resources/config');
         $loader  = new YamlFileLoader($container, $locator);
@@ -59,10 +53,7 @@ class Extension implements ExtensionInterface
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
     }
 
@@ -151,10 +142,8 @@ class Extension implements ExtensionInterface
 
     /**
      * @param string $name
-     *
-     * @return ArrayNodeDefinition
      */
-    private function getNewArrayNode($name)
+    private function getNewArrayNode($name): ArrayNodeDefinition
     {
         if (method_exists(TreeBuilder::class, 'root')) {
             // @phpstan-ignore-next-line

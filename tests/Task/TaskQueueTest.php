@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class TaskQueueTest extends TestCase
 {
-    public function testIsEmpty()
+    public function testIsEmpty(): void
     {
         $queue = new TaskQueue();
         $this->assertTrue($queue->isEmpty());

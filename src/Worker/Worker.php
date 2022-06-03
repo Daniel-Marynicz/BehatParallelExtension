@@ -7,28 +7,24 @@ interface Worker
     /**
      * Starts Worker
      */
-    public function start();
+    public function start(): void;
 
-    public function wait();
+    public function wait(): void;
 
     /**
      * There is a Running Process?
-     *
-     * @return bool
      */
-    public function isRunning();
+    public function isRunning(): bool;
 
     /**
      * Worker is started?
-     *
-     * @return bool
      */
-    public function isStarted();
+    public function isStarted(): bool;
 
     /**
      * Stops worker
      */
-    public function stop();
+    public function stop(): void;
 
     /**
      * Returns current worker environment
@@ -48,8 +44,6 @@ interface Worker
 
     /**
      * Return's worker id
-     *
-     * @return int
      */
-    public function getWorkerId();
+    public function getWorkerId(): int;
 }

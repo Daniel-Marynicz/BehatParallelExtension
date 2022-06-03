@@ -10,12 +10,12 @@ use PHPUnit\Framework\TestCase;
 
 class EventDispatcherDecoratorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         BypassFinals::enable();
     }
 
-    public function testDispatch()
+    public function testDispatch(): void
     {
         $dispatcher = new TestworkEventDispatcher();
         $decorator  = new EventDispatcherDecorator($dispatcher);
@@ -24,7 +24,7 @@ class EventDispatcherDecoratorTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testAddListener()
+    public function testAddListener(): void
     {
         $dispatcher = new TestworkEventDispatcher();
         $decorator  = new EventDispatcherDecorator($dispatcher);

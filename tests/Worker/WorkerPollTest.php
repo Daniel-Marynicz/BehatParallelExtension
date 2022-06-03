@@ -16,7 +16,7 @@ class WorkerPollTest extends TestCase
      *
      * @dataProvider maxWorkersProvider
      */
-    public function testWorkerPoll($maxWorkers)
+    public function testWorkerPoll($maxWorkers): void
     {
         $poll = $this->getNewWorkerPoll();
         $poll->setMaxWorkers($maxWorkers);
@@ -27,7 +27,7 @@ class WorkerPollTest extends TestCase
         $poll->stop();
     }
 
-    public function testWorkerPoll2()
+    public function testWorkerPoll2(): void
     {
         $poll = $this->getNewWorkerPoll();
         $poll->setMaxWorkers(3);
@@ -40,7 +40,7 @@ class WorkerPollTest extends TestCase
     /**
      * @return int[][]
      */
-    public function maxWorkersProvider()
+    public function maxWorkersProvider(): array
     {
         return [
             [1],
@@ -50,10 +50,7 @@ class WorkerPollTest extends TestCase
         ];
     }
 
-    /**
-     * @return WorkerPoll
-     */
-    private function getNewWorkerPoll()
+    private function getNewWorkerPoll(): WorkerPoll
     {
         $queue           = $this->createQueueMock();
         $eventDispatcher = $this->createEventDispatcherDecoratorMock();

@@ -22,7 +22,7 @@ class RerunControllerTest extends ControllerTest
     /** @var RerunController */
     protected $controller;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->eventsDispatcher = $this->createMock(EventDispatcherDecorator::class);
@@ -30,13 +30,13 @@ class RerunControllerTest extends ControllerTest
         $this->controller = new RerunController($this->decoratedController, $this->eventsDispatcher);
     }
 
-    public function testConfigure()
+    public function testConfigure(): void
     {
         $this->decoratedController->expects($this->once())->method('configure')->with($this->command);
         $this->controller->configure($this->command);
     }
 
-    public function testExecute()
+    public function testExecute(): void
     {
         $this
             ->decoratedController
@@ -47,7 +47,7 @@ class RerunControllerTest extends ControllerTest
         $this->controller->execute($this->input, $this->output);
     }
 
-    public function testCollectFailedTask()
+    public function testCollectFailedTask(): void
     {
         $afterTested = $this->createMock(AfterTaskTested::class);
         $process     = $this->createMock(Process::class);
@@ -68,7 +68,7 @@ class RerunControllerTest extends ControllerTest
      *
      * @dataProvider collectFailedProvider
      */
-    public function testCollectFailedTask2($suiteName, $featureFile, $expectedLines = [], $scenarioLine = null)
+    public function testCollectFailedTask2($suiteName, $featureFile, $expectedLines = [], $scenarioLine = null): void
     {
         $afterTested = $this->createMock(AfterTaskTested::class);
         $process     = $this->createMock(Process::class);
@@ -102,7 +102,7 @@ class RerunControllerTest extends ControllerTest
     /**
      * @return array<mixed>
      */
-    public function collectFailedProvider()
+    public function collectFailedProvider(): array
     {
         return [
             [
