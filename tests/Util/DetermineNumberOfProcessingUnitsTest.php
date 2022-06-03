@@ -10,7 +10,7 @@ class DetermineNumberOfProcessingUnitsTest extends TestCase
     /** @var string */
     private $numberOfPressersEnvValue;
 
-    public function testGetDetermineNumberOfProcessingUnits()
+    public function testGetDetermineNumberOfProcessingUnits(): void
     {
         $testedObject = new DetermineNumberOfProcessingUnits();
         $result       = $testedObject->getNumberOfProcessingUnits();
@@ -23,7 +23,7 @@ class DetermineNumberOfProcessingUnitsTest extends TestCase
      * @dataProvider  envMethodProvider
      * @depends testGetDetermineNumberOfProcessingUnits
      */
-    public function testWindowsEnvMethod($expected)
+    public function testWindowsEnvMethod($expected): void
     {
         putenv('NUMBER_OF_PROCESSORS=' . $expected);
         if (stripos(PHP_OS, 'WIN') === 0) {
@@ -39,7 +39,7 @@ class DetermineNumberOfProcessingUnitsTest extends TestCase
     /**
      * @return int[][]
      */
-    public function envMethodProvider()
+    public function envMethodProvider(): array
     {
         return [
             [1],

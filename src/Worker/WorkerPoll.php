@@ -39,7 +39,7 @@ class WorkerPoll implements Poll
     /**
      * @param int $maxWorkers
      */
-    public function setMaxWorkers($maxWorkers)
+    public function setMaxWorkers($maxWorkers): void
     {
         $this->maxWorkers = $maxWorkers;
     }
@@ -47,7 +47,7 @@ class WorkerPoll implements Poll
     /**
      * @return $this
      */
-    public function start()
+    public function start(): Poll
     {
         if ($this->isStarted()) {
             throw new Runtime('Worker Poll is already started');
@@ -67,7 +67,7 @@ class WorkerPoll implements Poll
         return $this;
     }
 
-    public function wait()
+    public function wait(): void
     {
         while ($this->hasStartedWorkers()) {
             foreach ($this->workers as $worker) {
@@ -82,10 +82,7 @@ class WorkerPoll implements Poll
         }
     }
 
-    /**
-     * @return bool
-     */
-    public function hasStartedWorkers()
+    public function hasStartedWorkers(): bool
     {
         foreach ($this->workers as $worker) {
             if ($worker->isStarted()) {
@@ -96,35 +93,29 @@ class WorkerPoll implements Poll
         return false;
     }
 
-    /**
-     * @return int
-     */
-    public function getTotalWorkers()
+    public function getTotalWorkers(): int
     {
         return count($this->workers);
     }
 
-    /**
-     * @return bool
-     */
-    public function isStarted()
+    public function isStarted(): bool
     {
         return $this->started;
     }
 
-    public function stop()
+    public function stop(): void
     {
         foreach ($this->workers as $worker) {
             $worker->stop();
         }
     }
 
-    private function sleep()
+    private function sleep(): void
     {
         usleep(1000);
     }
 
-    private function setMaxWorkersToProperValue()
+    private function setMaxWorkersToProperValue(): void
     {
         $envMaxWorkers = count($this->environments);
         if ($envMaxWorkers <= 0 || $this->maxWorkers <= $envMaxWorkers) {

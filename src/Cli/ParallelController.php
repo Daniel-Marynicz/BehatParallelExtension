@@ -89,7 +89,7 @@ abstract class ParallelController
         return $this->parallelExecute();
     }
 
-    public function beforeTaskTested(BeforeTaskTested $beforeTaskTested)
+    public function beforeTaskTested(BeforeTaskTested $beforeTaskTested): void
     {
         $task          = $beforeTaskTested->getTask();
         $featureTitle  = sprintf('<info>Feature: %s</info>', $task->getFeature()->getTitle());
@@ -102,7 +102,7 @@ abstract class ParallelController
         $this->progressBar->setMessage($scenarioTitle, 'scenario');
     }
 
-    public function afterTaskTested(AfterTaskTested $taskTested)
+    public function afterTaskTested(AfterTaskTested $taskTested): void
     {
         $this->progressBar->advance();
         $process = $taskTested->getProcess();
@@ -122,15 +122,12 @@ abstract class ParallelController
         $this->poll->stop();
     }
 
-    public function parallelTestsAborted()
+    public function parallelTestsAborted(): void
     {
         $this->poll->stop();
     }
 
-    /**
-     * @return int
-     */
-    private function parallelExecute()
+    private function parallelExecute(): int
     {
         $this->addEventListeners();
         $this->setupTasksWithProgressBar();
@@ -144,7 +141,7 @@ abstract class ParallelController
         return $this->exitCode;
     }
 
-    private function addEventListeners()
+    private function addEventListeners(): void
     {
         $this->eventDispatcher->addListener(BeforeTaskTested::BEFORE, [$this, 'beforeTaskTested']);
         $this->eventDispatcher->addListener(AfterTaskTested::AFTER, [$this, 'afterTaskTested']);
@@ -154,7 +151,7 @@ abstract class ParallelController
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    private function setupTasksWithProgressBar()
+    private function setupTasksWithProgressBar(): void
     {
         $tasks = $this->createTasks();
         foreach ($tasks as $task) {
@@ -172,7 +169,7 @@ abstract class ParallelController
         $this->progressBar->setFormat('custom');
     }
 
-    private function startPoll()
+    private function startPoll(): void
     {
         $poolSize = $this->getMaxPoolSize();
         $this->output->writeln(sprintf('Starting parallel scenario tests with %d workers', $poolSize));

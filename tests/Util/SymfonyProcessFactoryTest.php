@@ -17,7 +17,7 @@ class SymfonyProcessFactoryTest extends TestCase
      *
      * @dataProvider dataProvider
      */
-    public function testCreateNewProcess($command, $cwd, $environment, $input, $timeout)
+    public function testCreateNewProcess($command, $cwd, $environment, $input, $timeout): void
     {
         $process = (new SymfonyProcessFactory())->createNewProcess($command, $cwd, $environment, $input, $timeout);
         $this->assertEquals(new Process($command, $cwd, $environment, $input, $timeout), $process);
@@ -26,7 +26,7 @@ class SymfonyProcessFactoryTest extends TestCase
     /**
      * @return mixed[][]
      */
-    public function dataProvider()
+    public function dataProvider(): array
     {
         return [
             [

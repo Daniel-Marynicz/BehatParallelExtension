@@ -9,7 +9,7 @@ interface Queue extends Countable
     /**
      * Dispatch new task in to queue
      */
-    public function dispatch(TaskEntity $task);
+    public function dispatch(TaskEntity $task): void;
 
     /**
      * @return bool
@@ -25,8 +25,6 @@ interface Queue extends Countable
 
     /**
      * Count elements of an queue
-     *
-     * @return int
      */
-    public function count();
+    public function count(): int;
 }

@@ -29,10 +29,7 @@ class ReadWriteDataToFileWithLocking
         }
     }
 
-    /**
-     * @return string
-     */
-    public function read()
+    public function read(): string
     {
         rewind($this->handle);
         $fileSize = filesize($this->path);
@@ -51,7 +48,7 @@ class ReadWriteDataToFileWithLocking
     /**
      * @param string $data
      */
-    public function truncateAndWrite($data)
+    public function truncateAndWrite($data): void
     {
         ftruncate($this->handle, 0);
         rewind($this->handle);

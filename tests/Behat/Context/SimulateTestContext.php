@@ -11,7 +11,7 @@ class SimulateTestContext implements Context
      * @Given /^(?:|I )am on pretending to be on (?:|the )homepage$/
      * @When /^(?:|I )am pretending to go to (?:|the )homepage$/
      */
-    public function iAmPretendingOnHomepage()
+    public function iAmPretendingOnHomepage(): void
     {
     }
 
@@ -19,7 +19,7 @@ class SimulateTestContext implements Context
      * @Given /^(?:|I )am on pretending "(?P<page>[^"]+)"$/
      * @When /^(?:|I )pretend I am going to "(?P<page>[^"]+)"$/
      */
-    public function iAmPretendingOnPage()
+    public function iAmPretendingOnPage(): void
     {
     }
 
@@ -28,7 +28,7 @@ class SimulateTestContext implements Context
      *
      * @When /^I wait for (\d+) seconds$/
      */
-    public function iWaitForSeconds($seconds)
+    public function iWaitForSeconds($seconds): void
     {
         sleep($seconds);
     }
@@ -36,7 +36,7 @@ class SimulateTestContext implements Context
     /**
      * @Then this test will fail
      */
-    public function thenThisTestWillFail()
+    public function thenThisTestWillFail(): void
     {
         throw new Exception('fail');
     }
@@ -44,7 +44,7 @@ class SimulateTestContext implements Context
     /**
      * @Then /^this test will be successful$/
      */
-    public function thenThisTestWillBeSuccessful()
+    public function thenThisTestWillBeSuccessful(): void
     {
     }
 }

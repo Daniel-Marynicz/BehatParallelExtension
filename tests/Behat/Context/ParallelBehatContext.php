@@ -24,7 +24,7 @@ class ParallelBehatContext implements Context
      *
      * @BeforeScenario
      */
-    public function findAndSetPhpBin()
+    public function findAndSetPhpBin(): void
     {
         $phpFinder = new PhpExecutableFinder();
         $php       = $phpFinder->find();
@@ -42,7 +42,7 @@ class ParallelBehatContext implements Context
      *
      * @When /^I run "behat(?: ((?:\"|[^"])*))?"$/
      */
-    public function iRunBehat($argumentsString = '')
+    public function iRunBehat($argumentsString = ''): void
     {
         if (! defined('BEHAT_BIN_PATH')) {
             throw new Runtime('constant BEHAT_BIN_PATH is not defined.');
@@ -66,7 +66,7 @@ class ParallelBehatContext implements Context
      *
      * @When /^I start "behat(?: ((?:\"|[^"])*))?"$/
      */
-    public function iStartBehat($argumentsString = '')
+    public function iStartBehat($argumentsString = ''): void
     {
         if (! defined('BEHAT_BIN_PATH')) {
             throw new Runtime('constant BEHAT_BIN_PATH is not defined.');
@@ -86,7 +86,7 @@ class ParallelBehatContext implements Context
     /**
      * @Then /^I send a SIGINT signal to behat process$/
      */
-    public function iSendSigintSignalToBehatProcess()
+    public function iSendSigintSignalToBehatProcess(): void
     {
         $this->process->signal(SIGINT);
     }
@@ -99,7 +99,7 @@ class ParallelBehatContext implements Context
      *
      * @Then /^it should (fail|pass) with:$/
      */
-    public function itShouldPassWith($success, PyStringNode $text)
+    public function itShouldPassWith($success, PyStringNode $text): void
     {
         $this->itShouldFail($success);
         $this->theOutputShouldContain($text);
@@ -112,7 +112,7 @@ class ParallelBehatContext implements Context
      *
      * @Then /^it should (fail|pass)$/
      */
-    public function itShouldFail($success)
+    public function itShouldFail($success): void
     {
         if ($success === 'fail') {
             if ($this->getExitCode() === 0) {
@@ -136,7 +136,7 @@ class ParallelBehatContext implements Context
      *
      * @Then the output should contain:
      */
-    public function theOutputShouldContain(PyStringNode $text)
+    public function theOutputShouldContain(PyStringNode $text): void
     {
         Assert::assertStringContainsString((string) $text, $this->getOutput());
     }
@@ -144,7 +144,7 @@ class ParallelBehatContext implements Context
     /**
      * @Then /^I should see progress bar$/
      */
-    public function iShouldSeeProgressBar()
+    public function iShouldSeeProgressBar(): void
     {
         Assert::assertStringContainsString('[============================] 100%', $this->getOutput());
     }
@@ -152,7 +152,7 @@ class ParallelBehatContext implements Context
     /**
      * @Then /^print last output$/
      */
-    public function thenPrintLastOutput()
+    public function thenPrintLastOutput(): void
     {
         echo $this->getOutput();
     }
@@ -160,7 +160,7 @@ class ParallelBehatContext implements Context
     /**
      * @param string $cmd
      */
-    private function processFromShellCommandline($cmd)
+    private function processFromShellCommandline($cmd): void
     {
         if (method_exists('\\Symfony\\Component\\Process\\Process', 'fromShellCommandline')) {
             $this->process = Process::fromShellCommandline($cmd);
@@ -173,18 +173,12 @@ class ParallelBehatContext implements Context
         }
     }
 
-    /**
-     * @return int|null
-     */
-    private function getExitCode()
+    private function getExitCode(): ?int
     {
         return $this->process->getExitCode();
     }
 
-    /**
-     * @return string
-     */
-    private function getOutput()
+    private function getOutput(): string
     {
         $output = $this->process->getErrorOutput() . $this->process->getOutput();
 

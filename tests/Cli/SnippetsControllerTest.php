@@ -18,7 +18,7 @@ class SnippetsControllerTest extends ControllerTest
         $this->controller        = new SnippetsController($this->decoratedController, $this->snippetRepository);
     }
 
-    public function testConfigure()
+    public function testConfigure(): void
     {
         $this->decoratedController->expects($this->once())->method('configure')->with($this->command);
         $this->controller->configure($this->command);
@@ -39,7 +39,7 @@ class SnippetsControllerTest extends ControllerTest
         $undefinedSteps,
         $snippets,
         $expectedResult
-    ) {
+    ): void {
         $this
             ->decoratedController
             ->expects($this->once())
@@ -58,7 +58,7 @@ class SnippetsControllerTest extends ControllerTest
     /**
      * @return array<mixed>
      */
-    public function executeProvider()
+    public function executeProvider(): array
     {
         return [
             [

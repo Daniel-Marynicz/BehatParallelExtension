@@ -22,7 +22,7 @@ class SigintControllerTest extends ControllerTest
         $this->controller               = new SigintController($this->eventDispatcherDecorator);
     }
 
-    public function testConfigure()
+    public function testConfigure(): void
     {
         $this->controller->configure($this->command);
         $this->assertTrue(true);
@@ -37,7 +37,7 @@ class SigintControllerTest extends ControllerTest
      *
      * @dataProvider executeDataProvider
      */
-    public function testExecute($count, $first, $second, $firstValue, $secondValue)
+    public function testExecute($count, $first, $second, $firstValue, $secondValue): void
     {
         $this
             ->input
@@ -49,7 +49,7 @@ class SigintControllerTest extends ControllerTest
         $this->controller->execute($this->input, $this->output);
     }
 
-    public function testAbortTests()
+    public function testAbortTests(): void
     {
         $this
             ->eventDispatcherDecorator
@@ -66,7 +66,7 @@ class SigintControllerTest extends ControllerTest
     /**
      * @return mixed[][]
      */
-    public function executeDataProvider()
+    public function executeDataProvider(): array
     {
         return [
             [

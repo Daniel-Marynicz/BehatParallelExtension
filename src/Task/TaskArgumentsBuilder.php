@@ -24,7 +24,7 @@ final class TaskArgumentsBuilder implements ArgumentsBuilder
      *
      * @throws ReflectionException
      */
-    public function buildArguments(InputInterface $input, $path)
+    public function buildArguments(InputInterface $input, $path): array
     {
         $arguments = $this->buildFirstArguments();
 
@@ -47,7 +47,7 @@ final class TaskArgumentsBuilder implements ArgumentsBuilder
     /**
      * @return string[]
      */
-    private function buildOptionArguments(InputInterface $input)
+    private function buildOptionArguments(InputInterface $input): array
     {
         $arguments = [];
 
@@ -72,11 +72,11 @@ final class TaskArgumentsBuilder implements ArgumentsBuilder
     }
 
     /**
-     * @return string[]
+     * @return mixed[]
      *
      * @throws ReflectionException
      */
-    private function buildRemainingArguments(InputInterface $input)
+    private function buildRemainingArguments(InputInterface $input): array
     {
         $arguments = [];
         foreach ($input->getArguments() as $name => $value) {

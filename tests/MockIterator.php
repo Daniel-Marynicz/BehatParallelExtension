@@ -13,7 +13,7 @@ trait MockIterator
      * @param array<mixed>               $items
      * @param bool                       $includeCallsToKey
      */
-    public function mockIteratorItems(Iterator $iterator, array $items, $includeCallsToKey = false)
+    public function mockIteratorItems(Iterator $iterator, array $items, $includeCallsToKey = false): void
     {
         $arrayIterator = new ArrayIterator($items);
 

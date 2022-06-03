@@ -37,7 +37,7 @@ abstract class ParallelControllerTest extends ControllerTest
     /** @var MockObject | CanDetermineNumberOfProcessingUnits */
     protected $numberOfCores;
 
-    abstract public function testExecute();
+    abstract public function testExecute(): void;
 
     protected function setUp(): void
     {
@@ -57,7 +57,7 @@ abstract class ParallelControllerTest extends ControllerTest
             );
     }
 
-    public function testConfigure()
+    public function testConfigure(): void
     {
         $this->decoratedController->expects($this->once())->method('configure')->with($this->command);
         $this->command->method('addOption')->willReturn($this->command);
@@ -73,8 +73,12 @@ abstract class ParallelControllerTest extends ControllerTest
      *
      * @dataProvider beforeTaskTestedProvider
      */
-    public function testBeforeTaskTested($featureTitle, $scenarioTitle, $expectedFeatureTitle, $expectedScenarioTitle)
-    {
+    public function testBeforeTaskTested(
+        $featureTitle,
+        $scenarioTitle,
+        $expectedFeatureTitle,
+        $expectedScenarioTitle
+    ): void {
         $beforeTested = $this->createMock(BeforeTaskTested::class);
         $task         = $this->createMock(TaskEntity::class);
         $beforeTested->method('getTask')->willReturn($task);
@@ -99,7 +103,7 @@ abstract class ParallelControllerTest extends ControllerTest
         $this->assertEquals($expectedScenarioTitle, $progressBar->getMessage('scenario'));
     }
 
-    public function testParallelTestsAborted()
+    public function testParallelTestsAborted(): void
     {
         $this->poll->expects($this->once())->method('stop');
         $this->controller->parallelTestsAborted();
@@ -108,7 +112,7 @@ abstract class ParallelControllerTest extends ControllerTest
     /**
      * @return array<array<string|null>>
      */
-    public function beforeTaskTestedProvider()
+    public function beforeTaskTestedProvider(): array
     {
         return [
             [
@@ -145,7 +149,7 @@ abstract class ParallelControllerTest extends ControllerTest
         $expectedOutput,
         $stopOnFailure,
         $pollWillBeStopped
-    ) {
+    ): void {
         $process = $this->createMock(Process::class);
         $process->method('isSuccessful')->willReturn($isSuccessful);
         $process->method('getOutput')->willReturn($output);
@@ -174,7 +178,7 @@ abstract class ParallelControllerTest extends ControllerTest
     /**
      * @return array<mixed>
      */
-    public function afterTaskTestedProvider()
+    public function afterTaskTestedProvider(): array
     {
         return [
             [
@@ -204,7 +208,7 @@ abstract class ParallelControllerTest extends ControllerTest
         ];
     }
 
-    public function testExecuteWithTaskErrors()
+    public function testExecuteWithTaskErrors(): void
     {
         $taskEntity = $this->createMock(TaskEntity::class);
         $this->taskFactory->method('createTasks')->willReturn([$taskEntity]);
@@ -222,7 +226,7 @@ abstract class ParallelControllerTest extends ControllerTest
      *
      * @throws ReflectionException
      */
-    private function setNonAccessibleValue($object, $name, $value)
+    private function setNonAccessibleValue($object, $name, $value): void
     {
         $inputProp = new ReflectionProperty($object, $name);
         $inputProp->setAccessible(true);

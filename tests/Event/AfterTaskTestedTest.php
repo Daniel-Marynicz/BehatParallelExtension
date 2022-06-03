@@ -9,7 +9,7 @@ use Symfony\Component\Process\Process;
 
 class AfterTaskTestedTest extends TestCase
 {
-    public function testAfterTaskTested()
+    public function testAfterTaskTested(): void
     {
         $testedObject = new AfterTaskTested(
             $this->createMock(TaskEntity::class),

@@ -18,7 +18,7 @@ final class RerunController implements Controller
     /** @var EventDispatcherDecorator */
     private $eventDispatcher;
 
-    /** @var array<string, array<string>> */
+    /** @var array<string, array<mixed>> */
     private $lines = [];
 
     /** @var Controller|BehatRerunController  */
@@ -30,10 +30,7 @@ final class RerunController implements Controller
         $this->eventDispatcher     = $eventDispatcher;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function configure(Command $command)
+    public function configure(Command $command): void
     {
         $this->decoratedController->configure($command);
     }
@@ -55,7 +52,7 @@ final class RerunController implements Controller
     /**
      * Records task if it is failed.
      */
-    public function collectFailedTask(AfterTaskTested $taskTested)
+    public function collectFailedTask(AfterTaskTested $taskTested): void
     {
         $process = $taskTested->getProcess();
         if ($process->isSuccessful()) {
@@ -80,10 +77,8 @@ final class RerunController implements Controller
 
     /**
      * Writes failed tests cache.
-     *
-     * @return void
      */
-    public function writeCache()
+    public function writeCache(): void
     {
         if (empty($this->lines)) {
             $this->writeCacheByDecoratedController();
@@ -105,7 +100,7 @@ final class RerunController implements Controller
         $this->writeCacheByDecoratedController();
     }
 
-    private function writeCacheByDecoratedController()
+    private function writeCacheByDecoratedController(): void
     {
         if (! method_exists($this->decoratedController, 'writeCache')) {
             return;

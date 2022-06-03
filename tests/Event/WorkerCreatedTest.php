@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class WorkerCreatedTest extends TestCase
 {
-    public function testWorkerCreatedTest()
+    public function testWorkerCreatedTest(): void
     {
         $testedObject = new WorkerCreated($this->createMock(Worker::class));
         $this->assertEquals($this->createMock(Worker::class), $testedObject->getWorker());

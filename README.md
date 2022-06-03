@@ -2,6 +2,7 @@
 
 ![Packagist Version](https://img.shields.io/packagist/v/dmarynicz/behat-parallel-extension?label=version)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Daniel-Marynicz/BehatParallelExtension/blob/master/LICENSE)
+[![PHP Tests](https://github.com/Daniel-Marynicz/BehatParallelExtension/actions/workflows/php.yml/badge.svg)](https://github.com/Daniel-Marynicz/BehatParallelExtension/actions/workflows/php.yml)
 [![Unix Status](https://img.shields.io/travis/com/Daniel-Marynicz/BehatParallelExtension)](https://travis-ci.com/Daniel-Marynicz/BehatParallelExtension)
 [![Windows status](https://ci.appveyor.com/api/projects/status/i2y6sjmi6ae0xa7l/branch/master?svg=true)](https://ci.appveyor.com/project/Daniel-Marynicz/behat-parallel-extension/branch/master)
 [![Scrutinizer Code Coverage](https://img.shields.io/scrutinizer/coverage/g/Daniel-Marynicz/BehatParallelExtension)](https://scrutinizer-ci.com/g/Daniel-Marynicz/BehatParallelExtension/?branch=master)
@@ -192,7 +193,7 @@ The extension uses the following coding standards and quality tools:
 
  [https://www.doctrine-project.org/projects/doctrine-coding-standard/en/latest/reference/index.html#introduction](https://www.doctrine-project.org/projects/doctrine-coding-standard/en/latest/reference/index.html#introduction)
 
-### PHPStan at level max
+### PHPStan
 
  [PHPStan] A php framework for auto testing your business expectations. PHPStan focuses on finding errors in your
  code without actually running it. It catches whole classes of bugs even before you write tests for the code.

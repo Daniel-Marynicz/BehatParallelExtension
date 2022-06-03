@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Definition;
 
 class ExtensionTest extends TestCase
 {
-    public function test()
+    public function test(): void
     {
         $extension = new Extension();
         $this->assertEquals('parallel_extension', $extension->getConfigKey());

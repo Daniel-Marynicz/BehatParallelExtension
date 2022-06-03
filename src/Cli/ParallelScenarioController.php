@@ -9,10 +9,7 @@ use Symfony\Component\Console\Input\InputOption;
 
 final class ParallelScenarioController extends ParallelController implements Controller
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function configure(SymfonyCommand $command)
+    public function configure(SymfonyCommand $command): void
     {
         $this->decoratedController->configure($command);
 

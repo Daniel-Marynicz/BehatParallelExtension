@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class ParallelTestCompletedTest extends TestCase
 {
-    public function testParallelTestCompleted()
+    public function testParallelTestCompleted(): void
     {
         new ParallelTestsCompleted();
         $this->assertTrue(true);

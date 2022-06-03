@@ -13,7 +13,7 @@ use Symfony\Component\Process\Process;
 
 class TaskWorkerTest extends TestCase
 {
-    public function testStart()
+    public function testStart(): void
     {
         $queue = $this->createQueueMock();
         $task  = $this->createTaskEntityMock();

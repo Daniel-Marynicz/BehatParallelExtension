@@ -20,7 +20,7 @@ class ParallelScenarioControllerTest extends ParallelControllerTest
         );
     }
 
-    public function testExecute()
+    public function testExecute(): void
     {
         $taskEntity = $this->createMock(TaskEntity::class);
         $this->taskFactory->method('createTasks')->willReturn([$taskEntity]);

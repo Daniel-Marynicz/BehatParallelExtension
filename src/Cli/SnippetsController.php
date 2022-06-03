@@ -27,10 +27,7 @@ final class SnippetsController implements Controller
         $this->registry            = $registry;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configure(SymfonyCommand $command)
+    public function configure(SymfonyCommand $command): void
     {
         $this->decoratedController->configure($command);
         $command->addOption(
@@ -41,10 +38,7 @@ final class SnippetsController implements Controller
         );
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): ?int
     {
         $result = $this->decoratedController->execute($input, $output);
 
@@ -59,10 +53,7 @@ final class SnippetsController implements Controller
         return $result;
     }
 
-    /**
-     * @return bool
-     */
-    private function hasUndefinedStepsOrSnippets()
+    private function hasUndefinedStepsOrSnippets(): bool
     {
         $undefined = $this->registry->getUndefinedSteps();
         $snippets  = $this->registry->getSnippets();
