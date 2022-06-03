@@ -44,12 +44,20 @@ jobs:
       matrix:
         os: ['ubuntu-18.04', 'ubuntu-20.04']
         version: [ '7.4', '8.0', '8.1']
-        symfony: ['^4.0', '^5.0', '^6.0']
         include:
           - os: 'ubuntu-18.04'
             version: '7.2'
           - os: 'ubuntu-18.04'
             version: '7.3'
+          - os: 'ubuntu-20.04'
+            version: '7.4'
+            symfony: '^4.0'
+          - os: 'ubuntu-20.04'
+            version: '7.4'
+            symfony: '^5.0'
+          - os: 'ubuntu-20.04'
+            version: '8.1'
+            symfony: '^6.0'
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
