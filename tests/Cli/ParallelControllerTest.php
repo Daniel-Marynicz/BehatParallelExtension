@@ -152,8 +152,8 @@ abstract class ParallelControllerTest extends ControllerTest
     ): void {
         $process = $this->createMock(Process::class);
         $process->method('isSuccessful')->willReturn($isSuccessful);
-        $process->method('getOutput')->willReturn($output);
-        $process->method('getErrorOutput')->willReturn($errorOutput);
+        $process->method('getOutput')->willReturn((string) $output);
+        $process->method('getErrorOutput')->willReturn((string) $errorOutput);
 
         $progressBar = new ProgressBar(clone $this->output);
         $this->setNonAccessibleValue($this->controller, 'progressBar', $progressBar);
