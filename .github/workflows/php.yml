@@ -31,6 +31,8 @@ jobs:
             phpstan/phpstan-phpunit \
             doctrine/coding-standard:^8.0 \
             phpstan/phpstan-symfony
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
       - name: Run phpcs
         run: ./vendor/bin/phpcs
       - name: Run phpstan
