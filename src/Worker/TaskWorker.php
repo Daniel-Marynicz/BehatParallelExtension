@@ -150,7 +150,7 @@ class TaskWorker implements Worker
 
     public function __destruct()
     {
-        $this->eventDispatcher->dispatch(new WorkerDestroyed($this), WorkerCreated::WORKER_CREATED);
+        $this->eventDispatcher->dispatch(new WorkerDestroyed($this), WorkerDestroyed::WORKER_DESTROYED);
     }
 
     private function clearCurrent(): void
