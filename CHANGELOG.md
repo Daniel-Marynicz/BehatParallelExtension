@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2023-06-14
+### Fixed
+* [#64](https://github.com/Daniel-Marynicz/BehatParallelExtension/pull/64)  WorkerDestroyed events were dispatched under the incorrect name.
+
+
 ## [1.0.0] - 2022-06-03
 ### Added
   * [#61](https://github.com/Daniel-Marynicz/BehatParallelExtension/pull/61), [#63](https://github.com/Daniel-Marynicz/BehatParallelExtension/pull/63) Support for symfony 6.0 and php 8.0 and 8.1.
