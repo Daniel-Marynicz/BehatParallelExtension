@@ -193,7 +193,7 @@ abstract class ParallelController
      */
     private function createTasks()
     {
-        $path = $this->input->hasArgument('path') ? $this->input->getArgument('path') : null;
+        $path = $this->input->hasArgument('paths') ? $this->input->getArgument('paths') : null;
         if (! is_string($path) && $path !== null) {
             throw new UnexpectedValue('Expected string or null');
         }
