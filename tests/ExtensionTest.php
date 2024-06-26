@@ -7,6 +7,7 @@ use DMarynicz\BehatParallelExtension\Extension;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\NodeBuilder;
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 
@@ -20,6 +21,7 @@ class ExtensionTest extends TestCase
         $arrayBuilder = $this->createMock(ArrayNodeDefinition::class);
         $nodeBuilder  = $this->createMock(NodeBuilder::class);
         $nodeBuilder->method('append')->willReturn($nodeBuilder);
+        $nodeBuilder->method('end')->willReturn($arrayBuilder);
         $arrayBuilder
             ->method('children')
             ->willReturn($nodeBuilder);
