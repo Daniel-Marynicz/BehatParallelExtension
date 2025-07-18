@@ -193,12 +193,26 @@ abstract class ParallelController
      */
     private function createTasks()
     {
-        $path = $this->input->hasArgument('paths') ? $this->input->getArgument('paths') : null;
-        if (! is_string($path) && $path !== null) {
-            throw new UnexpectedValue('Expected string or null');
+        $paths = $this->input->hasArgument('paths') ? $this->input->getArgument('paths') : null;
+
+        if (is_null($paths) || is_string($paths)) {
+            return $this->taskFactory->createTasks($this->input, $paths);
         }
 
-        return $this->taskFactory->createTasks($this->input, $path);
+        if (!is_array($paths)) {
+            throw new UnexpectedValue('Expected array, string or null');
+        }
+
+        if (empty($paths)) {
+            return $this->taskFactory->createTasks($this->input, null);
+        }
+
+        $tasks = [];
+        foreach ($paths as $path) {
+            $tasks = array_merge($tasks, $this->taskFactory->createTasks($this->input, $path));
+        }
+
+        return $tasks;
     }
 
     /**
