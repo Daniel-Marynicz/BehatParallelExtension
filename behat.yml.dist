@@ -10,7 +10,6 @@ default:
                 - '%paths.base%/features'
             contexts:
                 - DMarynicz\Tests\Behat\Context\ParallelBehatContext
-                - DMarynicz\Tests\Behat\Context\ResolveDirectorySeparatorContext
                 - DMarynicz\Tests\Behat\Context\EnvironmentContext
                 - DMarynicz\Tests\Behat\Context\SimulateTestContext
     extensions:
