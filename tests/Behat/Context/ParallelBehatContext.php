@@ -101,6 +101,14 @@ class ParallelBehatContext implements Context
      */
     public function itShouldPassWith($success, PyStringNode $text): void
     {
+        $text = str_replace(
+            ['<DIRECTORY_SEPARATOR>'],
+            [DIRECTORY_SEPARATOR],
+            (string) $text
+        );
+
+        $text = new PyStringNode(explode("\n", $text), 0);
+
         $this->itShouldFail($success);
         $this->theOutputShouldContain($text);
     }
