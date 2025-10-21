@@ -27,7 +27,7 @@ final class Task implements TaskEntity
      * @param string   $path
      * @param string[] $command
      */
-    public function __construct(Suite $suite, FeatureNode $feature, $path, $command = [], Scenario $scenario = null)
+    public function __construct(Suite $suite, FeatureNode $feature, $path, $command = [], ?Scenario $scenario = null)
     {
         $this->suite    = $suite;
         $this->feature  = $feature;

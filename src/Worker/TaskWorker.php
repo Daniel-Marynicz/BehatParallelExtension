@@ -50,7 +50,7 @@ class TaskWorker implements Worker
         $environment,
         EventDispatcherDecorator $eventDispatcher,
         $workerId,
-        ProcessFactory $processFactory = null
+        ?ProcessFactory $processFactory = null
     ) {
         $this->environment     = $environment;
         $this->queue           = $queue;
