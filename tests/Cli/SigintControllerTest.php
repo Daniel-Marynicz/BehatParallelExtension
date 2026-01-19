@@ -24,8 +24,8 @@ class SigintControllerTest extends ControllerTest
 
     public function testConfigure(): void
     {
+        $this->command->expects($this->never())->method('addOption');
         $this->controller->configure($this->command);
-        $this->assertTrue(true);
     }
 
     /**

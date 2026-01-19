@@ -19,18 +19,22 @@ class EventDispatcherDecoratorTest extends TestCase
     {
         $dispatcher = new TestworkEventDispatcher();
         $decorator  = new EventDispatcherDecorator($dispatcher);
-        $decorator->dispatch($this->createMock(Event::class), 'some-name');
+        $event      = $this->createMock(Event::class);
+        $returned   = $decorator->dispatch($event, 'some-name');
 
-        $this->assertTrue(true);
+        $this->assertSame($event, $returned);
     }
 
     public function testAddListener(): void
     {
         $dispatcher = new TestworkEventDispatcher();
         $decorator  = new EventDispatcherDecorator($dispatcher);
-        $decorator->addListener('some-name', static function () {
+        $called     = false;
+        $decorator->addListener('some-name', static function () use (&$called) {
+            $called = true;
         }, 123);
+        $decorator->dispatch($this->createMock(Event::class), 'some-name');
 
-        $this->assertTrue(true);
+        $this->assertTrue($called);
     }
 }

@@ -8,7 +8,6 @@ use DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator;
 use DMarynicz\BehatParallelExtension\Event\WorkerCreated;
 use DMarynicz\BehatParallelExtension\Event\WorkerDestroyed;
 use DMarynicz\BehatParallelExtension\Exception\Runtime;
-use DMarynicz\BehatParallelExtension\Exception\UnexpectedValue;
 use DMarynicz\BehatParallelExtension\Task\Queue;
 use DMarynicz\BehatParallelExtension\Task\TaskEntity;
 use DMarynicz\BehatParallelExtension\Util\ProcessFactory;
@@ -17,7 +16,7 @@ use Symfony\Component\Process\Process;
 
 class TaskWorker implements Worker
 {
-    /** @var string[] */
+    /** @var array<string, string> */
     private $environment;
 
     /** @var Queue */
@@ -42,8 +41,8 @@ class TaskWorker implements Worker
     private $processFactory;
 
     /**
-     * @param string[] $environment
-     * @param int      $workerId
+     * @param array<string, string> $environment
+     * @param int                   $workerId
      */
     public function __construct(
         Queue $queue,
@@ -55,11 +54,7 @@ class TaskWorker implements Worker
         $this->environment     = $environment;
         $this->queue           = $queue;
         $this->eventDispatcher = $eventDispatcher;
-        if (! is_int($workerId)) {
-            throw new UnexpectedValue('Expected int');
-        }
-
-        $this->workerId = $workerId;
+        $this->workerId        = $workerId;
         $this->eventDispatcher->dispatch(new WorkerCreated($this), WorkerCreated::WORKER_CREATED);
         if (! $processFactory instanceof ProcessFactory) {
             $processFactory = new SymfonyProcessFactory();
@@ -120,27 +115,19 @@ class TaskWorker implements Worker
     }
 
     /**
-     * @return string[]
+     * @return array<string, string>
      */
-    public function getEnvironment()
+    public function getEnvironment(): array
     {
         return $this->environment;
     }
 
     /**
-     * @param string[] $env
-     *
-     * @return Worker
+     * @param array<string, string> $env
      */
-    public function setEnvironment($env)
+    public function setEnvironment(array $env): void
     {
-        if (! is_array($env)) {
-            throw new UnexpectedValue('Expected array');
-        }
-
         $this->environment = $env;
-
-        return $this;
     }
 
     public function getWorkerId(): int

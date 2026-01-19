@@ -31,16 +31,14 @@ interface Worker
      *
      * @return string[]
      */
-    public function getEnvironment();
+    public function getEnvironment(): array;
 
     /**
      * Sets worker environment
      *
      * @param string[] $env
-     *
-     * @return Worker
      */
-    public function setEnvironment($env);
+    public function setEnvironment(array $env): void;
 
     /**
      * Return's worker id

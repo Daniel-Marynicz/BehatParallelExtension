@@ -173,6 +173,13 @@ Use `--parallel` or `-l` option for start in parallel scenario mode.
    3/3 [============================] 100% 12 secs/12 secs
   ```
 
+## Test with the oldest supported PHP version
+
+```bash
+composer update --prefer-lowest --prefer-stable
+docker run --rm -ti -v $(pwd):/app -w /app -u $(id -u):$(id -g) php:7.4-cli bash -c "vendor/bin/phpunit; vendor/bin/behat"
+```
+
 ## Tools and Coding standards
 
 The extension uses the following coding standards and quality tools:

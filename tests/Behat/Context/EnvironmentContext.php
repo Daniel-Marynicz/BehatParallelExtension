@@ -46,16 +46,13 @@ class EnvironmentContext implements Context
 
         $data = $handle->read();
 
-        $array = json_decode($data);
+        $array = json_decode($data, true);
         if (! is_array($array)) {
             throw new Logic('Expected array');
         }
 
         $array[] = getenv($name);
         $data    = json_encode($array);
-        if (! is_array($array)) {
-            throw new Logic('Expected array');
-        }
 
         if (! is_string($data)) {
             throw new Logic('Expected string');
@@ -75,15 +72,15 @@ class EnvironmentContext implements Context
         $path   = $this->getRealPath($filename);
         $handle = new ReadWriteDataToFileWithLocking($path);
         $data   = $handle->read();
-        $array  = json_decode($data);
+        $array  = json_decode($data, true);
+        if (! is_array($array)) {
+            throw new Logic('Expected array');
+        }
 
         $array = array_unique($array);
         sort($array);
 
         $actualCount = count($array);
-        if (! is_int($actualCount)) {
-            throw new Logic('Expected int');
-        }
 
         Assert::assertCount($actualCount, $tableNode->getRows());
 

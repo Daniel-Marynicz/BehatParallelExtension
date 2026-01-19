@@ -148,9 +148,6 @@ abstract class ParallelController
         $this->eventDispatcher->addListener(ParallelTestsAborted::ABORTED, [$this, 'parallelTestsAborted']);
     }
 
-    /**
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
     private function setupTasksWithProgressBar(): void
     {
         $tasks = $this->createTasks();
@@ -195,11 +192,11 @@ abstract class ParallelController
     {
         $paths = $this->input->hasArgument('paths') ? $this->input->getArgument('paths') : null;
 
-        if (is_null($paths) || is_string($paths)) {
+        if ($paths === null || is_string($paths)) {
             return $this->taskFactory->createTasks($this->input, $paths);
         }
 
-        if (!is_array($paths)) {
+        if (! is_array($paths)) {
             throw new UnexpectedValue('Expected array, string or null');
         }
 
