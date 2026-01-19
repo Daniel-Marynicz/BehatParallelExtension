@@ -166,6 +166,82 @@ class ParallelBehatContext implements Context
     }
 
     /**
+     * @param string $filename
+     *
+     * @Given I delete file :filename
+     */
+    public function iDeleteFile($filename): void
+    {
+        $path = realpath(__DIR__ . '/../../../') . DIRECTORY_SEPARATOR . $filename;
+        if (! file_exists($path)) {
+            return;
+        }
+
+        unlink($path);
+    }
+
+    /**
+     * @param int    $count
+     * @param string $filename
+     *
+     * @Then I should have :count behat commands in :filename
+     */
+    public function iShouldHaveBehatCommandsIn($count, $filename): void
+    {
+        $array = $this->fetchJsonArrayFile($filename);
+        Assert::assertCount((int) $count, $array);
+    }
+
+    /**
+     * @param string $filename
+     *
+     * @Then behat commands in :filename should match:
+     */
+    public function behatCommandsInShouldMatch($filename, PyStringNode $expectedCommands): void
+    {
+        $commands = $this->fetchJsonArrayFile($filename);
+        $expected = array_filter(array_map('trim', $expectedCommands->getStrings()));
+
+        // Replace placeholders in expected commands
+        $phpBin   = $this->phpBin;
+        $behatBin = defined('BEHAT_BIN_PATH') ? BEHAT_BIN_PATH : 'behat';
+        // If behatBin is absolute, make it relative to root
+        $root = realpath(__DIR__ . '/../../../') . DIRECTORY_SEPARATOR;
+        if (strpos($behatBin, $root) === 0) {
+            $behatBin = substr($behatBin, strlen($root));
+        }
+
+        if (strpos($phpBin, $root) === 0) {
+            $phpBin = substr($phpBin, strlen($root));
+        }
+
+        foreach ($expected as &$cmd) {
+            $cmd = str_replace(['{PHP_BIN}', '{BEHAT_BIN}'], [$phpBin, $behatBin], $cmd);
+        }
+
+        sort($commands);
+        sort($expected);
+
+        Assert::assertEquals($expected, $commands);
+    }
+
+    /**
+     * @param string $filename
+     *
+     * @return array<string>
+     */
+    private function fetchJsonArrayFile($filename): array
+    {
+        $path = realpath(__DIR__ . '/../../../') . DIRECTORY_SEPARATOR . $filename;
+        Assert::assertFileExists($path);
+        $data  = file_get_contents($path);
+        $array = json_decode((string) $data, true);
+        Assert::assertIsArray($array);
+
+        return $array;
+    }
+
+    /**
      * @param string $cmd
      */
     private function processFromShellCommandline($cmd): void

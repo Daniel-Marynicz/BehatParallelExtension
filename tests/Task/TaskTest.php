@@ -6,6 +6,7 @@ use Behat\Gherkin\Node\FeatureNode;
 use Behat\Gherkin\Node\ScenarioInterface;
 use Behat\Testwork\Suite\Suite;
 use DMarynicz\BehatParallelExtension\Task\Task;
+use DMarynicz\BehatParallelExtension\Task\TaskUnit;
 use PHPUnit\Framework\TestCase;
 
 class TaskTest extends TestCase
@@ -17,41 +18,31 @@ class TaskTest extends TestCase
      */
     public function testTask($testWithScenario): void
     {
-        //Suite $suite, FeatureNode $feature, $path, $command = [], Scenario $scenario = null
         $suite   = $this->createMock(Suite::class);
         $feature = $this->createMock(FeatureNode::class);
-        $path    = 'some-path';
-        $command = ['php', 'ls'];
+        $feature->method('getFile')->willReturn('some-path');
 
-        $task = new Task($suite, $feature, $path, $command);
         if ($testWithScenario) {
             $scenario = $this->createMock(ScenarioInterface::class);
-            $task     = new Task($suite, $feature, $path, $command, $scenario);
+            $scenario->method('getLine')->willReturn(123);
+            $units = [new TaskUnit($feature, $scenario)];
+        } else {
+            $units = [new TaskUnit($feature)];
         }
 
-        $this->assertEquals(
-            $task->getSuite(),
-            $this->createMock(Suite::class)
-        );
+        $command = ['php', 'ls'];
+        $task    = new Task($suite, $units, $command);
+
+        $this->assertSame($suite, $task->getSuite());
 
         $this->assertEquals(
-            $task->getFeature(),
-            $this->createMock(FeatureNode::class)
+            $testWithScenario ? ['some-path:123'] : ['some-path'],
+            $task->getPaths()
         );
 
-        $this->assertEquals(
-            'some-path',
-            $task->getPath()
-        );
+        $this->assertEquals(['php', 'ls'], $task->getCommand());
 
-        $this->assertEquals(
-            ['php', 'ls'],
-            $task->getCommand()
-        );
-        $this->assertEquals(
-            $testWithScenario ? $this->createMock(ScenarioInterface::class) : null,
-            $task->getScenario()
-        );
+        $this->assertSame($units, $task->getUnits());
     }
 
     /**

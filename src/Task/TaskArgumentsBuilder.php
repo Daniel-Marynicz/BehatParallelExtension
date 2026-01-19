@@ -18,22 +18,19 @@ final class TaskArgumentsBuilder implements ArgumentsBuilder
     }
 
     /**
-     * @param string $path
+     * @param string[] $paths
      *
      * @return string[]
      *
      * @throws ReflectionException
      */
-    public function buildArguments(InputInterface $input, $path): array
+    public function buildArguments(InputInterface $input, array $paths): array
     {
         $arguments = $this->buildFirstArguments();
-
         $arguments = array_merge($arguments, $this->buildOptionArguments($input));
         $arguments = array_merge($arguments, $this->buildRemainingArguments($input));
 
-        $arguments[] = $path;
-
-        return $arguments;
+        return array_merge($arguments, $paths);
     }
 
     /**
@@ -61,7 +58,7 @@ final class TaskArgumentsBuilder implements ArgumentsBuilder
 
         $argsFromInputValue = [];
         foreach ($input->getOptions() as $name => $value) {
-            if (in_array($name, ['parallel', 'parallel-feature'])) {
+            if (in_array($name, ['parallel', 'parallel-feature', 'parallel-chunk-size'])) {
                 continue;
             }
 

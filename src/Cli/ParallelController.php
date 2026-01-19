@@ -2,7 +2,6 @@
 
 namespace DMarynicz\BehatParallelExtension\Cli;
 
-use Behat\Gherkin\Node\ScenarioLikeInterface;
 use Behat\Testwork\Cli\Controller;
 use Behat\Testwork\Tester\Cli\ExerciseController;
 use DMarynicz\BehatParallelExtension\Event\AfterTaskTested;
@@ -52,6 +51,9 @@ abstract class ParallelController
     /** @var CanDetermineNumberOfProcessingUnits */
     protected $numberOfCores;
 
+    /** @var TitleListFormatter */
+    protected $titleListFormatter;
+
     public function __construct(
         Controller $decoratedController,
         TaskFactory $taskFactory,
@@ -86,20 +88,20 @@ abstract class ParallelController
         $this->output = $output;
         $this->input  = $input;
 
+        // Unable to get the COLUMNS environment variable to know the width of the terminal
+        // because Behat overrides it to 9999. Let's use the default TitleListFormatter's maxLength value.
+        $this->titleListFormatter = new TitleListFormatter();
+
         return $this->parallelExecute();
     }
 
     public function beforeTaskTested(BeforeTaskTested $beforeTaskTested): void
     {
-        $task          = $beforeTaskTested->getTask();
-        $featureTitle  = sprintf('<info>Feature: %s</info>', $task->getFeature()->getTitle());
-        $scenarioTitle = '';
-        if ($task->getScenario() instanceof ScenarioLikeInterface) {
-            $scenarioTitle = sprintf('<info>Scenario: %s</info>', $task->getScenario()->getTitle());
-        }
+        $task  = $beforeTaskTested->getTask();
+        $units = $task->getUnits();
 
-        $this->progressBar->setMessage($featureTitle, 'feature');
-        $this->progressBar->setMessage($scenarioTitle, 'scenario');
+        $this->progressBar->setMessage($this->titleListFormatter->formatFeatures($units), 'feature');
+        $this->progressBar->setMessage($this->titleListFormatter->formatScenarios($units), 'scenario');
     }
 
     public function afterTaskTested(AfterTaskTested $taskTested): void
@@ -168,8 +170,17 @@ abstract class ParallelController
 
     private function startPoll(): void
     {
-        $poolSize = $this->getMaxPoolSize();
-        $this->output->writeln(sprintf('Starting parallel scenario tests with %d workers', $poolSize));
+        $poolSize  = $this->getMaxPoolSize();
+        $chunkSize = (int) $this->input->getOption('parallel-chunk-size');
+        $message   = sprintf(
+            'Starting parallel tests with %d workers',
+            $poolSize
+        );
+        if ($chunkSize > 1) {
+            $message .= sprintf(' and %d tests per worker', $chunkSize);
+        }
+
+        $this->output->writeln($message);
         $this->poll->setMaxWorkers($poolSize);
         $this->poll->start();
         $maxSize = $this->getMaxSizeFromParallelOption();
@@ -204,12 +215,12 @@ abstract class ParallelController
             return $this->taskFactory->createTasks($this->input, null);
         }
 
-        $tasks = [];
+        $tasksPerPath = [];
         foreach ($paths as $path) {
-            $tasks = array_merge($tasks, $this->taskFactory->createTasks($this->input, $path));
+            $tasksPerPath[] = $this->taskFactory->createTasks($this->input, $path);
         }
 
-        return $tasks;
+        return array_merge(...$tasksPerPath);
     }
 
     /**

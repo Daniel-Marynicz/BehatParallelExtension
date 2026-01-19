@@ -7,6 +7,12 @@ use Exception;
 
 class SimulateTestContext implements Context
 {
+    /*
+     * Any value you want to multiply the wait time by.
+     * Tips: when running tests many times, you can temporarily set this value to 0.0001 to speed up the tests.
+     */
+    private const WAIT_TIME_MULTIPLIER = 1;
+
     /**
      * @Given /^(?:|I )am on pretending to be on (?:|the )homepage$/
      * @When /^(?:|I )am pretending to go to (?:|the )homepage$/
@@ -30,7 +36,7 @@ class SimulateTestContext implements Context
      */
     public function iWaitForSeconds($seconds): void
     {
-        sleep($seconds);
+        usleep((int) ($seconds * 1000 * 1000 * self::WAIT_TIME_MULTIPLIER));
     }
 
     /**

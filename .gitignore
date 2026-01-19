@@ -2,4 +2,5 @@
 /.phpcs-cache
 /.phpunit.result.cache
 /test.json
+/tests/fixtures/*/chunk_test.json
 /composer.lock

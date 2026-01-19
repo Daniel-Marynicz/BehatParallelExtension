@@ -2,8 +2,6 @@
 
 namespace DMarynicz\BehatParallelExtension\Task;
 
-use Behat\Gherkin\Node\FeatureNode;
-use Behat\Gherkin\Node\ScenarioLikeInterface as Scenario;
 use Behat\Testwork\Suite\Suite;
 
 interface TaskEntity
@@ -14,22 +12,17 @@ interface TaskEntity
     public function getSuite();
 
     /**
-     * @return FeatureNode
+     * @return string[]
      */
-    public function getFeature();
-
-    /**
-     * @return Scenario|null
-     */
-    public function getScenario();
-
-    /**
-     * @return string
-     */
-    public function getPath();
+    public function getPaths();
 
     /**
      * @return string[]
      */
     public function getCommand();
+
+    /**
+     * @return TaskUnit[]
+     */
+    public function getUnits(): array;
 }

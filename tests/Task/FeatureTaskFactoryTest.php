@@ -4,6 +4,7 @@ namespace DMarynicz\Tests\Task;
 
 use DMarynicz\BehatParallelExtension\Task\FeatureTaskFactory;
 use DMarynicz\BehatParallelExtension\Task\Task;
+use DMarynicz\BehatParallelExtension\Task\TaskUnit;
 use ReflectionException;
 
 class FeatureTaskFactoryTest extends TaskFactoryTest
@@ -21,21 +22,21 @@ class FeatureTaskFactoryTest extends TaskFactoryTest
         $argumentsBuilder = $this->createArgumentsBuilderMock();
         $argumentsBuilder->method('buildArguments')->willReturn(['some', 'args']);
         $input = $this->createInputInterfaceMock();
+        $input->method('getOption')->willReturnMap([
+            ['parallel-chunk-size', 1],
+            ['rerun', false],
+        ]);
 
         $expected = [];
         foreach ($specsToMock as $suiteToMock) {
             $suite = $this->createSuiteMock($suiteToMock);
             foreach ($suiteToMock['features'] as $featureToMock) {
-                $feature = $this->createFeatureMock($featureToMock);
-                foreach ($featureToMock['scenarios'] as $scenarioToMock) {
-                    $expected[] = new Task(
-                        $suite,
-                        $feature,
-                        $featureToMock['file'],
-                        ['some', 'args'],
-                        null
-                    );
-                }
+                $feature    = $this->createFeatureMock($featureToMock);
+                $expected[] = new Task(
+                    $suite,
+                    [new TaskUnit($feature)],
+                    ['some', 'args']
+                );
             }
         }
 
