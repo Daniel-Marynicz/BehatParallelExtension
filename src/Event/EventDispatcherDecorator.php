@@ -26,7 +26,10 @@ class EventDispatcherDecorator
      */
     public function dispatch($event, $eventName = null)
     {
-        if (TestworkEventDispatcher::DISPATCHER_VERSION === 2) {
+        $dispatcherVersion = defined(TestworkEventDispatcher::class . '::DISPATCHER_VERSION')
+            ? constant(TestworkEventDispatcher::class . '::DISPATCHER_VERSION')
+            : 1;
+        if ((int) $dispatcherVersion === 2) {
             return $this->eventDispatcher->dispatch($event, $eventName);
         }
 

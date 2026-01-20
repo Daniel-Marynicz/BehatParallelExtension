@@ -9,7 +9,7 @@ interface TestworkSpecificationsFinder
     /**
      * @param string|null $path
      *
-     * @return GroupedSpecificationIterator[]
+     * @return array<string, GroupedSpecificationIterator<mixed>>
      */
     public function findGroupedSpecifications($path);
 }

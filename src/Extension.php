@@ -8,7 +8,6 @@ use DMarynicz\BehatParallelExtension\Event\WorkerCreated;
 use DMarynicz\BehatParallelExtension\Exception\UnexpectedValue;
 use DMarynicz\BehatParallelExtension\Worker\Poll;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -47,10 +46,7 @@ class Extension implements ExtensionInterface
         $loader->load('services.yaml');
 
         $pollDefinition = $container->findDefinition(Poll::class);
-        $pollDefinition->setArgument(
-            '$environments',
-            $config['environments']
-        );
+        $pollDefinition->setArgument('$environments', $config['environments']);
     }
 
     public function process(ContainerBuilder $container): void
@@ -64,7 +60,6 @@ class Extension implements ExtensionInterface
     {
         $node = $this->getNewArrayNode('events');
 
-        // @phpstan-ignore-next-line
         $node
             ->prototype('array')
                 ->children()
@@ -95,7 +90,7 @@ class Extension implements ExtensionInterface
     }
 
     /**
-     * @return ArrayNodeDefinition|NodeDefinition
+     * @return ArrayNodeDefinition
      */
     private function addEnvironmentsNode()
     {
@@ -145,22 +140,10 @@ class Extension implements ExtensionInterface
      */
     private function getNewArrayNode($name): ArrayNodeDefinition
     {
-        if (method_exists(TreeBuilder::class, 'root')) {
-            // @phpstan-ignore-next-line
-            $treeBuilder = new TreeBuilder();
-
-            // @phpstan-ignore-next-line
-            $node = $treeBuilder->root($name);
-            if (! $node instanceof ArrayNodeDefinition) {
-                throw new UnexpectedValue('expected ArrayNodeDefinition');
-            }
-
-            return $node;
-        }
-
         $treeBuilder = new TreeBuilder($name);
         $node        = $treeBuilder->getRootNode();
 
+        // @phpstan-ignore-next-line
         if (! $node instanceof ArrayNodeDefinition) {
             throw new UnexpectedValue('expected ArrayNodeDefinition');
         }

@@ -13,9 +13,12 @@ class SpecificationsFinder implements TestworkSpecificationsFinder
     /** @var SuiteRepository */
     private $suiteRepository;
 
-    /** @var TestworkSpecificationFinder */
+    /** @var TestworkSpecificationFinder<mixed> */
     private $specificationFinder;
 
+    /**
+     * @param TestworkSpecificationFinder<mixed> $specificationFinder
+     */
     public function __construct(
         SuiteRepository $suiteRepository,
         TestworkSpecificationFinder $specificationFinder
@@ -27,9 +30,7 @@ class SpecificationsFinder implements TestworkSpecificationsFinder
     /**
      * @param string|null $path
      *
-     * @return GroupedSpecificationIterator[]
-     *
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @return array<string, GroupedSpecificationIterator<mixed>>
      */
     public function findGroupedSpecifications($path)
     {
@@ -43,7 +44,7 @@ class SpecificationsFinder implements TestworkSpecificationsFinder
      *
      * @param string|null $path
      *
-     * @return SpecificationIterator[]
+     * @return list<SpecificationIterator<mixed>>
      */
     private function findSpecifications($path)
     {
@@ -56,7 +57,7 @@ class SpecificationsFinder implements TestworkSpecificationsFinder
      * @param Suite[]     $suites
      * @param string|null $locator
      *
-     * @return SpecificationIterator[]
+     * @return list<SpecificationIterator<mixed>>
      */
     private function findSuitesSpecifications($suites, $locator)
     {

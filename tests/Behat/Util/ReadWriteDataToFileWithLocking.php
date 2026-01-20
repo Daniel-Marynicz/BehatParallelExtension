@@ -37,6 +37,10 @@ class ReadWriteDataToFileWithLocking
             throw new Logic("Can't get file size");
         }
 
+        if ($fileSize === 0) {
+            return '';
+        }
+
         $data = fread($this->handle, $fileSize);
         if (! is_string($data)) {
             throw new Logic("Can't read data");

@@ -170,15 +170,7 @@ class ParallelBehatContext implements Context
      */
     private function processFromShellCommandline($cmd): void
     {
-        if (method_exists('\\Symfony\\Component\\Process\\Process', 'fromShellCommandline')) {
-            $this->process = Process::fromShellCommandline($cmd);
-        } else {
-            // BC layer for symfony/process 4.1 and older
-            // @phpstan-ignore-next-line
-            $this->process = new Process(null);
-            // @phpstan-ignore-next-line
-            $this->process->setCommandLine($cmd);
-        }
+        $this->process = Process::fromShellCommandline($cmd);
     }
 
     private function getExitCode(): ?int
