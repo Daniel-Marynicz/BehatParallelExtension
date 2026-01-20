@@ -24,20 +24,20 @@ class TaskArgumentsBuilderTest extends TestCase
      * @param array<string,mixed> $options
      * @param array<string,mixed> $arguments
      * @param string              $phpPath
-     * @param string              $path
+     * @param string[]            $paths
      * @param string[]            $expected
      *
      * @throws ReflectionException
      *
      * @dataProvider buildArgumentsProvider
      */
-    public function testBuildArguments($options, $arguments, $phpPath, $path, $expected): void
+    public function testBuildArguments($options, $arguments, $phpPath, $paths, $expected): void
     {
         $input  = $this->createInputInterfaceMock($options, $arguments);
         $finder = $this->createPhpExecutableFinder($phpPath);
 
         $builder = new TaskArgumentsBuilder($finder);
-        $actual  = $builder->buildArguments($input, $path);
+        $actual  = $builder->buildArguments($input, $paths);
 
         $this->assertEquals($expected, $actual);
     }
@@ -64,7 +64,7 @@ class TaskArgumentsBuilderTest extends TestCase
                 ],
                 ['paths' => 'path'],
                 'php-binary',
-                'path-some-test.feature:21',
+                ['path-some-test.feature:21'],
                 [
                     'php-binary',
                     'behat',
@@ -90,6 +90,7 @@ class TaskArgumentsBuilderTest extends TestCase
                     'some-false-option' => false,
                     'parallel' => true,
                     'parallel-feature' => true,
+                    'parallel-chunk-size' => 1,
                     'string-option' => 'string',
                     'integer-option' => 123,
                     'float-option' => 1.23,
@@ -102,7 +103,7 @@ class TaskArgumentsBuilderTest extends TestCase
                 ],
                 ['paths' => 'path'],
                 'php-binary',
-                'path-some-test.feature:21',
+                ['path-some-test.feature:21', 'path-some-test.feature:22'],
                 [
                     'php-binary',
                     'behat',
@@ -120,6 +121,7 @@ class TaskArgumentsBuilderTest extends TestCase
                     '--no-interaction',
                     '--fail-on-undefined-step',
                     'path-some-test.feature:21',
+                    'path-some-test.feature:22',
                 ],
             ],
         ];

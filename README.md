@@ -18,6 +18,7 @@ If you Properly integrate your app with this extension then it can be dramatical
 * Extension can cancel your tests when you hit CTRL+C.
 * When you have failed tests in **Parallel scenario** mode then can you rerun this test with Behat option `--rerun`.
 * For each worker you can set environment variables.
+* You can group scenarios or features into a single job to improve test execution time by using the same kernel bootstrapped once.
 
 ### Main modes
 
@@ -25,8 +26,7 @@ Behat Parallel Extension can work in two main modes:
 
 * **Parallel scenario** witch can be enabled by option `--parallel` or  `-l`.
 * **Parallel feature** to enable this you need use behat option `--parallel-feature`.
-
- Parallel feature option does not support's `--rerun` option.
+- **Parallel chunk size** to group multiple scenarios or features into a single job, use the --parallel-chunk-size option (default is 1). Only available with Behat >= 3.23
 
 ## Requirements
 
@@ -159,7 +159,7 @@ Use `--parallel` or `-l` option for start in parallel scenario mode.
 
   ```
   $ vendor/bin/behat -l 8 --colors
-  Starting parallel scenario tests with 8 workers
+  Starting parallel tests with 8 workers
    Feature: Parallel
     Scenario: Test behat tests with failed result
    3/3 [============================] 100% 12 secs/12 secs
@@ -167,17 +167,36 @@ Use `--parallel` or `-l` option for start in parallel scenario mode.
 
   ```
   $ vendor/bin/behat --parallel-feature 8 --colors
-  Starting parallel scenario tests with 8 workers
+  Starting parallel tests with 8 workers
    Feature: Parallel
-    Scenario: Test behat tests with failed result
+   
    3/3 [============================] 100% 12 secs/12 secs
   ```
 
-## Test with the oldest supported PHP version
+  ```
+  $ vendor/bin/behat --parallel 8 --colors --parallel-chunk-size 2
+  Starting parallel tests with 8 workers
+   Feature: Parallel, Any other feature
+    Scenario: Test behat tests with failed result, Any other scenario
+   3/3 [============================] 100% 12 secs/12 secs
+  ```
+
+## Test with the oldest supported PHP version and oldest vendors
+
+With docker, without Dockerfile:
 
 ```bash
-composer update --prefer-lowest --prefer-stable
-docker run --rm -ti -v $(pwd):/app -w /app -u $(id -u):$(id -g) php:7.4-cli bash -c "vendor/bin/phpunit; vendor/bin/behat"
+# Create the docker container
+docker run --rm -d -v $(pwd):/app -w /app --name behat-parallel-old-php php:7.4-cli bash -c "tail -f /dev/null"
+# Install deps
+docker exec -ti behat-parallel-old-php bash -c "apt-get update && apt-get install -y libzip-dev && docker-php-ext-install zip"
+# Install composer for the current user
+docker exec -ti -u $(id -u):$(id -g) -e HOME=/tmp behat-parallel-old-php bash -c "curl -s https://getcomposer.org/installer | php -- --install-dir=/tmp; php /tmp/composer.phar update --prefer-lowest --prefer-dist;"
+# Run tests
+docker exec -ti -u $(id -u):$(id -g) behat-parallel-old-php php /tmp/composer.phar phpunit
+docker exec -ti -u $(id -u):$(id -g) behat-parallel-old-php php /tmp/composer.phar behat
+# Stop and remove the docker container
+docker kill behat-parallel-old-php
 ```
 
 ## Tools and Coding standards

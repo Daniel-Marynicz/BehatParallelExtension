@@ -6,15 +6,18 @@ use Behat\Gherkin\Node\FeatureNode;
 use Behat\Gherkin\Node\ScenarioLikeInterface;
 use Behat\Testwork\Cli\Controller;
 use DMarynicz\BehatParallelExtension\Cli\ParallelController;
+use DMarynicz\BehatParallelExtension\Cli\TitleListFormatter;
 use DMarynicz\BehatParallelExtension\Event\AfterTaskTested;
 use DMarynicz\BehatParallelExtension\Event\BeforeTaskTested;
 use DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator;
 use DMarynicz\BehatParallelExtension\Task\Queue;
 use DMarynicz\BehatParallelExtension\Task\TaskEntity;
 use DMarynicz\BehatParallelExtension\Task\TaskFactory;
+use DMarynicz\BehatParallelExtension\Task\TaskUnit;
 use DMarynicz\BehatParallelExtension\Util\CanDetermineNumberOfProcessingUnits;
 use DMarynicz\BehatParallelExtension\Worker\Poll;
 use PHPUnit\Framework\MockObject\MockObject;
+use ReflectionClass;
 use ReflectionException;
 use ReflectionProperty;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
@@ -66,10 +69,10 @@ abstract class ParallelControllerTest extends ControllerTest
     }
 
     /**
-     * @param string      $featureTitle
-     * @param string|null $scenarioTitle
-     * @param string      $expectedFeatureTitle
-     * @param string|null $expectedScenarioTitle
+     * @param string|string[]      $featureTitle
+     * @param string|string[]|null $scenarioTitle
+     * @param string               $expectedFeatureTitle
+     * @param string|null          $expectedScenarioTitle
      *
      * @dataProvider beforeTaskTestedProvider
      */
@@ -83,19 +86,36 @@ abstract class ParallelControllerTest extends ControllerTest
         $task         = $this->createMock(TaskEntity::class);
         $beforeTested->method('getTask')->willReturn($task);
 
-        $feature = $this->createMock(FeatureNode::class);
-        $feature->method('getTitle')->willReturn($featureTitle);
-
-        $task->method('getFeature')->willReturn($feature);
+        $featureTitles = is_array($featureTitle) ? $featureTitle : [$featureTitle];
+        $units         = [];
+        foreach ($featureTitles as $title) {
+            $feature = $this->createMock(FeatureNode::class);
+            $feature->method('getTitle')->willReturn($title);
+            $units[] = new TaskUnit($feature);
+        }
 
         if ($scenarioTitle) {
-            $scenario = $this->createMock(ScenarioLikeInterface::class);
-            $scenario->method('getTitle')->willReturn($scenarioTitle);
-            $task->method('getScenario')->willReturn($scenario);
+            $scenarioTitles = is_array($scenarioTitle) ? $scenarioTitle : [$scenarioTitle];
+            foreach ($scenarioTitles as $index => $title) {
+                $scenario = $this->createMock(ScenarioLikeInterface::class);
+                $scenario->method('getTitle')->willReturn($title);
+                if (isset($units[$index])) {
+                    // Update existing unit to add scenario
+                    $ref      = new ReflectionClass($units[$index]);
+                    $property = $ref->getProperty('scenario');
+                    $property->setAccessible(true);
+                    $property->setValue($units[$index], $scenario);
+                } else {
+                    $units[] = new TaskUnit($this->createMock(FeatureNode::class), $scenario);
+                }
+            }
         }
+
+        $task->method('getUnits')->willReturn($units);
 
         $progressBar = new ProgressBar($this->output);
         $this->setNonAccessibleValue($this->controller, 'progressBar', $progressBar);
+        $this->setNonAccessibleValue($this->controller, 'titleListFormatter', new TitleListFormatter());
 
         $this->controller->beforeTaskTested($beforeTested);
 
@@ -110,7 +130,7 @@ abstract class ParallelControllerTest extends ControllerTest
     }
 
     /**
-     * @return array<array<string|null>>
+     * @return array<mixed>
      */
     public function beforeTaskTestedProvider(): array
     {
@@ -125,6 +145,21 @@ abstract class ParallelControllerTest extends ControllerTest
                 'feature title',
                 null,
                 '<info>Feature: feature title</info>',
+                null,
+            ],
+            [
+                array_fill(0, 10, 'Long Feature Title'),
+                null,
+                '<info>Feature: Long Feature Title</info>, <info>Long Feature Title</info>, '
+                . '<info>Long Feature Title</info>, <info>Long Feature Title</info>, '
+                . '<info>Long Feature Title</info> (and 5 more)',
+                null,
+            ],
+            [
+                ['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4', 'Feature 5'],
+                null,
+                '<info>Feature: Feature 1</info>, <info>Feature 2</info>, <info>Feature 3</info>, '
+                . '<info>Feature 4</info>, <info>Feature 5</info>',
                 null,
             ],
         ];

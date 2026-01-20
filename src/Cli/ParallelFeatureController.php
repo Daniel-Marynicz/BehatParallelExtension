@@ -20,6 +20,13 @@ final class ParallelFeatureController extends ParallelController implements Cont
             'How many scenario jobs run in parallel feature mode? Available values empty or integer',
             false
         );
+        $command->addOption(
+            'parallel-chunk-size',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            'How many features run in one chunk? (Behat >= 3.23)',
+            1
+        );
     }
 
     /**

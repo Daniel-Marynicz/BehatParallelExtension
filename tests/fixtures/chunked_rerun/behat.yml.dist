@@ -1,0 +1,11 @@
+default:
+    suites:
+        suite01:
+            paths:
+                - '%paths.base%/suite01'
+            contexts:
+                - DMarynicz\Tests\Behat\Context\ChunkTestContext:
+                    filesPath: '%paths.base%'
+                - DMarynicz\Tests\Behat\Context\SimulateTestContext
+    extensions:
+        DMarynicz\BehatParallelExtension\Extension: ~

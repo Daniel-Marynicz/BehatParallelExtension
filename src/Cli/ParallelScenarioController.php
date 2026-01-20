@@ -22,6 +22,13 @@ final class ParallelScenarioController extends ParallelController implements Con
         )
             ->addUsage('--parallel 8')
             ->addUsage('--parallel');
+        $command->addOption(
+            'parallel-chunk-size',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            'How many scenarios run in one chunk? (Behat >= 3.23)',
+            1
+        );
     }
 
     /**

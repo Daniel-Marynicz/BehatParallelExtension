@@ -3,12 +3,13 @@
 namespace DMarynicz\Tests\Cli;
 
 use Behat\Gherkin\Node\FeatureNode;
-use Behat\Gherkin\Node\ScenarioInterface;
+use Behat\Gherkin\Node\ScenarioLikeInterface;
 use Behat\Testwork\Suite\Suite;
 use DMarynicz\BehatParallelExtension\Cli\RerunController;
 use DMarynicz\BehatParallelExtension\Event\AfterTaskTested;
 use DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator;
 use DMarynicz\BehatParallelExtension\Task\TaskEntity;
+use DMarynicz\BehatParallelExtension\Task\TaskUnit;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
 use ReflectionException;
@@ -44,6 +45,12 @@ class RerunControllerTest extends ControllerTest
             ->method('execute')
             ->with($this->input, $this->output);
 
+        $this->controller->execute($this->input, $this->output);
+    }
+
+    public function testExecuteDoesNotOverrideParallelChunkSizeOnRerun(): void
+    {
+        $this->input->expects($this->never())->method('setOption');
         $this->controller->execute($this->input, $this->output);
     }
 
@@ -83,13 +90,16 @@ class RerunControllerTest extends ControllerTest
         $feature->method('getFile')->willReturn($featureFile);
 
         $task->method('getSuite')->willReturn($suite);
-        $task->method('getFeature')->willReturn($feature);
 
-        $scenario = $this->createMock(ScenarioInterface::class);
         if ($scenarioLine) {
-            $task->method('getScenario')->willReturn($scenario);
+            $scenario = $this->createMock(ScenarioLikeInterface::class);
             $scenario->method('getLine')->willReturn($scenarioLine);
+            $unit = new TaskUnit($feature, $scenario);
+        } else {
+            $unit = new TaskUnit($feature);
         }
+
+        $task->method('getUnits')->willReturn([$unit]);
 
         $this->controller->collectFailedTask($afterTested);
 

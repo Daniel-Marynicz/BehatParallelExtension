@@ -7,9 +7,9 @@ use Symfony\Component\Console\Input\InputInterface;
 interface ArgumentsBuilder
 {
     /**
-     * @param string $path
+     * @param string[] $paths
      *
      * @return string[]
      */
-    public function buildArguments(InputInterface $input, $path);
+    public function buildArguments(InputInterface $input, array $paths): array;
 }

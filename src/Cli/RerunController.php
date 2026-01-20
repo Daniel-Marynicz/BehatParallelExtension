@@ -3,7 +3,6 @@
 namespace DMarynicz\BehatParallelExtension\Cli;
 
 use Behat\Behat\Tester\Cli\RerunController as BehatRerunController;
-use Behat\Gherkin\Node\ScenarioLikeInterface;
 use Behat\Testwork\Cli\Controller;
 use DMarynicz\BehatParallelExtension\Event\AfterTaskTested;
 use DMarynicz\BehatParallelExtension\Event\EventDispatcherDecorator;
@@ -59,20 +58,18 @@ final class RerunController implements Controller
             return;
         }
 
-        $suiteName    = $taskTested->getTask()->getSuite()->getName();
-        $featureFile  = $taskTested->getTask()->getFeature()->getFile();
-        $scenarioLine = null;
-        $scenario     = $taskTested->getTask()->getScenario();
-        if ($scenario instanceof ScenarioLikeInterface) {
-            $scenarioLine = $scenario->getLine();
-        }
+        $task      = $taskTested->getTask();
+        $suiteName = $task->getSuite()->getName();
+        $units     = $task->getUnits();
 
-        $line = $featureFile;
-        if ($scenarioLine !== null) {
-            $line .= ':' . $scenarioLine;
-        }
+        foreach ($units as $unit) {
+            $path = $unit->getPath();
+            if (in_array($path, $this->lines[$suiteName] ?? [], true)) {
+                continue;
+            }
 
-        $this->lines[$suiteName][] = $line;
+            $this->lines[$suiteName][] = $path;
+        }
     }
 
     /**

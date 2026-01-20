@@ -2,8 +2,6 @@
 
 namespace DMarynicz\BehatParallelExtension\Task;
 
-use Behat\Gherkin\Node\FeatureNode;
-use Behat\Gherkin\Node\ScenarioLikeInterface as Scenario;
 use Behat\Testwork\Suite\Suite;
 
 final class Task implements TaskEntity
@@ -11,29 +9,32 @@ final class Task implements TaskEntity
     /** @var Suite */
     private $suite;
 
-    /** @var FeatureNode */
-    private $feature;
-
-    /** @var string */
-    private $path;
-
-    /** @var Scenario|null */
-    private $scenario;
+    /** @var TaskUnit[] */
+    private $units;
 
     /** @var string[] */
     private $command;
 
     /**
-     * @param string   $path
-     * @param string[] $command
+     * @param TaskUnit[] $units
+     * @param string[]   $command
      */
-    public function __construct(Suite $suite, FeatureNode $feature, $path, $command = [], ?Scenario $scenario = null)
+    public function __construct(
+        Suite $suite,
+        array $units,
+        array $command = []
+    ) {
+        $this->suite   = $suite;
+        $this->units   = $units;
+        $this->command = $command;
+    }
+
+    /**
+     * @return TaskUnit[]
+     */
+    public function getUnits(): array
     {
-        $this->suite    = $suite;
-        $this->feature  = $feature;
-        $this->path     = $path;
-        $this->command  = $command;
-        $this->scenario = $scenario;
+        return $this->units;
     }
 
     /**
@@ -45,27 +46,13 @@ final class Task implements TaskEntity
     }
 
     /**
-     * @return FeatureNode
+     * @return string[]
      */
-    public function getFeature()
+    public function getPaths(): array
     {
-        return $this->feature;
-    }
-
-    /**
-     * @return Scenario|null
-     */
-    public function getScenario()
-    {
-        return $this->scenario;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPath()
-    {
-        return $this->path;
+        return array_map(static function (TaskUnit $unit) {
+            return $unit->getPath();
+        }, $this->units);
     }
 
     /**

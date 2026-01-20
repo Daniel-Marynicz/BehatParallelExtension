@@ -7,7 +7,7 @@ Feature: Environment
     Then it should pass
     And the output should contain:
     """
-    Starting parallel scenario tests with 8 workers
+    Starting parallel tests with 8 workers
     """
     And the output should contain:
     """
