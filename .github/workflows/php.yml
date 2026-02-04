@@ -48,6 +48,9 @@ jobs:
           - os: 'ubuntu-22.04'
             version: '8.2'
             symfony: '^7.0'
+          - os: 'ubuntu-22.04'
+            version: '8.4'
+            symfony: '^8.0'
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
