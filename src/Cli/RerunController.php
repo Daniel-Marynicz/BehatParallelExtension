@@ -91,7 +91,12 @@ final class RerunController implements Controller
         }
 
         $property = $ref->getProperty('lines');
-        $property->setAccessible(true);
+        // Needed for PHP < 8.1 only; on newer versions it is implicit and
+        // calling setAccessible() is deprecated in PHP 8.5.
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
+
         $property->setValue($this->decoratedController, $this->lines);
 
         $this->writeCacheByDecoratedController();

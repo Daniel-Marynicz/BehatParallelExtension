@@ -17,7 +17,6 @@ use DMarynicz\BehatParallelExtension\Task\TaskUnit;
 use DMarynicz\BehatParallelExtension\Util\CanDetermineNumberOfProcessingUnits;
 use DMarynicz\BehatParallelExtension\Worker\Poll;
 use PHPUnit\Framework\MockObject\MockObject;
-use ReflectionClass;
 use ReflectionException;
 use ReflectionProperty;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
@@ -101,10 +100,7 @@ abstract class ParallelControllerTest extends ControllerTest
                 $scenario->method('getTitle')->willReturn($title);
                 if (isset($units[$index])) {
                     // Update existing unit to add scenario
-                    $ref      = new ReflectionClass($units[$index]);
-                    $property = $ref->getProperty('scenario');
-                    $property->setAccessible(true);
-                    $property->setValue($units[$index], $scenario);
+                    $this->setNonAccessibleValue($units[$index], 'scenario', $scenario);
                 } else {
                     $units[] = new TaskUnit($this->createMock(FeatureNode::class), $scenario);
                 }
@@ -264,7 +260,10 @@ abstract class ParallelControllerTest extends ControllerTest
     private function setNonAccessibleValue($object, $name, $value): void
     {
         $inputProp = new ReflectionProperty($object, $name);
-        $inputProp->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $inputProp->setAccessible(true);
+        }
+
         $inputProp->setValue($object, $value);
     }
 }

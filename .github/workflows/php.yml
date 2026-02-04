@@ -51,6 +51,7 @@ jobs:
           - os: 'ubuntu-22.04'
             version: '8.4'
             symfony: '^8.0'
+            behat: '4.x-dev'
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
@@ -82,6 +83,9 @@ jobs:
           symfony/event-dispatcher:${{ matrix.symfony }} \
           symfony/yaml:${{ matrix.symfony }} \
           symfony/expression-language:${{ matrix.symfony }}
+    - name: Require behat
+      if: ${{ matrix.behat }}
+      run: composer require --no-update behat/behat:${{ matrix.behat }}
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"

@@ -146,7 +146,9 @@ class RerunControllerTest extends ControllerTest
     {
         $ref      = new ReflectionClass($this->controller);
         $property = $ref->getProperty('lines');
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
 
         return $property->getValue($this->controller);
     }

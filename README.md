@@ -32,8 +32,10 @@ Behat Parallel Extension can work in two main modes:
 
 ### PHP compatibility
 
-This Behat extension requires php `5.6` or higher.
-The main reason for choosing php 5.6 is to be able to share this tool with more programmers :).
+This Behat extension requires PHP `7.4` or higher.
+Supported dependency ranges:
+- `behat/behat`: `^3.9 || ^4.0`
+- Symfony components: `^4.0 || ^5.0 || ^6.0 || ^7.0 || ^8.0`
 
 ## Installing Behat Parallel Extension
 
