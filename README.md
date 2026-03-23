@@ -234,7 +234,7 @@ classes for behat tests in directory [tests/Behat](tests/Behat).
    [Symfony]: <http://symfony.com>
    [PHPUnit]: <https://phpunit.de>
    [Composer]: <https://getcomposer.org>
-   [PHP_CodeSniffer]:  <https://github.com/squizlabs/PHP_CodeSniffer>
+   [PHP_CodeSniffer]:  <https://github.com/PHPCSStandards/PHP_CodeSniffer>
    [PHPStan]:   <https://github.com/phpstan/phpstan>
    [Doctrine Coding Standard]:   <https://www.doctrine-project.org/projects/doctrine-coding-standard/en/8.2/reference/index.html#introduction>
    [PSR-1]: <https://www.php-fig.org/psr/psr-1/>
