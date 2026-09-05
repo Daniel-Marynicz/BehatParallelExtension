@@ -78,7 +78,7 @@ abstract class ParallelController
     /**
      * @return int|null
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): ?int
     {
         $startInParallel = $this->getParallelOption($input) !== false;
         if (! $startInParallel) {

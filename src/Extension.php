@@ -18,7 +18,7 @@ class Extension implements ExtensionInterface
     /**
      * @return string
      */
-    public function getConfigKey()
+    public function getConfigKey(): string
     {
         return 'parallel_extension';
     }

@@ -37,7 +37,7 @@ final class RerunController implements Controller
     /**
      * {@inheritDoc}
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): ?int
     {
         $this->eventDispatcher->addListener(
             AfterTaskTested::AFTER,

@@ -26,7 +26,7 @@ final class SigintController implements Controller
     /**
      * @inheritDoc
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): ?int
     {
         if (! $this->isParallelModeEnabled($input)) {
             return null;
