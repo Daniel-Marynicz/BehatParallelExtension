@@ -34,9 +34,6 @@ final class RerunController implements Controller
         $this->decoratedController->configure($command);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function execute(InputInterface $input, OutputInterface $output): ?int
     {
         $this->eventDispatcher->addListener(

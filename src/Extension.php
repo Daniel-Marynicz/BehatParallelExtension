@@ -15,9 +15,6 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class Extension implements ExtensionInterface
 {
-    /**
-     * @return string
-     */
     public function getConfigKey(): string
     {
         return 'parallel_extension';
