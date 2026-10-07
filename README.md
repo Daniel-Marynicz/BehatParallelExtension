@@ -6,7 +6,7 @@
 
 ## Intro
 
-This extension is for an executing behat 3.x tests in parallel mode.
+This extension is for an executing behat 3.x and 4.x tests in parallel mode.
 
 ![Behat Parallel Runner](parallel.apng?raw=true "Behat Parallel Extension with parallel mode enabled")
 
@@ -32,8 +32,7 @@ Behat Parallel Extension can work in two main modes:
 
 ### PHP compatibility
 
-This Behat extension requires php `5.6` or higher.
-The main reason for choosing php 5.6 is to be able to share this tool with more programmers :).
+This Behat extension requires php `8.2` or higher and Behat `3.20` or higher (including Behat 4).
 
 ## Installing Behat Parallel Extension
 
