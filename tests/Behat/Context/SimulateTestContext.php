@@ -3,6 +3,9 @@
 namespace DMarynicz\Tests\Behat\Context;
 
 use Behat\Behat\Context\Context;
+use Behat\Step\Given;
+use Behat\Step\Then;
+use Behat\Step\When;
 use Exception;
 
 class SimulateTestContext implements Context
@@ -13,43 +16,34 @@ class SimulateTestContext implements Context
      */
     private const WAIT_TIME_MULTIPLIER = 1;
 
-    /**
-     * @Given /^(?:|I )am on pretending to be on (?:|the )homepage$/
-     * @When /^(?:|I )am pretending to go to (?:|the )homepage$/
-     */
+    #[Given('/^(?:|I )am on pretending to be on (?:|the )homepage$/')]
+    #[When('/^(?:|I )am pretending to go to (?:|the )homepage$/')]
     public function iAmPretendingOnHomepage(): void
     {
     }
 
-    /**
-     * @Given /^(?:|I )am on pretending "(?P<page>[^"]+)"$/
-     * @When /^(?:|I )pretend I am going to "(?P<page>[^"]+)"$/
-     */
-    public function iAmPretendingOnPage(): void
+    #[Given('/^(?:|I )am on pretending "(?P<page>[^"]+)"$/')]
+    #[When('/^(?:|I )pretend I am going to "(?P<page>[^"]+)"$/')]
+    public function iAmPretendingOnPage(string $page): void
     {
     }
 
     /**
      * @param int $seconds
-     *
-     * @When /^I wait for (\d+) seconds$/
      */
+    #[When('/^I wait for (\\d+) seconds$/')]
     public function iWaitForSeconds($seconds): void
     {
         usleep((int) ($seconds * 1000 * 1000 * self::WAIT_TIME_MULTIPLIER));
     }
 
-    /**
-     * @Then this test will fail
-     */
+    #[Then('this test will fail')]
     public function thenThisTestWillFail(): void
     {
         throw new Exception('fail');
     }
 
-    /**
-     * @Then /^this test will be successful$/
-     */
+    #[Then('/^this test will be successful$/')]
     public function thenThisTestWillBeSuccessful(): void
     {
     }

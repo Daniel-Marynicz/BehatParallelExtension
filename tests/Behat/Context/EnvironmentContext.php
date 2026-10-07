@@ -4,6 +4,7 @@ namespace DMarynicz\Tests\Behat\Context;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Step\When;
 use DMarynicz\BehatParallelExtension\Exception\Logic;
 use DMarynicz\Tests\Behat\Util\ReadWriteDataToFileWithLocking;
 use PHPUnit\Framework\Assert;
@@ -23,9 +24,8 @@ class EnvironmentContext implements Context
 
     /**
      * @param string $filename
-     *
-     * @When I create empty json file in :filename
      */
+    #[When('I create empty json file in :filename')]
     public function iCreateEmptyJsonFile($filename): void
     {
         $path   = $this->getRealPath($filename);
@@ -36,9 +36,8 @@ class EnvironmentContext implements Context
     /**
      * @param string $name
      * @param string $filename
-     *
-     * @When I append the value of the environment variable :name variable to json :filename
      */
+    #[When('I append the value of the environment variable :name variable to json :filename')]
     public function iAppendEnvironmentVariableToJson($name, $filename): void
     {
         $path   = $this->getRealPath($filename);
@@ -64,9 +63,8 @@ class EnvironmentContext implements Context
     /**
      * @param string            $filename
      * @param TableNode<string> $tableNode
-     *
-     * @When the ordered unique data of the :filename json file should match:
      */
+    #[When('the ordered unique data of the :filename json file should match:')]
     public function theOrderedUniqueDataOfTheFileShouldMatch($filename, TableNode $tableNode): void
     {
         $path   = $this->getRealPath($filename);

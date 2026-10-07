@@ -3,6 +3,7 @@
 namespace DMarynicz\Tests\Behat\Context;
 
 use Behat\Behat\Context\Context;
+use Behat\Step\Given;
 use DMarynicz\BehatParallelExtension\Exception\Logic;
 use DMarynicz\Tests\Behat\Util\ReadWriteDataToFileWithLocking;
 
@@ -21,9 +22,8 @@ class ChunkTestContext implements Context
 
     /**
      * @param string $filename
-     *
-     * @Given I log behat command to :filename
      */
+    #[Given('I log behat command to :filename')]
     public function iLogBehatCommandTo($filename): void
     {
         $path = $this->getRealPath($filename);
