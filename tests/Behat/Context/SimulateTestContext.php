@@ -22,9 +22,9 @@ class SimulateTestContext implements Context
     {
     }
 
-    #[Given('/^(?:|I )am on pretending "(?P<page>[^"]+)"$/')]
-    #[When('/^(?:|I )pretend I am going to "(?P<page>[^"]+)"$/')]
-    public function iAmPretendingOnPage(string $page): void
+    #[Given('/^(?:I )am on pretending "[^"]+"$/')]
+    #[When('/^(?:I )pretend I am going to "[^"]+"$/')]
+    public function iAmPretendingOnPage(): void
     {
     }
 
