@@ -4,6 +4,10 @@ namespace DMarynicz\Tests\Behat\Context;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
+use Behat\Hook\BeforeScenario;
+use Behat\Step\Given;
+use Behat\Step\Then;
+use Behat\Step\When;
 use DMarynicz\BehatParallelExtension\Exception\Runtime;
 use DMarynicz\BehatParallelExtension\Exception\UnexpectedValue;
 use PHPUnit\Framework\Assert;
@@ -21,9 +25,8 @@ class ParallelBehatContext implements Context
 
     /**
      * Prepares test folders in the temporary directory.
-     *
-     * @BeforeScenario
      */
+    #[BeforeScenario]
     public function findAndSetPhpBin(): void
     {
         $phpFinder = new PhpExecutableFinder();
@@ -39,9 +42,8 @@ class ParallelBehatContext implements Context
      * Runs behat command with provided parameters
      *
      * @param string $argumentsString
-     *
-     * @When /^I run "behat(?: ((?:\"|[^"])*))?"$/
      */
+    #[When('/^I run "behat(?: ((?:\\"|[^"])*))?"$/')]
     public function iRunBehat($argumentsString = ''): void
     {
         if (! defined('BEHAT_BIN_PATH')) {
@@ -63,9 +65,8 @@ class ParallelBehatContext implements Context
      * Starts behat command in non blocking way with provided parameters
      *
      * @param string $argumentsString
-     *
-     * @When /^I start "behat(?: ((?:\"|[^"])*))?"$/
      */
+    #[When('/^I start "behat(?: ((?:\\"|[^"])*))?"$/')]
     public function iStartBehat($argumentsString = ''): void
     {
         if (! defined('BEHAT_BIN_PATH')) {
@@ -83,9 +84,7 @@ class ParallelBehatContext implements Context
         $this->process->start();
     }
 
-    /**
-     * @Then /^I send a SIGINT signal to behat process$/
-     */
+    #[Then('/^I send a SIGINT signal to behat process$/')]
     public function iSendSigintSignalToBehatProcess(): void
     {
         $this->process->signal(SIGINT);
@@ -96,9 +95,8 @@ class ParallelBehatContext implements Context
      *
      * @param string       $success "fail" or "pass"
      * @param PyStringNode $text    PyString text instance
-     *
-     * @Then /^it should (fail|pass) with:$/
      */
+    #[Then('/^it should (fail|pass) with:$/')]
     public function itShouldPassWith($success, PyStringNode $text): void
     {
         $text = str_replace(
@@ -117,9 +115,8 @@ class ParallelBehatContext implements Context
      * Checks whether previously ran command failed|passed.
      *
      * @param string $success "fail" or "pass"
-     *
-     * @Then /^it should (fail|pass)$/
      */
+    #[Then('/^it should (fail|pass)$/')]
     public function itShouldFail($success): void
     {
         if ($success === 'fail') {
@@ -141,25 +138,20 @@ class ParallelBehatContext implements Context
      * Checks whether last command output contains provided string.
      *
      * @param PyStringNode $text PyString text instance
-     *
-     * @Then the output should contain:
      */
+    #[Then('the output should contain:')]
     public function theOutputShouldContain(PyStringNode $text): void
     {
         Assert::assertStringContainsString((string) $text, $this->getOutput());
     }
 
-    /**
-     * @Then /^I should see progress bar$/
-     */
+    #[Then('/^I should see progress bar$/')]
     public function iShouldSeeProgressBar(): void
     {
         Assert::assertStringContainsString('[============================] 100%', $this->getOutput());
     }
 
-    /**
-     * @Then /^print last output$/
-     */
+    #[Then('/^print last output$/')]
     public function thenPrintLastOutput(): void
     {
         echo $this->getOutput();
@@ -167,9 +159,8 @@ class ParallelBehatContext implements Context
 
     /**
      * @param string $filename
-     *
-     * @Given I delete file :filename
      */
+    #[Given('I delete file :filename')]
     public function iDeleteFile($filename): void
     {
         $path = realpath(__DIR__ . '/../../../') . DIRECTORY_SEPARATOR . $filename;
@@ -183,9 +174,8 @@ class ParallelBehatContext implements Context
     /**
      * @param int    $count
      * @param string $filename
-     *
-     * @Then I should have :count behat commands in :filename
      */
+    #[Then('I should have :count behat commands in :filename')]
     public function iShouldHaveBehatCommandsIn($count, $filename): void
     {
         $array = $this->fetchJsonArrayFile($filename);
@@ -194,9 +184,8 @@ class ParallelBehatContext implements Context
 
     /**
      * @param string $filename
-     *
-     * @Then behat commands in :filename should match:
      */
+    #[Then('behat commands in :filename should match:')]
     public function behatCommandsInShouldMatch($filename, PyStringNode $expectedCommands): void
     {
         $commands = $this->fetchJsonArrayFile($filename);

@@ -10,7 +10,7 @@
     <arg name="parallel" value="80"/>
 
     <rule ref="Doctrine">
-        <!-- disabling some rules for compatibility with php 5.6 -->
+        <!-- rules originally disabled for compatibility with php 5.6 -->
         <exclude name="SlevomatCodingStandard.TypeHints.DeclareStrictTypes.DeclareStrictTypesMissing" />
         <exclude name="SlevomatCodingStandard.Classes.ClassConstantVisibility.MissingConstantVisibility" />
         <exclude name="SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint" />

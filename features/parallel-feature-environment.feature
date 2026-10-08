@@ -3,7 +3,7 @@ Feature: Environment
 
   Scenario: I have only configured 4 environments for my poll and only should it start 4 Workers
     Given I create empty json file in "test.json"
-    And  I run "behat --config tests/fixtures/environments2/behat.yml.dist --parallel-feature 8"
+    And  I run "behat --config tests/fixtures/environments2/behat.dist.php --parallel-feature 8"
     Then it should pass
     And the output should contain:
     """

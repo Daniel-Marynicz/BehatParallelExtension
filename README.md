@@ -6,7 +6,7 @@
 
 ## Intro
 
-This extension is for an executing behat 3.x tests in parallel mode.
+This extension is for an executing behat 3.x and 4.x tests in parallel mode.
 
 ![Behat Parallel Runner](parallel.apng?raw=true "Behat Parallel Extension with parallel mode enabled")
 
@@ -32,8 +32,7 @@ Behat Parallel Extension can work in two main modes:
 
 ### PHP compatibility
 
-This Behat extension requires php `5.6` or higher.
-The main reason for choosing php 5.6 is to be able to share this tool with more programmers :).
+This Behat extension requires php `8.2` or higher and Behat `3.20` or higher (including Behat 4).
 
 ## Installing Behat Parallel Extension
 
@@ -87,6 +86,29 @@ Example for maximum an unlimited amount of Workers:
      extensions:
          DMarynicz\BehatParallelExtension\Extension: ~
  ```
+
+With PHP configuration (`behat.php` or `behat.dist.php`), which Behat 4 requires and Behat 3.20+ supports:
+
+```php
+<?php
+
+use Behat\Config\Config;
+use Behat\Config\Extension;
+use Behat\Config\Profile;
+use DMarynicz\BehatParallelExtension\Extension as ParallelExtension;
+
+return (new Config())
+    ->withProfile((new Profile('default'))
+        // ...
+        ->withExtension(new Extension(ParallelExtension::class, [
+            'environments' => [
+                ['DATABASE_URL' => 'mysql://db_user:db_password@127.0.0.1:3306/db_name_00?serverVersion=5.7'],
+                ['DATABASE_URL' => 'mysql://db_user:db_password@127.0.0.1:3306/db_name_01?serverVersion=5.7'],
+            ],
+        ])));
+```
+
+Leave out the `environments` option (`new Extension(ParallelExtension::class)`) for an unlimited amount of Workers.
 
 ## Integration with [SymfonyExtension] and [Symfony]
 
@@ -187,7 +209,7 @@ With docker, without Dockerfile:
 
 ```bash
 # Create the docker container
-docker run --rm -d -v $(pwd):/app -w /app --name behat-parallel-old-php php:7.4-cli bash -c "tail -f /dev/null"
+docker run --rm -d -v $(pwd):/app -w /app --name behat-parallel-old-php php:8.2-cli bash -c "tail -f /dev/null"
 # Install deps
 docker exec -ti behat-parallel-old-php bash -c "apt-get update && apt-get install -y libzip-dev && docker-php-ext-install zip"
 # Install composer for the current user
@@ -205,7 +227,7 @@ The extension uses the following coding standards and quality tools:
 
 ### Doctrine Coding Standard
 
- The [Doctrine Coding Standard] with some exceptions for php 5.6 compatibility.
+ The [Doctrine Coding Standard] with some exceptions (originally added for php 5.6 compatibility).
  The [Doctrine Coding Standard] is a set of rules for [PHP_CodeSniffer]. It is based on [PSR-1]
  and [PSR-12] , with some noticeable exceptions/differences/extensions.
 
